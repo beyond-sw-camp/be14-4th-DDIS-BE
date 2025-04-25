@@ -34,6 +34,8 @@ public class RoomController {
 
 
         roomService.createRoom(roomDTO);
+        return ResponseEntity.ok().build();
+
     }
 
 

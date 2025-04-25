@@ -7,6 +7,7 @@ import com.DDIS.shareTodo.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.domain.repository.RoomRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class RoomServiceImpl implements RoomService {
     public void createRoom(CreateShareRoomDTO roomDTO) {
         String randomColor = pickRandomColor();
         Integer postNum = roomDTO.getPost().getPostNum();
-        Posts posts = postRepository.findById(postNum).orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));;
+        Posts posts = postRepository.findById(postNum).orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));
 
 
         LocalDateTime now = LocalDateTime.now();
@@ -58,6 +59,8 @@ public class RoomServiceImpl implements RoomService {
                 content(posts.getPostContent()).build();
 
         roomRepository.save(rooms);
+
+
 
 
     }
