@@ -1,6 +1,8 @@
 package com.DDIS.client.Command.application.controller;
 
 import com.DDIS.client.Command.application.service.ClientService;
+import com.DDIS.client.Command.domain.vo.LoginRequestVO;
+import com.DDIS.client.Command.domain.vo.LoginResponseVO;
 import com.DDIS.client.Command.domain.vo.SignupRequestVO;
 import com.DDIS.client.Command.domain.vo.SignupResponseVO;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +28,16 @@ public class ClientController {
         }
 
         return ResponseEntity.status(201).body(response); // 201 Created
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseVO> login(@RequestBody LoginRequestVO vo) {
+        LoginResponseVO response = clientService.login(vo);
+
+        if (response.getToken() == null) {
+            return ResponseEntity.status(401).body(response); // 인증 실패
+        }
+
+        return ResponseEntity.ok(response); // 인증 성공
     }
 }
