@@ -3,41 +3,37 @@ package com.DDIS.chatRoom.Command.domain.aggregate.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_messages")
+@Table(name = "chatroom_log")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-public class ChatMessageEntity {
+public class ChatRoomLogEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long logId;
 
     @ManyToOne
     @JoinColumn(name = "chatroom_num")
     private ChatRoomEntity chatRoomEntity;
     private String roomId;
 
+    @Column(name = "client_num")
     private String sender;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "message_content")
     private String message;
 
-    private LocalDateTime timestamp;
+    private String sendTime;
 
-//    public ChatMessageEntity() {}
-
-    public ChatMessageEntity(String roomId, String sender, String message) {
+    public ChatRoomLogEntity(String roomId, String sender, String message, String sendTime) {
         this.roomId = roomId;
         this.sender = sender;
         this.message = message;
-        this.timestamp = LocalDateTime.now();
+        this.sendTime = sendTime;
     }
-
-    // Getter & Setter
 }

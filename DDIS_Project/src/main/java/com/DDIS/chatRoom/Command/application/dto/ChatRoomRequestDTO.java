@@ -7,11 +7,9 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class ChatRoomDTO {
-    private String chatroom_num;
+public class ChatRoomRequestDTO {
     private String chatroom_name;
-
-    // 생성자, getter/setter
+    private String chatroom_type;
+    private Long room_num;
 
 }
-

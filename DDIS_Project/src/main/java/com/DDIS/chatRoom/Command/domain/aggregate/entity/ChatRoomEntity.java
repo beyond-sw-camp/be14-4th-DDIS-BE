@@ -3,8 +3,6 @@ package com.DDIS.chatRoom.Command.domain.aggregate.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "chatroom")
 @NoArgsConstructor
@@ -16,31 +14,25 @@ public class ChatRoomEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String roomId;
+    private Long chatRoomId;
 
 //    @ManyToOne
 //    @JoinColumn(name = "room_num")
     @Column(name = "room_num")
-//    private Rooms roomNum;
-    private int roomNum;
+//    private RoomEntity roomNum;
+    private Long roomNum;
 
     @Column(name = "chatroom_name")
-    private String name;
+    private String chatRoomName;
 
     @Column(name = "chatroom_type")
-    private String type;
+    private String chatType;
 
     @Column(name = "created_time")
-    private String time;
+    private String createdTime;
 
-//    public ChatRoomEntity() {
-//        this.roomId = UUID.randomUUID().toString();
-//    }
-//
     public ChatRoomEntity(String name) {
         this();
-        this.name = name;
+        this.chatRoomName = name;
     }
-
-    // Getter & Setter
 }

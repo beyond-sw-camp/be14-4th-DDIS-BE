@@ -1,7 +1,7 @@
 package com.DDIS.chatRoom.Command.application.controller;
 
-import com.DDIS.chatRoom.Command.application.service.ChatMessageService;
-import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatMessageEntity;
+import com.DDIS.chatRoom.Command.application.dto.ChatRoomLogResponseDTO;
+import com.DDIS.chatRoom.Command.application.service.ChatRoomLogService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,14 +13,14 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatHistoryController {
 
-    private final ChatMessageService chatMessageService;
+    private final ChatRoomLogService chatRoomLogService;
 
-    public ChatHistoryController(ChatMessageService chatMessageService) {
-        this.chatMessageService = chatMessageService;
+    public ChatHistoryController(ChatRoomLogService chatRoomLogService) {
+        this.chatRoomLogService = chatRoomLogService;
     }
 
     @GetMapping("/messages/{roomId}")
-    public List<ChatMessageEntity> getMessages(@PathVariable String roomId) {
-        return chatMessageService.getMessagesByRoom(roomId);
+    public List<ChatRoomLogResponseDTO> getMessages(@PathVariable String roomId) {
+        return chatRoomLogService.getMessagesByRoomAsDTO(roomId);
     }
 }

@@ -1,25 +1,13 @@
 package com.DDIS.chatRoom.Command.domain.repository;
 
 import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Optional;
 
 @Repository
-public class ChatRoomRepository {
-    private final Map<String, ChatRoomEntity> chatRoomMap = new LinkedHashMap<>();
-
-    public List<ChatRoomEntity> findAll() {
-        return new ArrayList<>(chatRoomMap.values());
-    }
-
-    public ChatRoomEntity findById(String roomId) {
-        return chatRoomMap.get(roomId);
-    }
-
-    public ChatRoomEntity createRoom(String name) {
-        ChatRoomEntity room = new ChatRoomEntity(name);
-        chatRoomMap.put(room.getRoomId(), room);
-        return room;
-    }
+public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> {
+    // 필요 시 room_num으로 조회하는 메서드도 만들 수 있음
+//    Optional<ChatRoomEntity> findByRoomNum(Long roomNum);
 }

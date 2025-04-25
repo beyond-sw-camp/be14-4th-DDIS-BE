@@ -1,7 +1,8 @@
 package com.DDIS.chatRoom.Command.application.controller;
 
+import com.DDIS.chatRoom.Command.application.dto.ChatRoomRequestDTO;
+import com.DDIS.chatRoom.Command.application.dto.ChatRoomResponseDTO;
 import com.DDIS.chatRoom.Command.application.service.ChatRoomService;
-import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,21 +17,21 @@ public class ChatRoomController {
         this.chatRoomService = chatRoomService;
     }
 
-    // 모든 채팅방 조회
+    // ✅ 채팅방 생성
+    @PostMapping
+    public ChatRoomResponseDTO createRoom(@RequestBody ChatRoomRequestDTO requestDTO) {
+        return chatRoomService.createRoom(requestDTO);
+    }
+
+    // ✅ 전체 채팅방 목록 조회
     @GetMapping
-    public List<ChatRoomEntity> getRooms() {
+    public List<ChatRoomResponseDTO> getAllRooms() {
         return chatRoomService.getAllRooms();
     }
 
-    // 채팅방 생성
-    @PostMapping
-    public ChatRoomEntity createRoom(@RequestParam String name) {
-        return chatRoomService.createRoom(name);
-    }
-
-    // 채팅방ID로 조회
-    @GetMapping("/{roomId}")
-    public ChatRoomEntity getRoom(@PathVariable String roomId) {
-        return chatRoomService.getRoom(roomId);
+    // ✅ 특정 채팅방 조회
+    @GetMapping("/{chatroomNum}")
+    public ChatRoomResponseDTO getRoom(@PathVariable Long chatroomNum) {
+        return chatRoomService.getRoomById(chatroomNum);
     }
 }
