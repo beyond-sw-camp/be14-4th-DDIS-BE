@@ -11,12 +11,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reports")
-public class ReportController {
+public class ReportQueryController {
 
     private final ReportService reportService;
 
     @Autowired
-    public ReportController(ReportService reportService) {
+    public ReportQueryController(ReportService reportService) {
         this.reportService = reportService;
     }
 
