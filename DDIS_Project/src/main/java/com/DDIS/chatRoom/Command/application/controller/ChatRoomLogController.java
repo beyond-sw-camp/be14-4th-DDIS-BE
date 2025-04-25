@@ -3,6 +3,7 @@ package com.DDIS.chatRoom.Command.application.controller;
 import com.DDIS.chatRoom.Command.application.dto.ChatRoomLogRequestDTO;
 import com.DDIS.chatRoom.Command.application.dto.ChatRoomLogResponseDTO;
 import com.DDIS.chatRoom.Command.application.service.ChatRoomLogService;
+import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -28,12 +29,12 @@ public class ChatRoomLogController {
         ChatRoomLogResponseDTO responseDTO = chatRoomLogService.saveMessage(requestDTO);
 
         // 구독자들에게 실시간 브로드캐스트
-        messagingTemplate.convertAndSend("/topic/chatroom/" + responseDTO.getRoomId(), responseDTO);
+        messagingTemplate.convertAndSend("/sub/chatroom/" + responseDTO.getRoomNum(), responseDTO);
     }
 
     // 특정 채팅방의 메시지 리스트 조회
-    @GetMapping("/{roomId}")
-    public List<ChatRoomLogResponseDTO> getMessages(@PathVariable String roomId) {
-        return chatRoomLogService.getMessagesByRoomAsDTO(roomId);
+    @GetMapping("/{roomNum}")
+    public List<ChatRoomLogResponseDTO> getMessages(@PathVariable ChatRoomEntity roomNum) {
+        return chatRoomLogService.getMessagesByRoomAsDTO(roomNum);
     }
 }

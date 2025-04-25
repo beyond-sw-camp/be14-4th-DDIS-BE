@@ -14,6 +14,7 @@ public class ChatRoomEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "chatroom_num")
     private Long chatRoomId;
 
 //    @ManyToOne

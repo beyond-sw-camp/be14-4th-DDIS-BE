@@ -2,6 +2,7 @@ package com.DDIS.chatRoom.Command.application.service;
 
 import com.DDIS.chatRoom.Command.application.dto.ChatRoomLogRequestDTO;
 import com.DDIS.chatRoom.Command.application.dto.ChatRoomLogResponseDTO;
+import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomLogEntity;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomLogRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class ChatRoomLogService {
 
         // DB 저장
         ChatRoomLogEntity entity = new ChatRoomLogEntity(
-                requestDTO.getRoomId(),
+                requestDTO.getRoomNum(),
                 requestDTO.getSender(),
                 requestDTO.getMessage(),
                 formattedTime
@@ -35,7 +36,7 @@ public class ChatRoomLogService {
         ChatRoomLogEntity saved = chatRoomLogRepository.save(entity);
 
         return new ChatRoomLogResponseDTO(
-                saved.getRoomId(),
+                saved.getRoomNum(),
                 saved.getSender(),
                 saved.getMessage(),
                 saved.getSendTime()
@@ -43,10 +44,10 @@ public class ChatRoomLogService {
     }
 
     // 메시지 리스트 조회 (DTO 변환)
-    public List<ChatRoomLogResponseDTO> getMessagesByRoomAsDTO(String roomId) {
-        return chatRoomLogRepository.findByRoomIdOrderBySendTimeAsc(roomId).stream()
+    public List<ChatRoomLogResponseDTO> getMessagesByRoomAsDTO(ChatRoomEntity roomNum) {
+        return chatRoomLogRepository.findByRoomNumOrderBySendTimeAsc(roomNum).stream()
                 .map(log -> new ChatRoomLogResponseDTO(
-                        log.getRoomId(),
+                        log.getRoomNum(),
                         log.getSender(),
                         log.getMessage(),
                         log.getSendTime()

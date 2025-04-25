@@ -18,13 +18,13 @@ public class ChatRoomController {
     }
 
     // ✅ 채팅방 생성
-    @PostMapping
+    @PostMapping("/create")
     public ChatRoomResponseDTO createRoom(@RequestBody ChatRoomRequestDTO requestDTO) {
         return chatRoomService.createRoom(requestDTO);
     }
 
     // ✅ 전체 채팅방 목록 조회
-    @GetMapping
+    @GetMapping("/allChatRoom")
     public List<ChatRoomResponseDTO> getAllRooms() {
         return chatRoomService.getAllRooms();
     }

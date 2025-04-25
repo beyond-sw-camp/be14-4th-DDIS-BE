@@ -1,5 +1,6 @@
 package com.DDIS.chatRoom.Command.application.dto;
 
+import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import lombok.*;
 
 @NoArgsConstructor
@@ -14,7 +15,7 @@ public class ChatRoomLogRequestDTO {
 //    }
 //
 //    private MessageType type;
-    private String roomId;
+    private ChatRoomEntity roomNum;
     private String sender;
     private String message;
     private String sendTime;

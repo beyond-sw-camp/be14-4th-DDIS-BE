@@ -19,8 +19,8 @@ public class ChatRoomLogEntity {
 
     @ManyToOne
     @JoinColumn(name = "chatroom_num")
-    private ChatRoomEntity chatRoomEntity;
-    private String roomId;
+    private ChatRoomEntity roomNum;
+//    private String roomId;
 
     @Column(name = "client_num")
     private String sender;
@@ -30,8 +30,8 @@ public class ChatRoomLogEntity {
 
     private String sendTime;
 
-    public ChatRoomLogEntity(String roomId, String sender, String message, String sendTime) {
-        this.roomId = roomId;
+    public ChatRoomLogEntity(ChatRoomEntity roomNum, String sender, String message, String sendTime) {
+        this.roomNum = roomNum;
         this.sender = sender;
         this.message = message;
         this.sendTime = sendTime;
