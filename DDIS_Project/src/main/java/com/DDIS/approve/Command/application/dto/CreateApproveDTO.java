@@ -1,13 +1,16 @@
 package com.DDIS.approve.Command.application.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class CreateApproveDTO {
-    private String approve_title;
-    private String approve_content;
-    private String time;
-    private int permitCount;
+    private Long memberShareTodoNum;
+    private Long memberNum;
+    private String approveTitle;
+    private String approveContent;
+    private String approveTime;
 }
