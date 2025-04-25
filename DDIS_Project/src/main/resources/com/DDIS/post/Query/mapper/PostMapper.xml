@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- DTO필드와 컬럼을 매핑-->
+<mapper namespace="com.DDIS.post.Query.mapper.PostMapper">
+    <resultMap id="PostResultMap" type="com.DDIS.post.Query.dto.PostDTO">
+        <id property="postNum" column="post_num"/>
+        <result property="postTitle" column="post_title"/>
+        <result property="postContent" column="post_content"/>
+        <result property="recruitmentStartDate" column="recruitment_start_date"/>
+        <result property="recruitmentEndDate" column="recruitment_end_date"/>
+        <result property="activityTime" column="activity_time"/>
+        <result property="recruitmentLimit" column="recruitment_limit"/>
+        <result property="applicantCount" column="applicant_count"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="clientName" column="client_name"/>
+    </resultMap>
+
+    <!-- 전체 조회 SQL (명시적으로 전부 나열)-->
+    <select id="findAllPosts" resultMap="PostResultMap">
+        SELECT
+            post_num,
+            post_title,
+            post_content,
+            recruitment_start_date,
+            recruitment_end_date,
+            activity_time,
+            recruitment_limit,
+            applicant_count,
+            is_public,
+            category_name,
+            client_name
+        FROM posts
+    </select>
+
+
+</mapper>

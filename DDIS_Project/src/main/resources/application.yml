@@ -1,3 +1,4 @@
+
 server:
   port: 8080
 
@@ -28,3 +29,4 @@ spring:
     url: jdbc:mariadb://localhost:3306/ddis       #각자 수정
     username: DDIS                                #각자 수정
     password: DDIS                                #각자 수정
+
