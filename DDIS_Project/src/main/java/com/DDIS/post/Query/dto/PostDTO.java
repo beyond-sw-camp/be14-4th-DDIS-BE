@@ -18,6 +18,7 @@ public class PostDTO {
     private int recruitmentLimit;          // 모집 인원
     private Integer applicantCount;        // 현재 신청 인원 (nullable)
     private Boolean isPublic;              // 공개 여부
+    private String password;               // 비공개 비밀번호
     private String categoryName;  // 사용자에게 보여줄 이름
     private String clientName;    // 사용자에게 보여줄 이름
 }

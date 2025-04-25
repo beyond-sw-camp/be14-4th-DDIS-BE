@@ -10,5 +10,6 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
+
     List<PostDTO> findAllPosts();
 }
