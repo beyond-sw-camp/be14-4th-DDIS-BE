@@ -16,9 +16,9 @@ import java.time.format.DateTimeFormatter;
 public class ReportCommandServiceImpl implements ReportCommandService {
 
     private final ReportRepository reportRepository;
-    private final ClientRepository clientRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
+//    private final ClientRepository clientRepository;
+//    private final PostRepository postRepository;
+//    private final CommentRepository commentRepository;
 
     @Override
     public Long registerReport(ReportRegistRequest request) {
@@ -48,34 +48,34 @@ public class ReportCommandServiceImpl implements ReportCommandService {
         reportRepository.save(report);
 
         // 승인일 때 누적 처리
-        if (accept) {
-            Long targetClientNum = null;
-            switch (report.getReportType()) {
-                case "client":
-                    targetClientNum = report.getReportTypeNum();
-                    break;
-                case "post":
-                    Post post = postRepository.findById(report.getReportTypeNum())
-                            .orElseThrow(() -> new RuntimeException("게시글 없음"));
-                    targetClientNum = post.getClientNum();
-                    break;
-                case "comment":
-                    Comment comment = commentRepository.findById(report.getReportTypeNum())
-                            .orElseThrow(() -> new RuntimeException("댓글 없음"));
-                    targetClientNum = comment.getClientNum();
-                    break;
-            }
-            if (targetClientNum != null) {
-                Client client = clientRepository.findById(targetClientNum)
-                        .orElseThrow(() -> new RuntimeException("회원 없음"));
-                int count = client.getClientReportNum() + 1;
-                client.setClientReportNum(count);
-                if (count >= 3) {
-                    client.setClientStatus(false);
-                }
-                clientRepository.save(client);
-            }
-        }
+//        if (accept) {
+//            Long targetClientNum = null;
+//            switch (report.getReportType()) {
+//                case "client":
+//                    targetClientNum = report.getReportTypeNum();
+//                    break;
+//                case "post":
+//                    Post post = postRepository.findById(report.getReportTypeNum())
+//                            .orElseThrow(() -> new RuntimeException("게시글 없음"));
+//                    targetClientNum = post.getClientNum();
+//                    break;
+//                case "comment":
+//                    Comment comment = commentRepository.findById(report.getReportTypeNum())
+//                            .orElseThrow(() -> new RuntimeException("댓글 없음"));
+//                    targetClientNum = comment.getClientNum();
+//                    break;
+//            }
+//            if (targetClientNum != null) {
+//                Client client = clientRepository.findById(targetClientNum)
+//                        .orElseThrow(() -> new RuntimeException("회원 없음"));
+//                int count = client.getClientReportNum() + 1;
+//                client.setClientReportNum(count);
+//                if (count >= 3) {
+//                    client.setClientStatus(false);
+//                }
+//                clientRepository.save(client);
+//            }
+//        }
     }
 
 }
