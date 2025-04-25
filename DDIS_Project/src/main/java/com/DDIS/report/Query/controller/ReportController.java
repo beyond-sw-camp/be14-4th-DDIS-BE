@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/report")
+@RequestMapping("/reports")
 public class ReportController {
 
-    private ReportService reportService;
+    private final ReportService reportService;
 
     @Autowired
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
 
-    @GetMapping("/reports")
+    @GetMapping
     public List<ReportDTO> selectAllReports() {
         return reportService.selectAllReports();
     }
