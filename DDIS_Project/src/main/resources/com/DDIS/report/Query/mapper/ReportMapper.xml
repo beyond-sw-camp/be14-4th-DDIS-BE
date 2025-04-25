@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.DDIS.report.Query.mapper.ReportMapper">
+    <resultMap id="reportResultMap" type="com.DDIS.report.Query.dto.ReportDTO">
+        <id property="reportNum" column="report_num"/>
+        <result property="reportContent" column="report_content"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="reportStatus" column="report_status"/>
+        <result property="reportType" column="report_type"/>
+        <result property="clientNum" column="client_num"/>
+        <result property="reportTypeNum" column="report_type_num"/>
+        <result property="isAccepted" column="is_accepted"/>
+    </resultMap>
+
+    <select id="selectAllReports" resultMap="reportResultMap">
+        SELECT
+               report_num
+             , report_content
+             , report_time
+             , report_status
+             , report_type
+             , client_num
+             , report_type_num
+             , is_accepted
+          FROM reports
+         ORDER BY report_num DESC;
+    </select>
+</mapper>
