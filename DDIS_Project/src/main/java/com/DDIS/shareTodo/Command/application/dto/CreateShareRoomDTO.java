@@ -1,6 +1,14 @@
 package com.DDIS.shareTodo.Command.application.dto;
 
+
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Posts;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CreateShareRoomDTO {
+    private Posts post;
     private int memberCount;
     private boolean isActive;
     private String title;
