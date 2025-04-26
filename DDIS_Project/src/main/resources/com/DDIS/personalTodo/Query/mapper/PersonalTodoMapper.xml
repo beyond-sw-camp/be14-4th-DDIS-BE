@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.DDIS.personalTodo.Query.mapper.PersonalTodoMapper">
+
+    <!-- resultMap -->
+    <resultMap id="PersonalTodoQueryDTOResultMap" type="com.DDIS.personalTodo.Query.dto.PersonalTodoQueryDTO">
+        <id property="todoNum" column="todo_num"/>
+        <result property="todoContent" column="todo_content"/>
+        <result property="personalCategoryNum" column="personal_category_num"/>
+        <result property="clientNum" column="client_num"/>
+
+        <!-- 조인해서 가져오는 값들 -->
+        <result property="personalCategoryName" column="personal_category_name"/>
+        <result property="personalCategoryColorRgb" column="personal_category_color_rgb"/>
+        <result property="todoDate" column="todo_date"/>
+        <result property="isDone" column="is_done"/>
+        <result property="pinOrder" column="pin_order"/>
+        <result property="isPublic" column="is_public"/>
+    </resultMap>
+
+    <!-- 1. 회원별 전체 todo 조회 (카테고리, 일자 포함) -->
+    <select id="findAllByClientNum" resultMap="PersonalTodoQueryDTOResultMap">
+        SELECT
+            pt.todo_num, pt.todo_content, pt.personal_category_num, pt.client_num,
+            pc.personal_category_name, pc.personal_category_color_rgb,
+            ptd.todo_date, ptd.is_done, ptd.pin_order, ptd.is_public
+        FROM personal_todos pt
+                 LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
+                 LEFT JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+        WHERE pt.client_num = #{clientNum}
+          AND (pc.client_num = pt.client_num OR pc.client_num IS NULL)
+    </select>
+
+    <!-- 2. 특정 일자별 특정 회원의 todo 조회 -->
+    <select id="findByClientNumAndDate" resultMap="PersonalTodoQueryDTOResultMap">
+        SELECT
+            pt.todo_num, pt.todo_content, pt.personal_category_num, pt.client_num,
+            pc.personal_category_name, pc.personal_category_color_rgb,
+            ptd.todo_date, ptd.is_done, ptd.pin_order, ptd.is_public
+        FROM personal_todos pt
+                 LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
+                 JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+        WHERE pt.client_num = #{clientNum}
+          AND ptd.todo_date = #{todoDate}
+    </select>
+
+    <!-- 3. 카테고리 별 특정 회원의 todo 조회 -->
+    <select id="findTodosByClientAndCategory" resultMap="PersonalTodoQueryDTOResultMap">
+        SELECT
+            pt.todo_num, pt.todo_content, pt.personal_category_num, pt.client_num,
+            pc.personal_category_name, pc.personal_category_color_rgb,
+            ptd.todo_date, ptd.is_done, ptd.pin_order, ptd.is_public
+        FROM personal_todos pt
+                 LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
+                 LEFT JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+        WHERE pt.client_num = #{clientNum}
+          AND pt.personal_category_num = #{categoryNum}
+          AND pc.client_num = #{clientNum}
+    </select>
+
+    <!-- 4. 핀 고정된 특정 회원 todo 조회 -->
+    <select id="findPinnedTodosByClientNum" resultMap="PersonalTodoQueryDTOResultMap">
+        SELECT
+            pt.todo_num, pt.todo_content, pt.personal_category_num, pt.client_num,
+            pc.personal_category_name, pc.personal_category_color_rgb,
+            ptd.todo_date, ptd.is_done, ptd.pin_order, ptd.is_public
+        FROM personal_todos pt
+                 LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
+                 JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+        WHERE pt.client_num = #{clientNum}
+          AND ptd.pin_order > 0
+        ORDER BY ptd.pin_order ASC
+    </select>
+
+    <!-- 5, 6번 공개/비공개 TODO 조회 -->
+    <select id="findTodosByVisibility" resultMap="PersonalTodoQueryDTOResultMap">
+        SELECT
+            pt.todo_num, pt.todo_content, pt.personal_category_num, pt.client_num,
+            pc.personal_category_name, pc.personal_category_color_rgb,
+            ptd.todo_date, ptd.is_done, ptd.pin_order, ptd.is_public
+        FROM personal_todos pt
+                 LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
+                 JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+        WHERE pt.client_num = #{clientNum}
+          AND ptd.is_public = #{isPublic}
+    </select>
+
+    <!-- 7, 8번 완료/미완료 된 todo 조회 -->
+    <select id="findTodosByDoneStatus" resultMap="PersonalTodoQueryDTOResultMap">
+        SELECT
+            pt.todo_num, pt.todo_content, pt.personal_category_num, pt.client_num,
+            pc.personal_category_name, pc.personal_category_color_rgb,
+            ptd.todo_date, ptd.is_done, ptd.pin_order, ptd.is_public
+        FROM personal_todos pt
+                 LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
+                 JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+        WHERE pt.client_num = #{clientNum}
+          AND ptd.is_done = #{isDone}
+    </select>
+
+</mapper>

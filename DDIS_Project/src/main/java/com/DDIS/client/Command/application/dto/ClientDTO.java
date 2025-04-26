@@ -1,4 +1,4 @@
-package com.DDIS.client.Command.application.dto;
-
-public class ClientDTO {
-}
+//package com.DDIS.client.Command.application.dto;
+//
+//public class ClientDTO {
+//}
