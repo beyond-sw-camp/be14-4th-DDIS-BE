@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FollowServiceImpl implements FollowService {
+public class FollowQueryServiceImpl implements FollowQueryService {
 
     private final FollowMapper followMapper;
 

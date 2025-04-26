@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface FollowService {
+public interface FollowQueryService {
 
     List<FollowQueryDTO> getAllFollowers(Long clientNum);
 
