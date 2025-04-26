@@ -8,11 +8,12 @@
     <resultMap id="PersonalCategoryResultMap" type="com.DDIS.personalCategory.Query.dto.PersonalCategoryQueryDTO">
         <id property="personalCategoryNum" column="personal_category_num"/>
         <result property="personalCategoryName" column="personal_category_name"/>
+        <result property="personalCategoryColorRgb" column="personal_category_color_rgb"/> <!-- ✅ 추가 -->
     </resultMap>
 
     <!-- 개인이 등록한 카테고리 목록 조회 -->
     <select id="findCategoriesByClientNum" resultMap="PersonalCategoryResultMap">
-        SELECT personal_category_num, personal_category_name
+        SELECT personal_category_num, personal_category_name, personal_category_color_rgb
         FROM personal_categories
         WHERE client_num = #{clientNum}
     </select>

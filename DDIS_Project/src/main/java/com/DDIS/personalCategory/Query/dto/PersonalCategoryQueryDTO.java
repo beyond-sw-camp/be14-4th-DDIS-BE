@@ -14,4 +14,5 @@ import org.apache.ibatis.type.Alias;
 public class PersonalCategoryQueryDTO {
     private Long personalCategoryNum;
     private String personalCategoryName;
+    private String personalCategoryColorRgb;
 }
