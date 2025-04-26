@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    // is_public = false 게시글 조회 메서드
-    Optional<Post> findByPostNumAndIsPublicFalse(Long postNum);
+
 }
