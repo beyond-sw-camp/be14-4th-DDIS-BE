@@ -1,6 +1,6 @@
 package com.DDIS.post.Command.domain.aggregate.dto;
 
-import com.DDIS.shareTodo.Command.application.dto.ShareTodoCreateDTO;
+//import com.DDIS.shareTodo.Command.application.dto.ShareTodoCreateDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class PostCreateRequestDTO {
     private Long categoryNum;
     private Long clientNum;
 
-    private List<ShareTodoCreateDTO> shareTodos; // ⭐ 추가 : 공동할일 여러개
+//    private List<ShareTodoCreateDTO> shareTodos;
 }
 
 //    @Builder

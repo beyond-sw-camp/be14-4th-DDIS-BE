@@ -5,12 +5,11 @@ import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.post.Command.domain.aggregate.dto.PostCreateRequestDTO;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
-import com.DDIS.post.Command.domain.mapper.PostCommandMapper;
 import com.DDIS.post.Command.domain.repository.PostRepository;
 import com.DDIS.postCategory.Command.domain.aggregate.entity.PostCategoryEntity;
 import com.DDIS.postCategory.Command.domain.repository.PostCategoryRepository;
-import com.DDIS.shareTodo.Command.domain.aggregate.entity.ShareTodo;
-import com.DDIS.shareTodo.Command.domain.repository.ShareTodoRepository;
+//import com.DDIS.shareTodo.Command.domain.aggregate.entity.ShareTodo;
+//import com.DDIS.shareTodo.Command.domain.repository.ShareTodoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,7 @@ public class PostServiceImpl implements PostService {
     private final ClientRepository clientRepository;
     private final PostCategoryRepository categoryRepository;
 //    private final PostCommandMapper postCommandMapper;
-    private final ShareTodoRepository shareTodoRepository;
+//    private final ShareTodoRepository shareTodoRepository;
 
 
     // 1. 모집 게시글 조회
@@ -92,16 +91,16 @@ public class PostServiceImpl implements PostService {
         Long savedPostNum = post.getPostNum();
 
         // 공동 ToDo 여러 개 저장
-        if (dto.getShareTodos() != null) {
-            List<ShareTodo> shareTodoList = dto.getShareTodos().stream()
-                    .map(todo -> ShareTodo.builder()
-                            .shareTodoName(todo.getShareTodoName())
-                            .postNum(savedPostNum)
-                            .pinOrder(todo.getPinOrder() == null ? 0 : todo.getPinOrder())
-                            .build())
-                    .toList();
-            shareTodoRepository.saveAll(shareTodoList);
-        }
+//        if (dto.getShareTodos() != null) {
+//            List<ShareTodo> shareTodoList = dto.getShareTodos().stream()
+//                    .map(todo -> ShareTodo.builder()
+//                            .shareTodoName(todo.getShareTodoName())
+//                            .postNum(savedPostNum)
+//                            .pinOrder(todo.getPinOrder() == null ? 0 : todo.getPinOrder())
+//                            .build())
+//                    .toList();
+//            shareTodoRepository.saveAll(shareTodoList);
+//        }
     }
 
 
