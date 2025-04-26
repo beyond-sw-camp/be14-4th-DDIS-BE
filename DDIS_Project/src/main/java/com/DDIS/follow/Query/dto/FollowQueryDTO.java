@@ -10,13 +10,11 @@ import org.apache.ibatis.type.Alias;
 @AllArgsConstructor
 @Getter
 @ToString
-@Alias("ClientQueryDTO")
 public class FollowQueryDTO {
 
     private Long followNum;
     private Long followerNum;
     private Long followingNum;
 
-    private Long clientNum;
     private String clientNickname;
 }
