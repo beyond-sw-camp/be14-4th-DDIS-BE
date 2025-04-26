@@ -14,6 +14,7 @@
 
         <!-- 조인된 컬럼들 -->
         <result property="personalCategoryName" column="personal_category_name"/>
+        <result property="personalCategoryColorRgb" column="personal_category_color_rgb"/>
         <result property="todoDate" column="todo_date"/>
         <result property="isDone" column="is_done"/>
         <result property="pinOrder" column="pin_order"/>
@@ -21,7 +22,7 @@
 
     <!-- 1. 회원별 전체 todo 조회 (카테고리, 일자 포함) -->
     <select id="findAllByClientNum" resultMap="PersonalTodoQueryDTOResultMap">
-        SELECT pt.*, pc.personal_category_name, ptd.todo_date, ptd.is_done, ptd.pin_order
+        SELECT pt.*, pc.personal_category_name, pc.personal_category_color_rgb, ptd.todo_date, ptd.is_done, ptd.pin_order
         FROM personal_todos pt
                  LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
                  LEFT JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
@@ -40,7 +41,7 @@
 
     <!-- 3. 카테고리 별 특정 회원의 todo 조회 -->
     <select id="findTodosByClientAndCategory" resultMap="PersonalTodoQueryDTOResultMap">
-        SELECT pt.*, pc.personal_category_name, ptd.todo_date
+        SELECT pt.*, pc.personal_category_name, pc.personal_category_color_rgb, ptd.todo_date
         FROM personal_todos pt
                  LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
                  LEFT JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
