@@ -1,4 +1,4 @@
-package com.DDIS.post.Command.domain.aggregate.entity;
+package com.DDIS.postCategory.Command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,12 +12,12 @@ import lombok.*;
 @Setter
 @ToString
 @Table(name = "post_categories")
-public class PostCategory {
+public class PostCategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_num")
-    private int categoryNum;
+    private Long categoryNum;
 
     @Column
     private String categoryName;

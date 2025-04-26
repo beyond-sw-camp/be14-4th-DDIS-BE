@@ -36,7 +36,6 @@ public class PostResponseDTO {
         }
 
         // Entity → DTO 변환
-        @Builder
         public static PostResponseDTO fromEntity(Post post) {
                 return PostResponseDTO.builder()
                         .postNum(post.getPostNum())
