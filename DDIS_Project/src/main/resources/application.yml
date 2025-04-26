@@ -30,3 +30,5 @@ spring:
     username: root                                #각자 수정
     password: mariadb                                #각자 수정
 
+openai:
+  api-key: { }
