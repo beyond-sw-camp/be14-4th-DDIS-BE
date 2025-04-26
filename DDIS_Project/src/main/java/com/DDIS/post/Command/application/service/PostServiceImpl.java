@@ -20,12 +20,18 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         if (Boolean.FALSE.equals(post.getIsPublic())) {
-            // 비공개 게시글인데, password가 없거나 틀리면 에러
-            if (inputPassword == null || !post.getPostPassword().equals(inputPassword)) {
+            if (inputPassword == null) {
+                throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+            }
+
+            String savedPassword = post.getPostPassword();
+            if (savedPassword == null || !savedPassword.trim().equals(inputPassword.trim())) {
                 throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
             }
         }
+
         return post;
     }
+
 
 }
