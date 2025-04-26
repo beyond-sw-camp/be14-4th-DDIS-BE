@@ -16,10 +16,10 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/private/{postNum}")
+    @GetMapping("/find/{postNum}")
     public ResponseEntity<PostResponseDTO> getPrivatePost(
             @PathVariable Long postNum,
-            @RequestParam String password
+            @RequestParam(required = false) String password
     ) {
         log.info("비공개 게시글 조회 요청 - postNum: {}, 입력된 비밀번호: {}", postNum, password);
 
