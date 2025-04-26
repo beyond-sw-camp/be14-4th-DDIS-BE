@@ -23,15 +23,9 @@ public class ChatRoomController {
         return chatRoomService.createRoom(requestDTO);
     }
 
-    // ✅ 전체 채팅방 목록 조회
-    @GetMapping("/allChatRoom")
-    public List<ChatRoomResponseDTO> getAllRooms() {
-        return chatRoomService.getAllRooms();
-    }
-
-    // ✅ 특정 채팅방 조회
-    @GetMapping("/{chatroomNum}")
-    public ChatRoomResponseDTO getRoom(@PathVariable Long chatroomNum) {
-        return chatRoomService.getRoomById(chatroomNum);
+    // 채팅방 삭제
+    @DeleteMapping("/delete/{chatRoomId}")
+    public void deleteRoom(@PathVariable Long chatRoomId) {
+        chatRoomService.deleteRoom(chatRoomId);
     }
 }

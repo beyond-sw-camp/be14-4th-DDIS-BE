@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chatroomLog")
+@RequestMapping("/chatroom")
 @RequiredArgsConstructor
 public class ChatRoomQueryController {
 
@@ -26,7 +26,7 @@ public class ChatRoomQueryController {
         return chatRoomQueryService.getAllRooms();
     }
 
-//     ✅ 특정 채팅방 조회
+    // ✅ 특정 채팅방 조회
     @GetMapping("/{chatroomNum}")
     public ChatRoomQueryDTO getRoom(@PathVariable Long chatroomNum) {
         return chatRoomQueryService.getRoomById(chatroomNum);

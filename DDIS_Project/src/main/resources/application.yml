@@ -28,3 +28,7 @@ spring:
     url: jdbc:mariadb://localhost:3307/ddis       #각자 수정
     username: root                                #각자 수정
     password: 1123                                #각자 수정
+
+mybatis:
+  mapper-locations: classpath:/com/DDIS/chatRoom/Query/mapper/*.xml
+  type-aliases-package: com.DDIS.chatRoom.Query.dto

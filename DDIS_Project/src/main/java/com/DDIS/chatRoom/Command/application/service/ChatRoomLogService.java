@@ -54,4 +54,12 @@ public class ChatRoomLogService {
                 ))
                 .toList();
     }
+
+    public void deleteMessage(Long logId) {
+        chatRoomLogRepository.deleteById(logId);
+    }
+
+    public void deleteMessagesByRoom(Long roomNum) {
+        chatRoomLogRepository.deleteByRoomNum(roomNum);
+    }
 }

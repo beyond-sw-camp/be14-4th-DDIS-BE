@@ -42,31 +42,7 @@ public class ChatRoomService {
         );
     }
 
-    // 전체 채팅방 목록 조회
-    public List<ChatRoomResponseDTO> getAllRooms() {
-        return chatRoomRepository.findAll().stream()
-                .map(room -> new ChatRoomResponseDTO(
-                        room.getChatRoomId(),
-                        room.getChatRoomName(),
-                        room.getChatType(),
-                        room.getRoomNum(),
-                        room.getCreatedTime()
-                ))
-                .collect(Collectors.toList());
+    public void deleteRoom(Long chatRoomId) {
+        chatRoomRepository.deleteById(chatRoomId);
     }
-
-    // 특정 채팅방 단건 조회
-    public ChatRoomResponseDTO getRoomById(Long chatroomNum) {
-        ChatRoomEntity room = chatRoomRepository.findById(chatroomNum)
-                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
-
-        return new ChatRoomResponseDTO(
-                room.getChatRoomId(),
-                room.getChatRoomName(),
-                room.getChatType(),
-                room.getRoomNum(),
-                room.getCreatedTime()
-        );
-    }
-
 }

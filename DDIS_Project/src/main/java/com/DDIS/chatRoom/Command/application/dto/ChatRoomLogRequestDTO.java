@@ -9,12 +9,6 @@ import lombok.*;
 @Setter
 @ToString
 public class ChatRoomLogRequestDTO {
-
-//    public enum MessageType {
-//        ENTER, TALK, LEAVE
-//    }
-//
-//    private MessageType type;
     private ChatRoomEntity roomNum;
     private String sender;
     private String message;

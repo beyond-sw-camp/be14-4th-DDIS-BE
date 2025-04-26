@@ -1,8 +1,6 @@
 package com.DDIS.chatRoom.Query.service;
 
-import com.DDIS.chatRoom.Command.application.dto.ChatRoomResponseDTO;
-import com.DDIS.chatRoom.Query.dao.ChatRoomLogQueryMapper;
-import com.DDIS.chatRoom.Query.dao.ChatRoomQueryMapper;
+import com.DDIS.chatRoom.Query.dao.ChatRoomLogMapper;
 import com.DDIS.chatRoom.Query.dto.ChatRoomLogQueryDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,10 +11,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatRoomLogQueryService {
 
-    private final ChatRoomLogQueryMapper chatRoomLogQueryMapper;
+    private final ChatRoomLogMapper chatRoomLogMapper;
 
 
     public List<ChatRoomLogQueryDTO> getMessagesByRoomAsDTO(Long roomNum) {
-        return chatRoomLogQueryMapper.findByid(roomNum);
+        return chatRoomLogMapper.findById(roomNum);
     }
 }

@@ -32,9 +32,15 @@ public class ChatRoomLogController {
         messagingTemplate.convertAndSend("/sub/chatroom/" + responseDTO.getRoomNum(), responseDTO);
     }
 
-    // 특정 채팅방의 메시지 리스트 조회
-    @GetMapping("/{roomNum}")
-    public List<ChatRoomLogResponseDTO> getMessages(@PathVariable ChatRoomEntity roomNum) {
-        return chatRoomLogService.getMessagesByRoomAsDTO(roomNum);
+    // 메시지 단건(1개) 삭제
+    @DeleteMapping("/delete/{logId}")
+    public void deleteMessage(@PathVariable Long logId) {
+        chatRoomLogService.deleteMessage(logId);
+    }
+
+    // 채팅방의 모든 메시지 삭제 (선택사항)
+    @DeleteMapping("/delete/room/{roomNum}")
+    public void deleteAllMessagesInRoom(@PathVariable Long roomNum) {
+        chatRoomLogService.deleteMessagesByRoom(roomNum);
     }
 }

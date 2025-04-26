@@ -28,6 +28,7 @@ public class ChatRoomLogEntity {
     @Column(name = "message_content")
     private String message;
 
+    @Column(name = "send_time")
     private String sendTime;
 
     public ChatRoomLogEntity(ChatRoomEntity roomNum, String sender, String message, String sendTime) {
