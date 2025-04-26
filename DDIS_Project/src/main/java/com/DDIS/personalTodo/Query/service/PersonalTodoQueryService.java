@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface PersonalTodoQueryService {
     // 1. 전체 조회
     List<PersonalTodoQueryDTO> getAllTodos(Long clientNum);

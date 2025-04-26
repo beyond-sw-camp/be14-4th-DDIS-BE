@@ -1,4 +1,4 @@
-#  회원별 전체 todo 조회 (카테고리, 일자 포함)
+# 공개 여부가 공개/비공개인 특정 회원의 todo 조회
 
 SELECT
     pt.todo_num, pt.todo_content, pt.personal_category_num, pt.client_num,
@@ -6,6 +6,6 @@ SELECT
     ptd.todo_date, ptd.is_done, ptd.pin_order, ptd.is_public
 FROM personal_todos pt
          LEFT JOIN personal_categories pc ON pt.personal_category_num = pc.personal_category_num
-         LEFT JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+         JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
 WHERE pt.client_num = ?
-  AND (pc.client_num = pt.client_num OR pc.client_num IS NULL);
+  AND ptd.is_public = ?;
