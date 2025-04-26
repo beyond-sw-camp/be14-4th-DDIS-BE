@@ -29,10 +29,8 @@ public class PostController {
         Post post = postService.getPost(postNum, password);
         return ResponseEntity.ok(PostResponseDTO.fromEntity(post)); }
 
+
     @PostMapping("/create")
     public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO dto) { postService.createPost(dto);
         return ResponseEntity.ok("모집 게시글 작성 완료!"); }
-
-
-
 }

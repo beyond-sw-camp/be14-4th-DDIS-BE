@@ -3,6 +3,8 @@ package com.DDIS.post.Command.domain.aggregate.entity;
 import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import com.DDIS.postCategory.Command.domain.aggregate.entity.PostCategoryEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "posts")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Post {
 
         @Id
@@ -70,8 +74,4 @@ public class Post {
         this.categoryNum = category;  // ⭐ FK 객체
         this.clientNum = client;      // ⭐ FK 객체
     }
-
-
-
-
 }
