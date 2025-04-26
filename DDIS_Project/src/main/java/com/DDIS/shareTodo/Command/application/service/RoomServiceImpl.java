@@ -32,8 +32,9 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository, ModelMapper modelMapper) {
+    public RoomServiceImpl(RoomRepository roomRepository, PostRepository postRepository,ModelMapper modelMapper) {
         this.roomRepository = roomRepository;
+        this.postRepository = postRepository;
         this.modelMapper = modelMapper;
     }
 
