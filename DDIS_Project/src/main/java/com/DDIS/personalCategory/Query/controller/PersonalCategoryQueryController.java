@@ -3,6 +3,7 @@ package com.DDIS.personalCategory.Query.controller;
 import com.DDIS.personalCategory.Query.dto.PersonalCategoryQueryDTO;
 import com.DDIS.personalCategory.Query.service.PersonalCategoryQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,8 @@ public class PersonalCategoryQueryController {
 
     // 개인이 등록한 카테고리 목록 조회
     @GetMapping("/{clientNum}")
-    public List<PersonalCategoryQueryDTO> getCategoriesByClientNum(@PathVariable Long clientNum) {
-        return personalCategoryQueryService.getCategoriesByClientNum(clientNum);
+    public ResponseEntity<List<PersonalCategoryQueryDTO>> getCategoriesByClientNum(@PathVariable Long clientNum) {
+        List<PersonalCategoryQueryDTO> categories = personalCategoryQueryService.getCategoriesByClientNum(clientNum);
+        return ResponseEntity.ok(categories);
     }
 }
