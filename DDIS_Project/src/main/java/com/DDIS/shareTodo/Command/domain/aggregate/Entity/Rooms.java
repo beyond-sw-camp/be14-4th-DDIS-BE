@@ -15,7 +15,7 @@ public class Rooms {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_num")
-    private int roomNum;
+    private Long roomNum;
 
     @Column(name = "member_count")
     private int memberCount;

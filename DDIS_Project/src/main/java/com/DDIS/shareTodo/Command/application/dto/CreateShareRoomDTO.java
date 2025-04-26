@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateShareRoomDTO {
-    private Posts post;
+    private Long postNum;
     private int memberCount;
     private boolean isActive;
     private String title;

@@ -10,22 +10,21 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@Table(name = "members")
-public class members {
+@Table(name = "share_todos")
+public class ShareTodo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_num")
-    private int memberNum;
+    @Column(name = "share_todo_num")
+    private Long shareTodoNum;
 
-    @ManyToOne
-    @JoinColumn(name = "room_num")
-    private Rooms room;
+    @Column(name = "share_todo_name")
+    private String shareTodoName;
 
     @ManyToOne
     @JoinColumn(name = "post_num")
     private Posts post;
 
-    @ManyToOne
-    @JoinColumn(name = "client_num")
-    private Clients client;
+    @Column(name = "pin_order")
+    private int pinOrder;
+
 }

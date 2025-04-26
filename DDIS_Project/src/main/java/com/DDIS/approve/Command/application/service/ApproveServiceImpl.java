@@ -7,7 +7,7 @@ import com.DDIS.approve.Command.domain.repository.ApproveRepository;
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
 import com.DDIS.approve.Command.domain.repository.MemberShareTodoRepository;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.members;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Members;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class ApproveServiceImpl implements ApproveService {
     @Override
     @Transactional
     public Long createApprove(CreateApproveDTO approveDTO) {
-        members member = memberRepository.findById(approveDTO.getMemberNum())
+        Members member = memberRepository.findById(approveDTO.getMemberNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버 없음"));
 
         MemberShareTodo memberShareTodo = memberShareTodoRepository.findById(approveDTO.getMemberShareTodoNum())

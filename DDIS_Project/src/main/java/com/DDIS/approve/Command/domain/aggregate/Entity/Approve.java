@@ -1,7 +1,7 @@
 package com.DDIS.approve.Command.domain.aggregate.Entity;
 
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.members;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Members;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,7 +27,7 @@ public class Approve {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_num")
-    private members memberNum;
+    private Members memberNum;
 
     @Column(name = "approve_title")
     private String approveTitle;

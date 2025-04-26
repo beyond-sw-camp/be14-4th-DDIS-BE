@@ -1,13 +1,15 @@
 package com.DDIS.shareTodo.Command.application.service;
 
+import com.DDIS.approve.Command.domain.repository.MemberRepository;
+import com.DDIS.approve.Command.domain.repository.MemberShareTodoRepository;
 import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Posts;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.*;
 import com.DDIS.shareTodo.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.domain.repository.RoomRepository;
+import com.DDIS.shareTodo.Command.domain.repository.SharetodoRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,8 +19,11 @@ import java.util.Random;
 
 @Service
 public class RoomServiceImpl implements RoomService {
-    RoomRepository roomRepository;
-    PostRepository postRepository;
+    private final RoomRepository roomRepository;
+    private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
+    private final SharetodoRepository shareTodoRepository;
+    private final MemberShareTodoRepository memberShareTodoRepository;
     ModelMapper modelMapper;
 
 
@@ -32,16 +37,25 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository, PostRepository postRepository,ModelMapper modelMapper) {
+    public RoomServiceImpl(RoomRepository roomRepository,
+                           PostRepository postRepository,
+                           MemberRepository memberRepository,
+                           SharetodoRepository shareTodoRepository,
+                           MemberShareTodoRepository memberShareTodoRepository,
+                           ModelMapper modelMapper) {
         this.roomRepository = roomRepository;
         this.postRepository = postRepository;
+        this.memberRepository = memberRepository;
+        this.shareTodoRepository = shareTodoRepository;
+        this.memberShareTodoRepository = memberShareTodoRepository;
         this.modelMapper = modelMapper;
     }
 
     @Override
+    @Transactional
     public void createRoom(CreateShareRoomDTO roomDTO) {
         String randomColor = pickRandomColor();
-        Integer postNum = roomDTO.getPost().getPostNum();
+        Long postNum = roomDTO.getPostNum();
         Posts posts = postRepository.findById(postNum).orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));
 
 
@@ -60,6 +74,25 @@ public class RoomServiceImpl implements RoomService {
                 content(posts.getPostContent()).build();
 
         roomRepository.save(rooms);
+
+        // (4) 방 생성 후, 해당 방 멤버 조회
+        List<Members> members = memberRepository.findByRoom_RoomNum(rooms.getRoomNum());
+
+        // (5) 이 방에 연결된 share_todos 조회
+        List<ShareTodo> shareTodos = shareTodoRepository.findByPost_PostNum(postNum);
+
+        // (6) 멤버 × share_todo로 member_share_todos insert
+        for (Members member : members) {
+            for (ShareTodo shareTodo : shareTodos) {
+                MemberShareTodo memberShareTodo = MemberShareTodo.builder()
+                        .memberNum(member)
+                        .shareTodoNum(shareTodo)
+                        .isCompleted(false)
+                        .completionTime(null)
+                        .build();
+                memberShareTodoRepository.save(memberShareTodo);
+            }
+        }
 
 
 
