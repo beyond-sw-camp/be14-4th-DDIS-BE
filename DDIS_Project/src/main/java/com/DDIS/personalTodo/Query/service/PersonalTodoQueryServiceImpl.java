@@ -33,19 +33,13 @@ public class PersonalTodoQueryServiceImpl implements PersonalTodoQueryService{
         return personalTodoMapper.findPinnedTodosByClientNum(clientNum);
     }
 
-//    @Override
-//    public List<PersonalTodoQueryDTO> getPublicTodos(Long clientNum) {
-//        return personalTodoMapper.findPublicTodosByClientNum(clientNum);
-//    }
-//
-//    @Override
-//    public List<PersonalTodoQueryDTO> getPrivateTodos(Long clientNum) {
-//        return personalTodoMapper.findPrivateTodosByClientNum(clientNum);
-//    }
-
     @Override
     public List<PersonalTodoQueryDTO> getTodosByVisibility(Long clientNum, Boolean isPublic) {
         return personalTodoMapper.findTodosByVisibility(clientNum, isPublic);
     }
 
+    @Override
+    public List<PersonalTodoQueryDTO> getTodosByDoneStatus(Long clientNum, Boolean isDone) {
+        return personalTodoMapper.findTodosByDoneStatus(clientNum, isDone);
+    }
 }

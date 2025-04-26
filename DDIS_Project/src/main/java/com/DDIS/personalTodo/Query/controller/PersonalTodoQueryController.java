@@ -40,21 +40,17 @@ public class PersonalTodoQueryController {
         return personalTodoQueryService.getPinnedTodos(clientNum);
     }
 
-    // 5, 6번 공개/비공개 TODO 조회를 하나로 합치기
+    // 5, 6번 공개/비공개 TODO 조회
     @GetMapping("/{clientNum}/visibility")
     public List<PersonalTodoQueryDTO> getTodosByVisibility(@PathVariable Long clientNum,
                                                            @RequestParam Boolean isPublic) {
         return personalTodoQueryService.getTodosByVisibility(clientNum, isPublic);
     }
-//    // 5. 공개(todo.is_public = true) 조회
-//    @GetMapping("/{clientNum}/public")
-//    public List<PersonalTodoQueryDTO> getPublicTodos(@PathVariable Long clientNum) {
-//        return personalTodoQueryService.getPublicTodos(clientNum);
-//    }
-//
-//    // 6. 비공개(todo.is_public = false) 조회
-//    @GetMapping("/{clientNum}/private")
-//    public List<PersonalTodoQueryDTO> getPrivateTodos(@PathVariable Long clientNum) {
-//        return personalTodoQueryService.getPrivateTodos(clientNum);
-//    }
+
+    // 7, 8번 완료/미완료 된 todo 조회
+    @GetMapping("/{clientNum}/donestatus")
+    public List<PersonalTodoQueryDTO> getTodosByDoneStatus(@PathVariable Long clientNum,
+                                                           @RequestParam Boolean isDone) {
+        return personalTodoQueryService.getTodosByDoneStatus(clientNum, isDone);
+    }
 }

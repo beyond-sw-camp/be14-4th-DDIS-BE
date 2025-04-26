@@ -59,8 +59,7 @@
         ORDER BY ptd.pin_order ASC
     </select>
 
-
-<!--    5, 6번 공개/비공개 TODO 조회를 하나로 합치기-->
+    <!--    5, 6번 공개/비공개 TODO 조회-->
     <select id="findTodosByVisibility" resultMap="PersonalTodoQueryDTOResultMap">
         SELECT pt.*, ptd.todo_date
         FROM personal_todos pt
@@ -68,22 +67,13 @@
         WHERE pt.client_num = #{clientNum}
           AND pt.is_public = #{isPublic}
     </select>
-<!--    &lt;!&ndash; 5. 공개(true)인 특정 회원의 todo 조회 &ndash;&gt;-->
-<!--    <select id="findPublicTodosByClientNum" resultMap="PersonalTodoQueryDTOResultMap">-->
-<!--        SELECT pt.*, ptd.todo_date-->
-<!--        FROM personal_todos pt-->
-<!--                 JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num-->
-<!--        WHERE pt.client_num = #{clientNum}-->
-<!--          AND pt.is_public = TRUE-->
-<!--    </select>-->
 
-<!--    &lt;!&ndash; 6. 비공개(false)인 특정 회원의 todo 조회 &ndash;&gt;-->
-<!--    <select id="findPrivateTodosByClientNum" resultMap="PersonalTodoQueryDTOResultMap">-->
-<!--        SELECT pt.*, ptd.todo_date-->
-<!--        FROM personal_todos pt-->
-<!--                 JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num-->
-<!--        WHERE pt.client_num = #{clientNum}-->
-<!--          AND pt.is_public = FALSE-->
-<!--    </select>-->
-
+    <!-- 7, 8번 완료/미완료 된 todo 조회   -->
+    <select id="findTodosByDoneStatus" resultMap="PersonalTodoQueryDTOResultMap">
+        SELECT pt.*, ptd.todo_date, ptd.is_done
+        FROM personal_todos pt
+                 JOIN personal_todo_date ptd ON pt.todo_num = ptd.todo_num
+        WHERE pt.client_num = #{clientNum}
+          AND ptd.is_done = #{isDone}
+    </select>
 </mapper>
