@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.DDIS.chatRoom.Query.dao.ChatRoomLogMapper">
+
+    <resultMap id="chatRoomLogResultMap" type="com.DDIS.chatRoom.Query.dto.ChatRoomLogQueryDTO">
+        <id property="messageNum" column="message_num"/>
+        <result property="chatRoomNum" column="chatroom_num"/>
+        <result property="clientNum" column="client_num"/>
+        <result property="messageContent" column="message_content"/>
+        <result property="sendTime" column="send_time"/>
+    </resultMap>
+
+    <select id="findById" resultMap="chatRoomLogResultMap">
+        SELECT
+            message_num
+            , chatroom_num
+            , client_num
+            , message_content
+            , send_time
+          FROM chatroom_log
+        WHERE message_num = #{messageNum}
+        ORDER BY message_num DESC;
+    </select>
+</mapper>

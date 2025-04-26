@@ -1,0 +1,39 @@
+package com.DDIS.chatRoom.Command.domain.aggregate.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "chatroom")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+public class ChatRoomEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "chatroom_num")
+    private Long chatRoomId;
+
+//    @ManyToOne
+//    @JoinColumn(name = "room_num")
+    @Column(name = "room_num")
+//    private RoomEntity roomNum;
+    private Long roomNum;
+
+    @Column(name = "chatroom_name")
+    private String chatRoomName;
+
+    @Column(name = "chatroom_type")
+    private String chatType;
+
+    @Column(name = "created_time")
+    private String createdTime;
+
+    public ChatRoomEntity(String name) {
+        this();
+        this.chatRoomName = name;
+    }
+}
