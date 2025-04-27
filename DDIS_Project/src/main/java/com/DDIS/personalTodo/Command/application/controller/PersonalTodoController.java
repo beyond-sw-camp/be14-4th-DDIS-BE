@@ -39,4 +39,22 @@ public class PersonalTodoController {
         personalTodoService.updatePersonalTodo(requestDTO, clientNum);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deletePersonalTodo(
+            @RequestParam Long clientNum,
+            @RequestParam Long todoNum) {
+        personalTodoService.deletePersonalTodo(todoNum, clientNum);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/date")
+    public ResponseEntity<Void> deletePersonalTodoDate(
+            @RequestParam Long clientNum,
+            @RequestParam Long todoNum,
+            @RequestParam String todoDate) {
+        personalTodoService.deletePersonalTodoDate(todoNum, todoDate, clientNum);
+        return ResponseEntity.noContent().build();
+    }
+
 }

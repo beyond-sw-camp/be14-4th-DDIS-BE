@@ -117,6 +117,30 @@ public class PersonalTodoServiceImpl implements PersonalTodoService {
         personalTodoRepository.saveAndFlush(personalTodo);
     }
 
+    @Override
+    public void deletePersonalTodo(Long todoNum, Long clientNum) {
+        PersonalTodos todo = personalTodoRepository.findById(todoNum)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Todo입니다."));
+
+        if (!todo.getClientNum().equals(clientNum)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
+        personalTodoDateRepository.deleteAllByTodoNum(todoNum);
+        personalTodoRepository.delete(todo);
+    }
+
+    @Override
+    public void deletePersonalTodoDate(Long todoNum, String todoDate, Long clientNum) {
+        PersonalTodos todo = personalTodoRepository.findById(todoNum)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Todo입니다."));
+
+        if (!todo.getClientNum().equals(clientNum)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
+        personalTodoDateRepository.deleteById(new PersonalTodoDateId(todoDate, todoNum));
+    }
 
 
     // 생성 타입별로 메서드 분리
