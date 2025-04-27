@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.DDIS.applicant.Query.mapper.ApplicantMapper">
+
+    <select id="findApplicantsByPostNum" resultType="com.DDIS.applicant.Query.dto.ApplicantResponseDTO">
+        SELECT
+            c.client_num AS clientNum,
+            c.client_name AS clientName
+        FROM applicants a
+        INNER JOIN clients c ON a.client_num = c.client_num
+        WHERE a.post_num = #{postNum}
+    </select>
+
+    <select id="existsPost" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM posts
+            WHERE post_num = #{postNum}
+        )
+    </select>
+
+</mapper>

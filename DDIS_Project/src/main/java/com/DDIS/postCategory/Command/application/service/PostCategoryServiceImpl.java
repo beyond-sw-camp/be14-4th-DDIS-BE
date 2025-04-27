@@ -1,4 +1,4 @@
-package com.DDIS.postCategory.Command.domain.service;
+package com.DDIS.postCategory.Command.application.service;
 
 import com.DDIS.postCategory.Command.domain.aggregate.entity.PostCategoryEntity;
 import com.DDIS.postCategory.Command.domain.repository.PostCategoryRepository;
