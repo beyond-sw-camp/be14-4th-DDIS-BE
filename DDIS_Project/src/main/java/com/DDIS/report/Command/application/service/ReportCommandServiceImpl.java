@@ -1,6 +1,6 @@
 package com.DDIS.report.Command.application.service;
 
-import com.DDIS.client.Command.domain.aggregate.ClientEntity;
+import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.post.Command.domain.aggregate.entity.Client;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
@@ -71,7 +71,7 @@ public class ReportCommandServiceImpl implements ReportCommandService {
 //                    break;
             }
             if (targetClientNum != null) {
-                ClientEntity client = clientRepository.findById(targetClientNum)
+                UserEntity client = clientRepository.findById(targetClientNum)
                         .orElseThrow(() -> new RuntimeException("회원 없음"));
                 int count = client.getClientReportNum() + 1;
                 client.setClientReportNum(count);
