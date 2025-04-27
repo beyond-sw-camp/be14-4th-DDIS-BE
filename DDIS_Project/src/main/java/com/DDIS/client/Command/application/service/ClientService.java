@@ -9,5 +9,4 @@ public interface ClientService {
     SignupResponseVO signup(SignupRequestVO vo);
 
     LoginResponseVO login(LoginRequestVO requestVO);
-
 }
