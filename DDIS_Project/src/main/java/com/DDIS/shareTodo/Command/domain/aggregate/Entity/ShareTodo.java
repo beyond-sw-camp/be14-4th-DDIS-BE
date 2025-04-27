@@ -22,8 +22,8 @@ public class ShareTodo {
     private String shareTodoName;
 
     @ManyToOne
-    @JoinColumn(name = "post_num")
-    private Post post;
+    @JoinColumn(name = "room_num")
+    private Rooms rooms;
 
     @Column(name = "pin_order")
     private int pinOrder;

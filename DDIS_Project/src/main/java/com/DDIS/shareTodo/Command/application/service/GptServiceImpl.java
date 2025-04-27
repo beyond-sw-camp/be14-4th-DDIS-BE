@@ -1,5 +1,6 @@
 package com.DDIS.shareTodo.Command.application.service;
 
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.ShareTodo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,11 +22,11 @@ public class GptServiceImpl implements GptService {
     private String OPENAI_API_KEY;
 
     @Override
-    public List<ShareTodo> generateTodoList(String topic) {
+    public List<ShareTodo> generateTodoList(Rooms room, String topic) {
         String prompt = createPrompt(topic);
         String gptResponse = requestGpt(prompt);
 
-        return parseResponseToTodos(topic, gptResponse);
+        return parseResponseToTodos(room, gptResponse);
     }
 
     private String createPrompt(String topic) {
@@ -64,7 +65,7 @@ public class GptServiceImpl implements GptService {
         return response.getBody();
     }
 
-    private List<ShareTodo> parseResponseToTodos(String topic, String gptResponse) {
+    private List<ShareTodo> parseResponseToTodos(Rooms room, String gptResponse) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(gptResponse);
@@ -79,14 +80,16 @@ public class GptServiceImpl implements GptService {
             List<ShareTodo> todos = new ArrayList<>();
             String[] lines = content.split("\n");
 
+            int order = 1; // ✅ pinOrder 1부터 시작
+
             for (String line : lines) {
                 String todoName = line.replaceAll("^\\d+\\.\\s*", "").trim();
                 if (!todoName.isEmpty()) {
                     todos.add(ShareTodo.builder()
                             .shareTodoNum(null)
                             .shareTodoName(todoName)
-                            .post(null)
-                            .pinOrder(0)
+                            .rooms(room)          // ✅ 방 연결
+                            .pinOrder(order++)   // ✅ 순차 증가
                             .build());
                 }
             }

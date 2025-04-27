@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -71,6 +72,7 @@ public class RoomServiceImpl implements RoomService {
 
 
         Rooms rooms = Rooms.builder().
+                roomNum(postNum).
                 memberCount(roomDTO.getMemberCount()).
                 colorRgb(randomColor).
                 startDate(formatted).
@@ -86,47 +88,54 @@ public class RoomServiceImpl implements RoomService {
 
         return todoList;
 
-
-//        // (4) 방 생성 후, 해당 방 멤버 조회
-//        List<Members> members = memberRepository.findByRoom_RoomNum(rooms.getRoomNum());
-//
-//        // (5) 이 방에 연결된 share_todos 조회
-//        List<ShareTodo> shareTodos = shareTodoRepository.findByPost_PostNum(postNum);
-//
-//        // (6) 멤버 × share_todo로 member_share_todos insert
-//        for (Members member : members) {
-//            for (ShareTodo shareTodo : shareTodos) {
-//                MemberShareTodo memberShareTodo = MemberShareTodo.builder()
-//                        .memberNum(member)
-//                        .shareTodoNum(shareTodo)
-//                        .isCompleted(false)
-//                        .completionTime(null)
-//                        .build();
-//                memberShareTodoRepository.save(memberShareTodo);
-//            }
         }
 
     @Override
     @Transactional
     public void saveShareTodos(List<SaveShareTodoDTO> todoList) {
+        if (todoList.isEmpty()) {
+            throw new IllegalArgumentException("저장할 Todo가 없습니다.");
+        }
+        Rooms room = roomRepository.findById(postNum)
+                .orElseThrow(() -> new IllegalArgumentException("방을 찾을 수 없습니다."));
+
+        // 저장된 ShareTodo 리스트 모으기
+        List<ShareTodo> savedTodos = new ArrayList<>();
         for (SaveShareTodoDTO dto : todoList) {
-            Post post = postRepository.findById(dto.getPostNum())
-                    .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
 
             ShareTodo shareTodo = ShareTodo.builder()
                     .shareTodoName(dto.getShareTodoName())
-                    .post(post)
+                    .rooms(room)
                     .pinOrder(dto.getPinOrder())
                     .build();
 
             shareTodoRepository.save(shareTodo);
+            savedTodos.add(shareTodo);
+        }
+        
+
+        // (여기!) 저장된 Todo를 멤버에게 할당
+        assignTodosToMembers(room, savedTodos);
+    }
+
+    private void assignTodosToMembers(Rooms room, List<ShareTodo> shareTodos) {
+        List<Members> members = memberRepository.findByRoom_RoomNum(room.getRoomNum());
+
+        for (Members member : members) {
+            for (ShareTodo todo : shareTodos) {
+                MemberShareTodo memberShareTodo = MemberShareTodo.builder()
+                        .memberNum(member)
+                        .shareTodoNum(todo)
+                        .isCompleted(false)
+                        .completionTime(null)
+                        .build();
+                memberShareTodoRepository.save(memberShareTodo);
+            }
         }
     }
 
 
-
-
-    }
+}
 
 
 
