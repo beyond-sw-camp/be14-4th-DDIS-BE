@@ -16,7 +16,7 @@ public class Members {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_num")
-    private int memberNum;
+    private Long memberNum;
 
     @ManyToOne
     @JoinColumn(name = "room_num")

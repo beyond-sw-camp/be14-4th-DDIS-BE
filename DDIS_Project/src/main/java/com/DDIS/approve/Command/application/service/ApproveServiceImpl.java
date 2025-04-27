@@ -1,5 +1,6 @@
 package com.DDIS.approve.Command.application.service;
 
+import com.DDIS.approve.Command.application.dto.ApproveResponseDTO;
 import com.DDIS.approve.Command.application.dto.CreateApproveDTO;
 import com.DDIS.approve.Command.application.dto.UpdateApproveStatusDTO;
 import com.DDIS.approve.Command.domain.aggregate.Entity.Approve;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -70,5 +73,30 @@ public class ApproveServiceImpl implements ApproveService {
             default -> throw new IllegalArgumentException("허용되지 않은 액션입니다.");
         }
 
+    }
+    @Override
+    public List<ApproveResponseDTO> getAllApproves() {
+        List<Approve> approves = approveRepository.findAll();
+        return approves.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ApproveResponseDTO getApprove(Long id) {
+        Approve approve = approveRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 승인 요청이 존재하지 않습니다. id=" + id));
+        return toDTO(approve);
+    }
+
+    private ApproveResponseDTO toDTO(Approve approve) {
+        return ApproveResponseDTO.builder()
+                .approveId(approve.getApproveNum())
+                .memberShareTodoNum(approve.getMemberShareTodoNum().getMemberShareTodoNum())
+                .memberNum(approve.getMemberNum().getMemberNum())
+                .approveTitle(approve.getApproveTitle())
+                .approveContent(approve.getApproveContent())
+                .approveTime(approve.getApproveTime())
+                .build();
     }
 }
