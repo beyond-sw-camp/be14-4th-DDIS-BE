@@ -71,7 +71,7 @@ public class PersonalCategoryCommandServiceImpl implements PersonalCategoryComma
         if ("delete".equalsIgnoreCase(action)) {
             // delete일 때만 personal_todo_date 삭제
             for (PersonalTodos todo : relatedTodos) {
-                personalTodoDateRepository.deleteAllByTodoNum(todo.getTodoNum());
+                personalTodoDateRepository.deleteAllById_TodoNum(todo.getTodoNum());
             }
             personalTodoRepository.deleteAll(relatedTodos);
             personalTodoRepository.flush();

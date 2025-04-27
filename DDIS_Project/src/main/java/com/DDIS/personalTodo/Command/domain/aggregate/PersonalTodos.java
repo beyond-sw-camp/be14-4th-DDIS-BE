@@ -1,12 +1,12 @@
 package com.DDIS.personalTodo.Command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @Table(name = "personal_todos")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PersonalTodos {
@@ -16,7 +16,7 @@ public class PersonalTodos {
     @Column(name = "todo_num", nullable = false)
     private Long todoNum;
 
-    @Column(name = "todo_content", nullable = true)
+    @Column(name = "todo_content", nullable = false)
     private String todoContent;
 
     @Column(name = "personal_category_num", nullable = true)

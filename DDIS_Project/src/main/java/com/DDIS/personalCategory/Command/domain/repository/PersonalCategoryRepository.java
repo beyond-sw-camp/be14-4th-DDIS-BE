@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PersonalCategoryRepository extends JpaRepository<PersonalCategories, Long> {
 
     boolean existsByClientNumAndPersonalCategoryName(Long clientNum, String personalCategoryName);
+    boolean existsByPersonalCategoryNumAndClientNum(Long personalCategoryNum, Long clientNum);
+
 }

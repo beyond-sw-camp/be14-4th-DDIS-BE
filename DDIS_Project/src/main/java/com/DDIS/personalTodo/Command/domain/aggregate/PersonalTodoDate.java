@@ -1,22 +1,17 @@
 package com.DDIS.personalTodo.Command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "personal_todo_date")
-@IdClass(PersonalTodoDateId.class) // 복합키 관리용
 public class PersonalTodoDate {
 
-    @Id
-    private String todoDate; // YYYY-MM-DD 같은 형식
-
-    @Id
-    private Long todoNum;
+    @EmbeddedId
+    private PersonalTodoDateId id;
 
     @Column(nullable = false)
     private boolean isDone = false;
@@ -26,4 +21,11 @@ public class PersonalTodoDate {
 
     private Integer pinOrder = 0;
 
+    @Builder
+    public PersonalTodoDate(String todoDate, Long todoNum, boolean isDone, boolean isPublic, Integer pinOrder) {
+        this.id = new PersonalTodoDateId(todoDate, todoNum); // EmbeddedId를 내부에서 생성
+        this.isDone = isDone;
+        this.isPublic = isPublic;
+        this.pinOrder = pinOrder;
+    }
 }
