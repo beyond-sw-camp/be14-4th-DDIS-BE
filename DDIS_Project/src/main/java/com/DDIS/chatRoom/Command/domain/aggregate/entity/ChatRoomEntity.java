@@ -1,5 +1,6 @@
 package com.DDIS.chatRoom.Command.domain.aggregate.entity;
 
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,11 +18,9 @@ public class ChatRoomEntity {
     @Column(name = "chatroom_num")
     private Long chatRoomId;
 
-//    @ManyToOne
-//    @JoinColumn(name = "room_num")
-    @Column(name = "room_num")
-//    private RoomEntity roomNum;
-    private Long roomNum;
+    @ManyToOne
+    @JoinColumn(name = "room_num")
+    private Rooms roomNum;
 
     @Column(name = "chatroom_name")
     private String chatRoomName;
