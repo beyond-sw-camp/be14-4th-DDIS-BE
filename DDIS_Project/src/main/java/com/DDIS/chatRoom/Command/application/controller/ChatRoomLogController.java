@@ -23,7 +23,7 @@ public class ChatRoomLogController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/chat/send")
+    @MessageMapping("/pub/chat/send")
     public void sendMessage(@Payload ChatRoomLogRequestDTO requestDTO) {
         // DB에 저장
         ChatRoomLogResponseDTO responseDTO = chatRoomLogService.saveMessage(requestDTO);
@@ -38,9 +38,13 @@ public class ChatRoomLogController {
         chatRoomLogService.deleteMessage(logId);
     }
 
-    // 채팅방의 모든 메시지 삭제 (선택사항)
-    @DeleteMapping("/delete/room/{roomNum}")
-    public void deleteAllMessagesInRoom(@PathVariable Long roomNum) {
-        chatRoomLogService.deleteMessagesByRoom(roomNum);
+    @MessageMapping("/chat/delete")
+    public void deleteMessageViaWebSocket(@Payload Long logId) {
+        // DB에서 soft delete
+        chatRoomLogService.deleteMessage(logId);
+
+        // 구독자에게 "이 메시지 삭제됐음" 알림 보내기
+        messagingTemplate.convertAndSend("/sub/chatroom/delete", logId);
     }
+
 }

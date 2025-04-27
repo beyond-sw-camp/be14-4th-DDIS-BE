@@ -62,6 +62,7 @@ public class Post {
         @JoinColumn(name = "client_num")
         private UserEntity clientNum;
 
+
     public Post(String postTitle, String postContent, String recruitmentStartDate,
                 String recruitmentEndDate, Integer activityTime, Integer recruitmentLimit,
                 Boolean isPublic, String postPassword, PostCategoryEntity category, UserEntity client) {
@@ -84,8 +85,35 @@ public class Post {
         this.postContent = postContent;
     }
 
+    // 모집게시글 삭제
     public void softDelete(String deleteDate) {
         this.deleteDate = deleteDate;
     }
+
+    // 신청자 수 +1
+    public void increaseApplicantCount() {
+        this.applicantCount += 1;
+    }
+
+    // 신청마감
+    public void closeRecruitment() {
+        this.isClosed = true;
+    }
+
+    // 신청자 수 -1
+    public void decreaseApplicantCount() {
+        if (this.applicantCount > 0) {
+            this.applicantCount -= 1;
+        }
+    }
+
+//    // 저장하거나 수정할 때 null 자동으로 false로 세팅
+//    @PrePersist
+//    @PreUpdate
+//    public void prePersistOrUpdate() {
+//        if (this.isClosed == null) {
+//            this.isClosed = false;
+//        }
+//    }
 
 }

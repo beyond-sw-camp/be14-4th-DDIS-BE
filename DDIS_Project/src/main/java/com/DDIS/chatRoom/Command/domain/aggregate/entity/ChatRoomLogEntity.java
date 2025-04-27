@@ -21,7 +21,6 @@ public class ChatRoomLogEntity {
     @ManyToOne
     @JoinColumn(name = "chatroom_num")
     private ChatRoomEntity roomNum;
-//    private String roomId;
 
     @Column(name = "client_num")
     private Long sender;

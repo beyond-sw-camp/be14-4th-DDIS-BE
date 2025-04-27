@@ -13,8 +13,6 @@ public class JwtUtil {
 
     public JwtUtil(@Value("${token.secret}") String secret,
                    @Value("${token.expiration_time}") long expiration) {
-        System.out.println("JWT Secret: " + secret);
-        System.out.println("JWT Expiration: " + expiration);
         this.secret = secret;
         this.expiration = expiration;
     }
