@@ -29,4 +29,7 @@ public class Members {
     @ManyToOne
     @JoinColumn(name = "client_num")
     private Clients client;
+
+    @Column(name = "client_num", insertable = false, updatable = false)
+    private Integer clientNum;
 }

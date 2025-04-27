@@ -20,6 +20,7 @@ public class MemberShareTodo {
     @ManyToOne
     @JoinColumn(name = "share_todo_num")
     private ShareTodo shareTodoNum;
+
     @ManyToOne
     @JoinColumn(name = "member_num")
     private Members memberNum;
