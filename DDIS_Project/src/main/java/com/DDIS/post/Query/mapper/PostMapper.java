@@ -3,6 +3,7 @@
 package com.DDIS.post.Query.mapper;
 
 import com.DDIS.post.Query.dto.PostDTO;
+import com.DDIS.post.Query.dto.PublicPostDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,14 +11,17 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
-    // 1. 전체 게시글 조회 (public, private -> 관리자 조회시)
+    // 1. 전체 모집게시글 조회 (public, private -> 관리자 조회시)
     List<PostDTO> findAllPosts();
 
-    // 2. 회원번호(작성자)별 조회
+    // 2. 전체공개 모집게시글 조회
+    List<PublicPostDTO> findPublicPosts();
 
-    // 3. 카테고리별 조회
+    //  회원번호(작성자)별 조회
 
-    // 4. 등록일 최신순 조회
+    //  카테고리별 조회
+
+    //  등록일 최신순 조회
 
 
 }

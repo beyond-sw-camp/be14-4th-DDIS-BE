@@ -2,6 +2,7 @@
 package com.DDIS.post.Query.controller;
 
 import com.DDIS.post.Query.dto.PostDTO;
+import com.DDIS.post.Query.dto.PublicPostDTO;
 import com.DDIS.post.Query.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class PostController {
 
     private final PostService postService;
 
-    // 1. 전체 조회 요청 핸들러
+    // 1. 모집게시글 전체 조회 (관리자)
     @GetMapping("/findAll")
     public ResponseEntity<List<PostDTO>> getAllPosts() { List<PostDTO> posts = postService.findAllPost();
 
@@ -28,6 +29,18 @@ public class PostController {
         }
 
         return ResponseEntity.ok(posts); // 200 Introduce local variable
+    }
+
+    // 2. public 모집게시글 조회
+    @GetMapping("/public")
+    public ResponseEntity<List<PublicPostDTO>> getPublicPosts() {
+        List<PublicPostDTO> posts = postService.findPublicPost();
+
+        if (posts.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204 No Content
+        }
+
+        return ResponseEntity.ok(posts); // 200 OK
     }
 
 

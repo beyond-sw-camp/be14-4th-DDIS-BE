@@ -40,5 +40,48 @@
         WHERE p.is_public = TRUE
     </select>
 
+    <!-- 2. 전체공개 모집게시글 조회 (public 전용, password 제외) -->
+    <select id="findPublicPosts" resultType="com.DDIS.post.Query.dto.PublicPostDTO">
+        SELECT
+            p.post_num AS postNum,
+            p.post_title AS postTitle,
+            p.post_content AS postContent,
+            p.recruitment_start_date AS recruitmentStartDate,
+            p.recruitment_end_date AS recruitmentEndDate,
+            p.activity_time,
+            p.recruitment_limit,
+            p.applicant_count,
+            p.is_public,
+            c.category_name AS categoryName,
+            u.client_name AS clientName
+        FROM posts p
+                 JOIN post_categories c ON p.category_num = c.category_num
+                 JOIN clients u ON p.client_num = u.client_num
+        WHERE p.is_public = true
+          AND (p.delete_date IS NULL OR p.delete_date = false)
+    </select>
+
+    <!-- 3. 단건 조회: post_num으로 게시글 하나 조회 -->
+    <select id="findPostById" resultType="com.DDIS.post.Query.dto.PostDTO">
+        SELECT
+            p.post_num AS postNum,
+            p.post_title AS postTitle,
+            p.post_content AS postContent,
+            p.recruitment_start_date AS recruitmentStartDate,
+            p.recruitment_end_date AS recruitmentEndDate,
+            p.activity_time,
+            p.recruitment_limit,
+            p.applicant_count,
+            p.is_public,
+            p.post_password AS password,
+            c.category_name AS categoryName,
+            u.client_name AS clientName
+        FROM posts p
+                 JOIN post_categories c ON p.category_num = c.category_num
+                 JOIN clients u ON p.client_num = u.client_num
+        WHERE p.post_num = #{postNum}
+          AND (p.delete_date IS NULL OR p.delete_date = '')
+    </select>
+
 
 </mapper>
