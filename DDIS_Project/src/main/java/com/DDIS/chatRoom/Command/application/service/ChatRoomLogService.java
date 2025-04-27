@@ -6,11 +6,13 @@ import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomLogEntity;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomLogRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Transactional
 public class ChatRoomLogService {
 
     private final ChatRoomLogRepository chatRoomLogRepository;
@@ -23,6 +25,8 @@ public class ChatRoomLogService {
     }
 
     public ChatRoomLogResponseDTO saveMessage(ChatRoomLogRequestDTO requestDTO) {
+        System.out.println("💬 saveMessage 호출: " + requestDTO);
+
 
         String formattedTime = requestDTO.getSendTime().format(String.valueOf(FORMATTER));
 
@@ -43,23 +47,12 @@ public class ChatRoomLogService {
         );
     }
 
-    // 메시지 리스트 조회 (DTO 변환)
-    public List<ChatRoomLogResponseDTO> getMessagesByRoomAsDTO(ChatRoomEntity roomNum) {
-        return chatRoomLogRepository.findByRoomNumOrderBySendTimeAsc(roomNum).stream()
-                .map(log -> new ChatRoomLogResponseDTO(
-                        log.getRoomNum(),
-                        log.getSender(),
-                        log.getMessage(),
-                        log.getSendTime()
-                ))
-                .toList();
-    }
 
     public void deleteMessage(Long logId) {
         chatRoomLogRepository.deleteById(logId);
     }
 
-    public void deleteMessagesByRoom(Long roomNum) {
+    public void deleteMessagesByRoom(ChatRoomEntity roomNum) {
         chatRoomLogRepository.deleteByRoomNum(roomNum);
     }
 }

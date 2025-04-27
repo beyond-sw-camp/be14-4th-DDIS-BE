@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket 채팅 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        #chat-log {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ddd;
+            overflow-y: scroll;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        #chat-log p {
+            margin: 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        button {
+            margin-right: 10px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🧪 WebSocket 채팅 테스트</h1>
+
+<button onclick="connect()">서버 연결</button>
+<button onclick="disconnect()">서버 연결 종료</button>
+<br><br>
+
+<input type="text" id="messageInput" placeholder="메시지를 입력하세요" style="width:300px;">
+<button onclick="sendMessage()">메시지 전송</button>
+
+<div id="chat-log"></div>
+
+<script>
+    let stompClient = null;
+
+    // const socket = new SockJS('http://localhost:8080/ws-chat');
+    const socket = new SockJS('/ws-chat');
+    // const stompClient = Stomp.over(socket);
+
+    function connect() {
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            addMessage("✅ 서버 연결 완료");
+
+            // 구독 시작
+            stompClient.subscribe('/sub/chatroom/1', function (message) {
+                const body = JSON.parse(message.body);
+                console.log('받은 메시지:', body);
+                addMessage(`🛬 ${body.sender}: ${body.message}`);
+            });
+        }, function (error) {
+            console.error('연결 실패:', error);
+            addMessage('❌ 서버 연결 실패');
+        });
+    }
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect(() => {
+                console.log('Disconnected');
+                addMessage("🛑 서버 연결 종료");
+            });
+        }
+    }
+
+    function sendMessage() {
+        const content = document.getElementById('messageInput').value.trim();
+        if (content === "") {
+            alert("메시지를 입력하세요!");
+            return;
+        }
+
+        const message = {
+            roomNum: 1,       // 테스트용 채팅방 번호
+            sender: "테스트유저",  // 테스트용 보낸 사람
+            message: content,
+            sendTime: new Date().toISOString()
+        };
+
+        stompClient.send("/pub/chat/send", {}, JSON.stringify(message));
+        addMessage(`🚀 보낸 메시지: ${content}`);
+        document.getElementById('messageInput').value = '';
+    }
+
+    function addMessage(message) {
+        const chatLog = document.getElementById('chat-log');
+        const p = document.createElement('p');
+        p.innerText = message;
+        chatLog.appendChild(p);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
