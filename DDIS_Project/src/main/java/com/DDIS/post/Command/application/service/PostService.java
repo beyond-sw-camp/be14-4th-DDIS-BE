@@ -13,4 +13,5 @@ public interface PostService {
     // 2. 모집게시글 작성
     void createPost(PostCreateRequestDTO request);
 
+    // 3. 모집게시글 수정
 }

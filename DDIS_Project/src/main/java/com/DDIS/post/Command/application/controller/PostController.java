@@ -19,7 +19,8 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/find/{postNum}")
+    // 1. 모집 게시글 조회
+    @GetMapping("/{postNum}")
     public ResponseEntity<PostResponseDTO> getPrivatePost(
             @PathVariable Long postNum,
             @RequestParam(required = false) String password
@@ -29,7 +30,7 @@ public class PostController {
         Post post = postService.getPost(postNum, password);
         return ResponseEntity.ok(PostResponseDTO.fromEntity(post)); }
 
-
+    // 2. 모집 게시글 작성
     @PostMapping("/create")
     public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO dto) { postService.createPost(dto);
         return ResponseEntity.ok("모집 게시글 작성 완료!"); }

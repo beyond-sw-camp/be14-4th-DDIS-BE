@@ -86,24 +86,5 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         postRepository.save(post);
-
-        // 저장된 postNum
-        Long savedPostNum = post.getPostNum();
-
-        // 공동 ToDo 여러 개 저장
-//        if (dto.getShareTodos() != null) {
-//            List<ShareTodo> shareTodoList = dto.getShareTodos().stream()
-//                    .map(todo -> ShareTodo.builder()
-//                            .shareTodoName(todo.getShareTodoName())
-//                            .postNum(savedPostNum)
-//                            .pinOrder(todo.getPinOrder() == null ? 0 : todo.getPinOrder())
-//                            .build())
-//                    .toList();
-//            shareTodoRepository.saveAll(shareTodoList);
-//        }
     }
-
-
-
-
 }
