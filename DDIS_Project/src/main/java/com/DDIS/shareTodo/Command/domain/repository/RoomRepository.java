@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Rooms, Long > {
+public interface RoomRepository extends JpaRepository<Rooms, Long >{
 
-    Optional<Rooms> findByPost_PostNum(Long postNum);;
 }

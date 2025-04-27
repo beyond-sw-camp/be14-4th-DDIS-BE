@@ -9,11 +9,16 @@ import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Members;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @Service
+@Transactional
 public class ApproveServiceImpl implements ApproveService {
     private final ApproveRepository approveRepository;
     private final MemberRepository memberRepository;
@@ -36,12 +41,14 @@ public class ApproveServiceImpl implements ApproveService {
         MemberShareTodo memberShareTodo = memberShareTodoRepository.findById(approveDTO.getMemberShareTodoNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버공동투두 없음"));
 
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         Approve approve = Approve.builder()
                 .memberNum(member)
                 .memberShareTodoNum(memberShareTodo)
                 .approveTitle(approveDTO.getApproveTitle())
                 .approveContent(approveDTO.getApproveContent())
-                .approveTime(approveDTO.getApproveTime()) // LocalDateTime이면 그대로
+                .approveTime(now) // LocalDateTime이면 그대로
                 .approvePermitCount(0)
                 .approveRefuseCount(0)
                 .build();
@@ -52,6 +59,7 @@ public class ApproveServiceImpl implements ApproveService {
     }
 
     @Override
+    @Transactional
     public void updateApproveStatus(UpdateApproveStatusDTO dto) {
         Approve approve = approveRepository.findById(dto.getApproveNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 approve가 존재하지 않습니다."));
@@ -62,6 +70,5 @@ public class ApproveServiceImpl implements ApproveService {
             default -> throw new IllegalArgumentException("허용되지 않은 액션입니다.");
         }
 
-        approveRepository.save(approve);
     }
 }

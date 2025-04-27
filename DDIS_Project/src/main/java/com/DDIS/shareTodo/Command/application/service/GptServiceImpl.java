@@ -31,8 +31,9 @@ public class GptServiceImpl implements GptService {
 
     private String createPrompt(String topic) {
         return String.format(
-                "'%s'을(를) 주제로 공동 Todo 리스트를 5개 만들어줘. " +
+                "'%s'을(를) 주제로 공동Todo 리스트를 5개 만들어줘. " +
                         "각 항목은 짧고 명확한 문장으로 해줘. " +
+                        "하루 단위로 할수 있는 것과 안된다면 일주일 단위도 좋아" +
                         "답변은 '1. ~~~', '2. ~~~' 이런 식으로 번호를 붙여서 줘.",
                 topic
         );
