@@ -1,5 +1,6 @@
 package com.DDIS.shareTodo.Command.domain.aggregate.Entity;
 
+import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +24,7 @@ public class Members {
 
     @ManyToOne
     @JoinColumn(name = "post_num")
-    private Posts post;
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name = "client_num")

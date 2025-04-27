@@ -1,11 +1,12 @@
 package com.DDIS.shareTodo.Command.application.service;
 
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
+import com.DDIS.post.Command.domain.aggregate.entity.Post;
+import com.DDIS.post.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
 import com.DDIS.shareTodo.Command.application.dto.SaveShareTodoDTO;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.*;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoRepository;
-import com.DDIS.shareTodo.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.domain.repository.RoomRepository;
 import com.DDIS.shareTodo.Command.domain.repository.ShareTodoRepository;
 import jakarta.transaction.Transactional;
@@ -60,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
     public List<ShareTodo> createRoom(CreateShareRoomDTO roomDTO) {
         String randomColor = pickRandomColor();
         Long postNum = roomDTO.getPostNum();
-        Posts posts = postRepository.findById(postNum).orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));
+        Post posts = postRepository.findById(postNum).orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));
 
 
         LocalDateTime now = LocalDateTime.now();
@@ -109,7 +110,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     public void saveShareTodos(List<SaveShareTodoDTO> todoList) {
         for (SaveShareTodoDTO dto : todoList) {
-            Posts post = postRepository.findById(dto.getPostNum())
+            Post post = postRepository.findById(dto.getPostNum())
                     .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
 
             ShareTodo shareTodo = ShareTodo.builder()

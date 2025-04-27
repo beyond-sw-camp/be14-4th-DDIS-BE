@@ -1,7 +1,6 @@
 package com.DDIS.shareTodo.Command.application.dto;
 
 
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Posts;
 import lombok.Getter;
 import lombok.Setter;
 

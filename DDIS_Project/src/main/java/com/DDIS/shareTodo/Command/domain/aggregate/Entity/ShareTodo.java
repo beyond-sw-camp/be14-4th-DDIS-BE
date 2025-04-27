@@ -1,5 +1,6 @@
 package com.DDIS.shareTodo.Command.domain.aggregate.Entity;
 
+import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class ShareTodo {
 
     @ManyToOne
     @JoinColumn(name = "post_num")
-    private Posts post;
+    private Post post;
 
     @Column(name = "pin_order")
     private int pinOrder;
