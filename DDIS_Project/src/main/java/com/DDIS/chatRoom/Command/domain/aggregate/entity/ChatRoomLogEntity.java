@@ -15,7 +15,8 @@ public class ChatRoomLogEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long logId;
+    @Column(name = "message_num")
+    private Long messageNum;
 
     @ManyToOne
     @JoinColumn(name = "chatroom_num")
@@ -23,7 +24,7 @@ public class ChatRoomLogEntity {
 //    private String roomId;
 
     @Column(name = "client_num")
-    private String sender;
+    private Long sender;
 
     @Column(name = "message_content")
     private String message;
@@ -31,7 +32,7 @@ public class ChatRoomLogEntity {
     @Column(name = "send_time")
     private String sendTime;
 
-    public ChatRoomLogEntity(ChatRoomEntity roomNum, String sender, String message, String sendTime) {
+    public ChatRoomLogEntity(ChatRoomEntity roomNum, Long sender, String message, String sendTime) {
         this.roomNum = roomNum;
         this.sender = sender;
         this.message = message;

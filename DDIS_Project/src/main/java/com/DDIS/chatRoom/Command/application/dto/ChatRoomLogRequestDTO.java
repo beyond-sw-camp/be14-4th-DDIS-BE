@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 public class ChatRoomLogRequestDTO {
     private ChatRoomEntity roomNum;
-    private String sender;
+    private Long sender;
     private String message;
     private String sendTime;
 }

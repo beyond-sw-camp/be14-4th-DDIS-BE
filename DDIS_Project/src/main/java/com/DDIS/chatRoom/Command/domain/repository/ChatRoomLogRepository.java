@@ -13,7 +13,7 @@ public interface ChatRoomLogRepository extends JpaRepository<ChatRoomLogEntity, 
     // 특정 채팅방의 로그를 시간 순으로 가져오기
     List<ChatRoomLogEntity> findByRoomNumOrderBySendTimeAsc(ChatRoomEntity roomNum);
 
-    void deleteByRoomNum(Long roomNum);
+    void deleteByRoomNum(ChatRoomEntity roomNum);
 
     // 특정 방 + 특정 유저의 메시지만 가져오기
 //    List<ChatRoomLogEntity> findByRoomIdAndSenderOrderBySendTimeAsc(String roomId, String sender);

@@ -5,6 +5,7 @@ import com.DDIS.chatRoom.Command.application.dto.ChatRoomLogResponseDTO;
 import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomLogEntity;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomLogRepository;
+import com.DDIS.chatRoom.Command.domain.repository.ChatRoomRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -14,12 +15,14 @@ import java.util.List;
 public class ChatRoomLogService {
 
     private final ChatRoomLogRepository chatRoomLogRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
-    public ChatRoomLogService(ChatRoomLogRepository chatRoomLogRepository) {
+    public ChatRoomLogService(ChatRoomLogRepository chatRoomLogRepository,ChatRoomRepository chatRoomRepository) {
         this.chatRoomLogRepository = chatRoomLogRepository;
+        this.chatRoomRepository = chatRoomRepository;
     }
 
     public ChatRoomLogResponseDTO saveMessage(ChatRoomLogRequestDTO requestDTO) {
@@ -60,6 +63,8 @@ public class ChatRoomLogService {
     }
 
     public void deleteMessagesByRoom(Long roomNum) {
-        chatRoomLogRepository.deleteByRoomNum(roomNum);
+        ChatRoomEntity chatRoom = chatRoomRepository.findById(roomNum)
+                .orElseThrow(() -> new IllegalArgumentException("채팅방 없음"));
+        chatRoomLogRepository.deleteByRoomNum(chatRoom);
     }
 }
