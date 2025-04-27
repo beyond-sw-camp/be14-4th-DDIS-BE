@@ -1,6 +1,7 @@
 package com.DDIS.inquiry.Command.application.service;
 
 import com.DDIS.inquiry.Command.application.dto.*;
+import com.DDIS.inquiry.Command.domain.aggregate.entity.InquiryEntity;
 import com.DDIS.inquiry.Command.domain.aggregate.entity.InquiryResponseEntity;
 import com.DDIS.inquiry.Command.domain.repository.InquiryResponseRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +13,21 @@ import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
 public class InquiryResponseServiceImpl implements InquiryResponseService {
+
     private final InquiryResponseRepository inquiryResponseRepository;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public InquiryResponseResponseDTO createResponse(InquiryResponseRequestDTO requestDTO) {
         String now = LocalDateTime.now().format(FORMATTER);
 
-        InquiryResponseEntity inquiryResponse = new InquiryResponseEntity();
+        InquiryResponseEntity inquiryResponse = requestDTO.toEntity();
         inquiryResponse.setInquiryNum(requestDTO.getInquiryNum());
         inquiryResponse.setResponseContent(requestDTO.getResponseContent());
         inquiryResponse.setResponseTime(now);
-        return InquiryResponseResponseDTO.fromEntity(inquiryResponse);
+
+        InquiryResponseEntity savedEntity = inquiryResponseRepository.save(inquiryResponse);
+
+        return InquiryResponseResponseDTO.fromEntity(savedEntity);
     }
 
     @Override

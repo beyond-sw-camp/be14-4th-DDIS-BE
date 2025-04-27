@@ -13,14 +13,14 @@ public class InquiryResponseRequestDTO {
 
     private Long inquiryNum;
     private String responseContent;
-    private String responseTime;
+//    private String responseTime;
 
     // DTO -> Entity 변환
     public InquiryResponseEntity toEntity() {
         return InquiryResponseEntity.builder()
                 .inquiryNum(this.inquiryNum)
                 .responseContent(this.responseContent)
-                .responseTime(this.responseTime)
+//                .responseTime(this.responseTime)
                 .build();
     }
 }

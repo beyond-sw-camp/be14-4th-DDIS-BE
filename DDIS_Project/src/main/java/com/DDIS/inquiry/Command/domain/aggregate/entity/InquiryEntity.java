@@ -18,13 +18,13 @@ public class InquiryEntity {
     @Column(name = "inquiry_num")
     private Long inquiryNum;
 
-    @Column(name = "inquiry_title", nullable = false, length = 255)
+    @Column(name = "inquiry_title", nullable = false)
     private String inquiryTitle;
 
-    @Column(name = "inquiry_content", nullable = false, length = 255)
+    @Column(name = "inquiry_content", nullable = false)
     private String inquiryContent;
 
-    @Column(name = "inquiry_time", nullable = false, length = 255)
+    @Column(name = "inquiry_time", nullable = false)
     private String inquiryTime;
 
     @Column(name = "client_num", nullable = false)

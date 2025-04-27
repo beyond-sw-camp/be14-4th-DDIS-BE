@@ -2,6 +2,7 @@ package com.DDIS.inquiry.Command.application.dto;
 
 import com.DDIS.inquiry.Command.domain.aggregate.entity.InquiryEntity;
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Setter

@@ -24,11 +24,14 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeResponseDTO createNotice(NoticeRequestDTO requestDTO) {
         String now = LocalDateTime.now().format(FORMATTER);
 
-        NoticeEntity notice = new NoticeEntity();
+        NoticeEntity notice = requestDTO.toEntity();
         notice.setNoticeTitle(requestDTO.getNoticeTitle());
         notice.setNoticeContent(requestDTO.getNoticeContent());
         notice.setNoticeTime(now);
-        return NoticeResponseDTO.fromEntity(notice);
+
+        NoticeEntity savedEntity = noticeRepository.save(notice);
+
+        return NoticeResponseDTO.fromEntity(savedEntity);
     }
 
     @Override

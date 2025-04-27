@@ -6,11 +6,13 @@ import com.DDIS.inquiry.Command.domain.aggregate.entity.InquiryEntity;
 import com.DDIS.inquiry.Command.domain.repository.InquiryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class InquiryServiceImpl implements InquiryService {
     private final InquiryRepository inquiryRepository;
@@ -22,11 +24,14 @@ public class InquiryServiceImpl implements InquiryService {
     public InquiryResponseDTO createInquiry(InquiryRequestDTO requestDTO) {
         String now = LocalDateTime.now().format(FORMATTER);
 
-        InquiryEntity inquiry = new InquiryEntity();
+        InquiryEntity inquiry = requestDTO.toEntity();
+
         inquiry.setInquiryTitle(requestDTO.getInquiryTitle());
         inquiry.setInquiryContent(requestDTO.getInquiryContent());
         inquiry.setInquiryTime(now);
-        return InquiryResponseDTO.fromEntity(inquiry);
+
+        InquiryEntity savedEntity = inquiryRepository.save(inquiry);
+        return InquiryResponseDTO.fromEntity(savedEntity);
     }
 
     @Override
