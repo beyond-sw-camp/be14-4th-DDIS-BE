@@ -47,8 +47,12 @@ public class Post {
 
         private String postPassword;
 
+        @Builder.Default
         @Column(nullable = false)
         private Boolean isClosed = false;
+
+        @Column
+        private String deleteDate; // 삭제일시
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "category_num")
@@ -57,6 +61,7 @@ public class Post {
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "client_num")
         private UserEntity clientNum;
+
 
     public Post(String postTitle, String postContent, String recruitmentStartDate,
                 String recruitmentEndDate, Integer activityTime, Integer recruitmentLimit,
@@ -74,4 +79,41 @@ public class Post {
         this.categoryNum = category;  // ⭐ FK 객체
         this.clientNum = client;      // ⭐ FK 객체
     }
+
+    public void updatePost(String postTitle, String postContent) {
+        this.postTitle = postTitle;
+        this.postContent = postContent;
+    }
+
+    // 모집게시글 삭제
+    public void softDelete(String deleteDate) {
+        this.deleteDate = deleteDate;
+    }
+
+    // 신청자 수 +1
+    public void increaseApplicantCount() {
+        this.applicantCount += 1;
+    }
+
+    // 신청마감
+    public void closeRecruitment() {
+        this.isClosed = true;
+    }
+
+    // 신청자 수 -1
+    public void decreaseApplicantCount() {
+        if (this.applicantCount > 0) {
+            this.applicantCount -= 1;
+        }
+    }
+
+//    // 저장하거나 수정할 때 null 자동으로 false로 세팅
+//    @PrePersist
+//    @PreUpdate
+//    public void prePersistOrUpdate() {
+//        if (this.isClosed == null) {
+//            this.isClosed = false;
+//        }
+//    }
+
 }

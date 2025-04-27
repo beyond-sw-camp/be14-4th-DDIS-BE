@@ -3,6 +3,9 @@ package com.DDIS.client.Command.domain.aggregate;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "clients")
 @Getter
@@ -49,4 +52,7 @@ public class UserEntity {
 
     @Column(name = "client_color_rgb", nullable = false)
     private String clientColorRgb = "rgba (80, 212, 198, 100)";
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ClientRoleEntity> clientRoles = new ArrayList<>();
 }

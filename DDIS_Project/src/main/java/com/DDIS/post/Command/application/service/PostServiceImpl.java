@@ -4,6 +4,7 @@ package com.DDIS.post.Command.application.service;
 import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.post.Command.domain.aggregate.dto.PostCreateRequestDTO;
+import com.DDIS.post.Command.domain.aggregate.dto.PostUpdateRequestDTO;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import com.DDIS.post.Command.domain.repository.PostRepository;
 import com.DDIS.postCategory.Command.domain.aggregate.entity.PostCategoryEntity;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service("commandPostServiceImpl")
@@ -26,8 +29,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ClientRepository clientRepository;
     private final PostCategoryRepository categoryRepository;
-//    private final PostCommandMapper postCommandMapper;
-//    private final ShareTodoRepository shareTodoRepository;
 
 
     // 1. 모집 게시글 조회
@@ -86,24 +87,40 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         postRepository.save(post);
-
-        // 저장된 postNum
-        Long savedPostNum = post.getPostNum();
-
-        // 공동 ToDo 여러 개 저장
-//        if (dto.getShareTodos() != null) {
-//            List<ShareTodo> shareTodoList = dto.getShareTodos().stream()
-//                    .map(todo -> ShareTodo.builder()
-//                            .shareTodoName(todo.getShareTodoName())
-//                            .postNum(savedPostNum)
-//                            .pinOrder(todo.getPinOrder() == null ? 0 : todo.getPinOrder())
-//                            .build())
-//                    .toList();
-//            shareTodoRepository.saveAll(shareTodoList);
-//        }
     }
 
+    // 3. 모집게시글 수정
+    @Override
+    @Transactional
+    public void updatePost(Long postNum, PostUpdateRequestDTO request, Long requesterId) {
+        Post post = postRepository.findById(postNum)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        // TODO: 시큐리티 적용 후 작성자 확인 다시 추가
+//        if (!post.getClientNum().getClientNum().equals(requesterId)) {
+//            throw new RuntimeException("작성자만 수정할 수 있습니다.");
+//        }
 
 
+        post.updatePost(request.getPostTitle(), request.getPostContent());
+    }
+
+    // 4. 모집게시글 삭제
+    @Override
+    @Transactional
+    public void deletePost(Long postNum, Long requesterId) {
+        Post post = postRepository.findById(postNum)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        // TODO: 시큐리티 적용 후 작성자 확인 다시 추가
+//        if (!post.getClientNum().getClientNum().equals(requesterId)) {
+//            throw new RuntimeException("작성자만 삭제할 수 있습니다.");
+//        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String now = LocalDateTime.now().format(formatter);
+
+        post.softDelete(now);
+    }
 
 }

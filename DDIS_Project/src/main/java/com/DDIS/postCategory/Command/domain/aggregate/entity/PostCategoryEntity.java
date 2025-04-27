@@ -21,4 +21,8 @@ public class PostCategoryEntity {
 
     @Column
     private String categoryName;
+
+    public void updateCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }
