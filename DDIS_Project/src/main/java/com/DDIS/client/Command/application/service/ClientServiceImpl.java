@@ -7,10 +7,7 @@ import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.client.Command.domain.repository.ClientRoleRepository;
 import com.DDIS.client.Command.domain.repository.RoleRepository;
-import com.DDIS.client.Command.domain.vo.LoginRequestVO;
-import com.DDIS.client.Command.domain.vo.LoginResponseVO;
-import com.DDIS.client.Command.domain.vo.SignupRequestVO;
-import com.DDIS.client.Command.domain.vo.SignupResponseVO;
+import com.DDIS.client.Command.domain.vo.*;
 import com.DDIS.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +25,7 @@ public class ClientServiceImpl implements ClientService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    // 회원 가입 메서드
     @Override
     public SignupResponseVO signup(SignupRequestVO vo) {
         if (clientRepository.findByClientId(vo.getClientId()).isPresent()) {
@@ -71,6 +69,7 @@ public class ClientServiceImpl implements ClientService {
         return new SignupResponseVO("회원가입이 성공적으로 완료되었습니다.");
     }
 
+    // 로그인 메서드
     @Override
     public LoginResponseVO login(LoginRequestVO vo) {
         Optional<UserEntity> optionalUser = clientRepository.findByClientId(vo.getClientId());
@@ -94,6 +93,32 @@ public class ClientServiceImpl implements ClientService {
     private boolean isValidPassword(String password) {
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$";
         return password.matches(regex);
+    }
+
+    // 회원 정보 수정 메서드
+    @Override
+    public UpdateProfileResponseVO updateProfile(UpdateProfileRequestVO vo) {
+        Optional<UserEntity> optionalUser = clientRepository.findByClientId(vo.getClientId());
+
+        if (optionalUser.isEmpty()) {
+            return new UpdateProfileResponseVO("해당 사용자를 찾을 수 없습니다.");
+        }
+
+        UserEntity user = optionalUser.get();
+
+        // 닉네임만 수정 요청한 경우
+        if (vo.getNewNickname() != null && !vo.getNewNickname().isBlank()) {
+            user.updateNickname(vo.getNewNickname());
+        }
+
+        // 이메일만 수정 요청한 경우
+        if (vo.getNewEmail() != null && !vo.getNewEmail().isBlank()) {
+            user.updateEmail(vo.getNewEmail());
+        }
+
+        clientRepository.save(user);
+
+        return new UpdateProfileResponseVO("회원 정보가 성공적으로 수정되었습니다.");
     }
 }
 
