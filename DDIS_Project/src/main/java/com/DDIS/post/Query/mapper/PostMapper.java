@@ -10,5 +10,14 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
+    // 1. 전체 게시글 조회 (public, private -> 관리자 조회시)
     List<PostDTO> findAllPosts();
+
+    // 2. 회원번호(작성자)별 조회
+
+    // 3. 카테고리별 조회
+
+    // 4. 등록일 최신순 조회
+
+
 }
