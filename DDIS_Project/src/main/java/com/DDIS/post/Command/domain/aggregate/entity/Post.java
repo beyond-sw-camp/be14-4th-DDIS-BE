@@ -47,8 +47,12 @@ public class Post {
 
         private String postPassword;
 
+        @Builder.Default
         @Column(nullable = false)
         private Boolean isClosed = false;
+
+        @Column
+        private String deleteDate; // 삭제일시
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "category_num")
@@ -74,4 +78,14 @@ public class Post {
         this.categoryNum = category;  // ⭐ FK 객체
         this.clientNum = client;      // ⭐ FK 객체
     }
+
+    public void updatePost(String postTitle, String postContent) {
+        this.postTitle = postTitle;
+        this.postContent = postContent;
+    }
+
+    public void softDelete(String deleteDate) {
+        this.deleteDate = deleteDate;
+    }
+
 }

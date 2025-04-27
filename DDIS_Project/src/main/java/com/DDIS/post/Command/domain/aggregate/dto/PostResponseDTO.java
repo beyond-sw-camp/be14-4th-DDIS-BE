@@ -45,7 +45,7 @@ public class PostResponseDTO {
                         .activityTime(post.getActivityTime())
                         .applicants(post.getApplicantCount())
                         .limit(post.getRecruitmentLimit())
-                        .status(post.getIsClosed() ? "모집마감" : "모집중")
+                        .status(Boolean.TRUE.equals(post.getIsClosed()) ? "모집마감" : "모집중")
                         .categoryName(post.getCategoryNum().getCategoryName())
                         .writerName(post.getClientNum().getClientName())
                         .build();
