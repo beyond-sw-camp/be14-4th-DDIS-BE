@@ -38,12 +38,6 @@ public class ChatRoomLogController {
         chatRoomLogService.deleteMessage(logId);
     }
 
-//    // 채팅방의 모든 메시지 삭제 (선택사항)
-//    @DeleteMapping("/delete/room/{roomNum}")
-//    public void deleteAllMessagesInRoom(@PathVariable Long roomNum) {
-//        chatRoomLogService.deleteMessagesByRoom(roomNum);
-//    }
-
     @MessageMapping("/chat/delete")
     public void deleteMessageViaWebSocket(@Payload Long logId) {
         // DB에서 soft delete

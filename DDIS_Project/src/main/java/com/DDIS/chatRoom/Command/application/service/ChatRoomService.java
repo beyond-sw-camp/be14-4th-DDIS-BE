@@ -47,8 +47,4 @@ public class ChatRoomService {
                 saved.getCreatedTime()
         );
     }
-
-    public void deleteRoom(Long chatRoomId) {
-        chatRoomRepository.deleteById(chatRoomId);
-    }
 }
