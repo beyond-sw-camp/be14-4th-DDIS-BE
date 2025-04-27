@@ -1,0 +1,13 @@
+package com.DDIS.chatRoom.Query.dto;
+
+import lombok.*;
+
+@Getter
+@Setter
+public class ChatRoomLogQueryDTO {
+    private Long messageNum;
+    private Long chatRoomNum;
+    private Long clientNum;
+    private String messageContent;
+    private String sendTime;
+}
