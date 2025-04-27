@@ -18,7 +18,7 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final RoomRepository roomRepository; // <-- 추가
+    private final RoomRepository roomRepository;
 
     public ChatRoomService(ChatRoomRepository chatRoomRepository, RoomRepository roomRepository) {
         this.chatRoomRepository = chatRoomRepository;
@@ -46,9 +46,5 @@ public class ChatRoomService {
                 saved.getRoomNum().getRoomNum(),
                 saved.getCreatedTime()
         );
-    }
-
-    public void deleteRoom(Long chatRoomId) {
-        chatRoomRepository.deleteById(chatRoomId);
     }
 }

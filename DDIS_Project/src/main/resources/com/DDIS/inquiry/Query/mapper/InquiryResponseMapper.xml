@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.DDIS.inquiry.Query.dao.InquiryResponseMapper">
+
+    <resultMap id="InquiryResponseResultMap" type="com.DDIS.inquiry.Query.dto.InquiryResponseQueryDTO">
+        <id property="responseNum" column="response_num"/>
+        <result property="inquiryNum" column="inquiry_num"/>
+        <result property="responseContent" column="response_content"/>
+        <result property="responseTime" column="response_time"/>
+    </resultMap>
+
+    <select id="selectAllResponses" resultMap="InquiryResponseResultMap">
+        SELECT
+            response_num,
+            inquiry_num,
+            response_content,
+            response_time
+        FROM inquiry_responses
+        ORDER BY response_num DESC
+    </select>
+
+    <select id="selectResponse" resultMap="InquiryResponseResultMap">
+        SELECT
+            response_num,
+            inquiry_num,
+            response_content,
+            response_time
+        FROM inquiry_responses
+        WHERE response_num = #{responseNum}
+    </select>
+
+</mapper>

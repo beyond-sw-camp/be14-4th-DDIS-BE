@@ -7,11 +7,13 @@ import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomLogEntity;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomLogRepository;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Transactional
 public class ChatRoomLogService {
 
     private final ChatRoomLogRepository chatRoomLogRepository;
@@ -26,6 +28,8 @@ public class ChatRoomLogService {
     }
 
     public ChatRoomLogResponseDTO saveMessage(ChatRoomLogRequestDTO requestDTO) {
+        System.out.println("💬 saveMessage 호출: " + requestDTO);
+
 
         String formattedTime = requestDTO.getSendTime().format(String.valueOf(FORMATTER));
 
