@@ -22,10 +22,4 @@ public class ChatRoomController {
     public ChatRoomResponseDTO createRoom(@RequestBody ChatRoomRequestDTO requestDTO) {
         return chatRoomService.createRoom(requestDTO);
     }
-
-    // 채팅방 삭제
-    @DeleteMapping("/delete/{chatRoomId}")
-    public void deleteRoom(@PathVariable Long chatRoomId) {
-        chatRoomService.deleteRoom(chatRoomId);
-    }
 }
