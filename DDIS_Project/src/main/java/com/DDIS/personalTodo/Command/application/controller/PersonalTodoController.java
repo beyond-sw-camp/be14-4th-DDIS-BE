@@ -1,6 +1,7 @@
 package com.DDIS.personalTodo.Command.application.controller;
 
 import com.DDIS.personalTodo.Command.application.dto.request.PersonalTodoCreateRequestDTO;
+import com.DDIS.personalTodo.Command.application.dto.request.PersonalTodoUpdateRequestDTO;
 import com.DDIS.personalTodo.Command.application.service.PersonalTodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class PersonalTodoController {
 
     private final PersonalTodoService personalTodoService;
 
+    // Todo 생성
     @PostMapping
     public ResponseEntity<Void> createPersonalTodo(
             @Valid @RequestBody PersonalTodoCreateRequestDTO requestDTO,
@@ -28,5 +30,13 @@ public class PersonalTodoController {
         personalTodoService.createPersonalTodo(requestDTO, clientNum);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // Todo 수정
+    @PatchMapping
+    public ResponseEntity<Void> updatePersonalTodo(@Valid @RequestBody PersonalTodoUpdateRequestDTO requestDTO,
+                                                   @RequestParam Long clientNum) {
+        personalTodoService.updatePersonalTodo(requestDTO, clientNum);
+        return ResponseEntity.ok().build();
     }
 }

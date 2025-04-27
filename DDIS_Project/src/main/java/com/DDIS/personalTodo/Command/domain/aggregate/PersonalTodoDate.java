@@ -28,4 +28,16 @@ public class PersonalTodoDate {
         this.isPublic = isPublic;
         this.pinOrder = pinOrder;
     }
+
+    public void updateIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public void updateIsDone(Boolean isDone) {
+        this.isDone = isDone;
+    }
+
+    public void updatePinOrder(Integer pinOrder) {
+        this.pinOrder = pinOrder;
+    }
 }

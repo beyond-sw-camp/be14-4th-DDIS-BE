@@ -3,6 +3,7 @@ package com.DDIS.personalTodo.Command.application.service;
 import com.DDIS.personalCategory.Command.domain.repository.PersonalCategoryRepository;
 import com.DDIS.personalTodo.Command.application.dto.request.CreateType;
 import com.DDIS.personalTodo.Command.application.dto.request.PersonalTodoCreateRequestDTO;
+import com.DDIS.personalTodo.Command.application.dto.request.PersonalTodoUpdateRequestDTO;
 import com.DDIS.personalTodo.Command.application.dto.request.RepeatInfo;
 import com.DDIS.personalTodo.Command.domain.aggregate.PersonalTodoDate;
 import com.DDIS.personalTodo.Command.domain.aggregate.PersonalTodoDateId;
@@ -56,6 +57,68 @@ public class PersonalTodoServiceImpl implements PersonalTodoService {
         }
     }
 
+    @Override
+    public void updatePersonalTodo(PersonalTodoUpdateRequestDTO requestDTO, Long clientNum) {
+        // Todo 조회
+        PersonalTodos personalTodo = personalTodoRepository.findById(requestDTO.getTodoNum())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Todo입니다."));
+
+        // clientNum 검증
+        if (!personalTodo.getClientNum().equals(clientNum)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        // 기존 personalTodoDate 조회 (todoNum + 기존 todoDate)
+        PersonalTodoDate personalTodoDate = personalTodoDateRepository.findById(
+                        new PersonalTodoDateId(requestDTO.getExistingTodoDate(), requestDTO.getTodoNum()))
+                .orElseThrow(() -> new IllegalArgumentException("연결된 날짜 데이터가 없습니다."));
+
+        // todoContent 수정
+        if (requestDTO.getTodoContent() != null) {
+            personalTodo.updateContent(requestDTO.getTodoContent());
+        }
+
+        // isPublic 수정
+        if (requestDTO.getIsPublic() != null) {
+            personalTodoDate.updateIsPublic(requestDTO.getIsPublic());
+        }
+
+        // isDone 수정
+        if (requestDTO.getIsDone() != null) {
+            personalTodoDate.updateIsDone(requestDTO.getIsDone());
+        }
+
+        // todoDate 수정 (날짜 바꾸는 경우)
+        if (requestDTO.getNewTodoDate() != null && !requestDTO.getNewTodoDate().equals(requestDTO.getExistingTodoDate())) {
+            // 기존 날짜 삭제
+            personalTodoDateRepository.deleteById(new PersonalTodoDateId(requestDTO.getExistingTodoDate(), requestDTO.getTodoNum()));
+            personalTodoDateRepository.flush();
+
+            // 새 날짜로 저장
+            saveTodoDate(
+                    requestDTO.getNewTodoDate(),
+                    personalTodo,
+                    personalTodoDate.isDone(),
+                    personalTodoDate.isPublic(),
+                    personalTodoDate.getPinOrder() != null ? personalTodoDate.getPinOrder() : 0
+            );
+        }
+
+        // 핀 고정/해제
+        if (requestDTO.getPinOrderUpdate() != null) {
+            if (requestDTO.getPinOrderUpdate()) {
+                Integer maxPinOrder = personalTodoDateRepository.findMaxPinOrderByClientNum(clientNum);
+                personalTodoDate.updatePinOrder(maxPinOrder != null ? maxPinOrder + 1 : 1);
+            } else {
+                personalTodoDate.updatePinOrder(0);
+            }
+        }
+
+        personalTodoRepository.saveAndFlush(personalTodo);
+    }
+
+
+
     // 생성 타입별로 메서드 분리
     private void createSingleTodo(PersonalTodoCreateRequestDTO requestDTO, PersonalTodos personalTodos) {
         saveTodoDate(requestDTO.getTodoDate(), personalTodos, false, requestDTO.getIsPublic(), requestDTO.getPinOrder());
@@ -87,4 +150,5 @@ public class PersonalTodoServiceImpl implements PersonalTodoService {
 
         personalTodoDateRepository.save(todoDate);
     }
+
 }

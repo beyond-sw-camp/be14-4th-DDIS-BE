@@ -29,4 +29,8 @@ public class PersonalTodos {
     public void detachCategory() {
         this.personalCategoryNum = null;
     }
+
+    public void updateContent(String todoContent) {
+        this.todoContent = todoContent;
+    }
 }
