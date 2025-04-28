@@ -12,6 +12,7 @@ import com.DDIS.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Optional;
 
@@ -24,18 +25,31 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRoleRepository clientRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RedisTemplate<String, String> redisTemplate;
+
 
     // 회원 가입 메서드
     @Override
     public SignupResponseVO signup(SignupRequestVO vo) {
+
+        // 1. 이메일 인증 여부 체크
+        String verified = redisTemplate.opsForValue().get("verified:" + vo.getClientEmail());
+
+        if (!"true".equals(verified)) {
+            return new SignupResponseVO("이메일 인증이 완료되지 않았습니다.");
+        }
+
+        // 2. 아이디 중복 체크
         if (clientRepository.findByClientId(vo.getClientId()).isPresent()) {
             return new SignupResponseVO("이미 존재하는 아이디입니다.");
         }
 
+        // 3. 비밀번호 유효성 검사
         if (!isValidPassword(vo.getClientPwd())) {
             return new SignupResponseVO("비밀번호는 대소문자와 숫자를 포함해 8자리 이상이어야 합니다.");
         }
 
+        // 4. 회원 저장 로직
         UserEntity user = UserEntity.builder()
                 .clientName(vo.getClientName())
                 .clientId(vo.getClientId())
