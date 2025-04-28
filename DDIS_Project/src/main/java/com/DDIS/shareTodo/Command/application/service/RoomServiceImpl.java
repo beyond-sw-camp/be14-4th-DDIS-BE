@@ -4,6 +4,7 @@ import com.DDIS.approve.Command.domain.repository.MemberRepository;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import com.DDIS.post.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
+import com.DDIS.shareTodo.Command.application.dto.MemberShareTodoResponseDTO;
 import com.DDIS.shareTodo.Command.application.dto.SaveShareTodoDTO;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.*;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoRepository;
@@ -97,7 +98,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public void generateAndSaveGptTodos(Long roomNum, String topic) {
+    public List<MemberShareTodoResponseDTO> generateAndSaveGptTodos(Long roomNum, String topic) {
         Rooms room = findRoomByRoomNum(roomNum);
 
         // GPT한테 투두 생성
@@ -115,12 +116,24 @@ public class RoomServiceImpl implements RoomService {
             savedTodos.add(newTodo);
         }
 
-        // 멤버에게 분배
-        assignTodosToMembers(room, savedTodos);
+        List<MemberShareTodo> memberShareTodos = assignTodosToMembers(room, savedTodos);
+
+
+
+        return memberShareTodos.stream()
+                .map(mst -> MemberShareTodoResponseDTO.builder()
+                        .memberShareTodoNum(mst.getMemberShareTodoNum())  // 진짜 저장된 PK
+                        .shareTodoNum(mst.getShareTodoNum().getShareTodoNum())
+                        .shareTodoName(mst.getShareTodoNum().getShareTodoName())
+                        .isCompleted(mst.isCompleted())
+                        .completionTime(mst.getCompletionTime())
+                        .build())
+                .toList();
     }
 
-    private void assignTodosToMembers(Rooms room, List<ShareTodo> shareTodos) {
+    private List<MemberShareTodo> assignTodosToMembers(Rooms room, List<ShareTodo> shareTodos) {
         List<Members> members = memberRepository.findByRoom_RoomNum(room.getRoomNum());
+        List<MemberShareTodo> result = new ArrayList<>();
 
         for (Members member : members) {
             for (ShareTodo todo : shareTodos) {
@@ -131,7 +144,9 @@ public class RoomServiceImpl implements RoomService {
                         .completionTime(null)
                         .build();
                 memberShareTodoRepository.save(memberShareTodo);
+                result.add(memberShareTodo);
             }
         }
+        return result;
     }
 }
