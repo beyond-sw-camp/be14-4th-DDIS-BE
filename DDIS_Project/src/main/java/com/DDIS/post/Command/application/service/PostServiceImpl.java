@@ -70,14 +70,15 @@ public class PostServiceImpl implements PostService {
         UserEntity client = clientRepository.findById(dto.getClientNum())
                 .orElseThrow(() -> new IllegalArgumentException("작성자를 찾을 수 없습니다."));
 
-        // 현재 날짜
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        // 현재 날짜 (작성일용)
+        String nowDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         // 모집게시글 저장
         Post post = Post.builder()
                 .postTitle(dto.getPostTitle())
                 .postContent(dto.getPostContent())
-                .recruitmentStartDate(now)
+                .recruitmentStartDate(nowDate)
                 .recruitmentEndDate(dto.getRecruitmentEndDate())
                 .activityTime(dto.getActivityTime())
                 .recruitmentLimit(dto.getRecruitmentLimit())
@@ -87,10 +88,12 @@ public class PostServiceImpl implements PostService {
                 .clientNum(client)
                 .applicantCount(0)
                 .isClosed(false)
+                .createdDate(nowDateTime) // ✅ createdDate 추가
                 .build();
 
         postRepository.save(post);
     }
+
 
     // 3. 모집게시글 수정
     @Override
@@ -100,11 +103,15 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
         // TODO: 시큐리티 적용 후 작성자 확인 다시 추가
-//        if (!post.getClientNum().getClientNum().equals(requesterId)) {
-//            throw new RuntimeException("작성자만 수정할 수 있습니다.");
-//        }
+//    if (!post.getClientNum().getClientNum().equals(requesterId)) {
+//        throw new RuntimeException("작성자만 수정할 수 있습니다.");
+//    }
 
         post.updatePost(request.getPostTitle(), request.getPostContent());
+
+        // ✅ 수정 시간 (updatedDate) 세팅
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        post.setUpdatedDate(now);
     }
 
     // 4. 모집게시글 삭제
@@ -115,15 +122,15 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
         // TODO: 시큐리티 적용 후 작성자 확인 다시 추가
-//        if (!post.getClientNum().getClientNum().equals(requesterId)) {
-//            throw new RuntimeException("작성자만 삭제할 수 있습니다.");
-//        }
+//    if (!post.getClientNum().getClientNum().equals(requesterId)) {
+//        throw new RuntimeException("작성자만 삭제할 수 있습니다.");
+//    }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = LocalDateTime.now().format(formatter);
-
+        // ✅ 삭제 시간 (deleteDate) 세팅
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         post.softDelete(now);
     }
+
 
     // 5. 모집게시글 검색(제목, 내용)
     @Override
@@ -134,8 +141,7 @@ public class PostServiceImpl implements PostService {
                 .map(post -> new PostResearchDTO(
                         post.getPostNum(),
                         post.getPostTitle(),
-                        post.getPostContent(),
-                        post.getCreatedDate()
+                        post.getPostContent()
                 ))
                 .collect(Collectors.toList());
     }
