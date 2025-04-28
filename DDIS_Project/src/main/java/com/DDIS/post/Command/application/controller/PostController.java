@@ -30,7 +30,8 @@ public class PostController {
         log.info("비공개 게시글 조회 요청 - postNum: {}, 입력된 비밀번호: {}", postNum, password);
 
         Post post = postService.getPost(postNum, password);
-        return ResponseEntity.ok(PostResponseDTO.fromEntity(post)); }
+        return ResponseEntity.ok(PostResponseDTO.fromEntity(post));
+    }
 
     // 2. 작성
     @PostMapping("/createPost")

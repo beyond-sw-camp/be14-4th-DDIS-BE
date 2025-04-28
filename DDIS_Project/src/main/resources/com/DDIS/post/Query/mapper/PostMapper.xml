@@ -16,6 +16,10 @@
         <result property="applicantCount" column="applicant_count"/>
         <result property="isPublic" column="is_public"/>
         <result property="password" column="post_password"/>
+        <result property="isClosed" column="is_closed"/>         <!-- 추가 -->
+        <result property="createdDate" column="created_date"/>   <!-- 추가 -->
+        <result property="updatedDate" column="updated_date"/>   <!-- 추가 -->
+        <result property="deleteDate" column="delete_date"/>     <!-- 추가 -->
         <result property="categoryName" column="category_name"/>
         <result property="clientName" column="client_name"/>
     </resultMap>
@@ -32,9 +36,14 @@
         <result property="applicantCount" column="applicant_count"/>
         <result property="isPublic" column="is_public"/>
         <result property="password" column="post_password"/>
+        <result property="isClosed" column="is_closed"/>         <!-- 추가 -->
+        <result property="createdDate" column="created_date"/>   <!-- 추가 -->
+        <result property="updatedDate" column="updated_date"/>   <!-- 추가 -->
+        <result property="deleteDate" column="delete_date"/>     <!-- 추가 -->
         <result property="categoryName" column="category_name"/>
         <result property="clientName" column="client_name"/>
     </resultMap>
+
 
     <!-- 1. 전체 조회 (관리자)-->
     <select id="findAllPosts" resultMap="PostResultMap">
@@ -49,12 +58,14 @@
             p.applicant_count,
             p.is_public,
             p.post_password,
+            p.created_date,
+            p.delete_date,
+            p.updated_date,
             c.category_name,
             cl.client_name
         FROM posts p
                  LEFT JOIN post_categories c ON p.category_num = c.category_num
                  LEFT JOIN clients cl ON p.client_num = cl.client_num
-        WHERE p.is_public = TRUE
     </select>
 
     <!-- 2. 전체공개 모집게시글 조회 (public 전용, password 제외) -->
@@ -69,13 +80,14 @@
             p.recruitment_limit,
             p.applicant_count,
             p.is_public,
+            p.created_date,
             c.category_name,
             u.client_name
         FROM posts p
                  JOIN post_categories c ON p.category_num = c.category_num
                  JOIN clients u ON p.client_num = u.client_num
         WHERE p.is_public = true
-          AND (p.delete_date IS NULL OR p.delete_date = false)
+        ORDER BY p.post_num ASC
     </select>
 
     <!-- 3. 카테고리별 -->
@@ -89,7 +101,9 @@
             p.activity_time,
             p.recruitment_limit,
             p.applicant_count,
+            p.applicant_count,
             p.is_public,
+            p.created_date,
             c.category_name,
             u.client_name
         FROM posts p
@@ -111,8 +125,9 @@
             p.activity_time,
             p.recruitment_limit,
             p.applicant_count,
+            p.applicant_count,
             p.is_public,
-            p.post_password,
+            p.created_date,
             c.category_name,
             u.client_name
         FROM posts p
@@ -122,7 +137,5 @@
           AND (p.delete_date IS NULL OR TRIM(p.delete_date) = false)
         ORDER BY p.recruitment_start_date DESC
     </select>
-
-
 
 </mapper>

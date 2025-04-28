@@ -19,6 +19,4 @@ public interface PostService {
     // 4. 최신 모집일 기준 정렬 조회
     List<PublicPostDTO> findPostsOrderByStartDateDesc();
 
-
-
 }
