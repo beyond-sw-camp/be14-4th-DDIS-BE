@@ -2,8 +2,12 @@
 package com.DDIS.post.Command.application.service;
 
 import com.DDIS.post.Command.domain.aggregate.dto.PostCreateRequestDTO;
+import com.DDIS.post.Command.domain.aggregate.dto.PostResearchDTO;
+import com.DDIS.post.Command.domain.aggregate.dto.PostResponseDTO;
 import com.DDIS.post.Command.domain.aggregate.dto.PostUpdateRequestDTO;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
+
+import java.util.List;
 
 public interface PostService {
 
@@ -19,4 +23,7 @@ public interface PostService {
 
     // 4. 모집게시글 삭제
     void deletePost(Long postNum, Long requesterId);
+
+    // 5. 모집게시글 검색
+    List<PostResearchDTO> searchPosts(String keyword);
 }
