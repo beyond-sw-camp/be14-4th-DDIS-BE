@@ -4,6 +4,7 @@ import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
 import com.DDIS.shareTodo.Command.application.dto.SaveShareTodoDTO;
 import com.DDIS.shareTodo.Command.application.service.GptService;
 import com.DDIS.shareTodo.Command.application.service.RoomService;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.ShareTodo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +21,12 @@ import java.util.List;
 public class RoomController {
     private Environment env;
     private RoomService roomService;
-    private ModelMapper modelMapper;
-    private GptService gptService;
 
     @Autowired
-    public RoomController(Environment env, RoomService roomService, ModelMapper modelMapper, GptService gptService) {
+    public RoomController(Environment env, RoomService roomService) {
         this.env = env;
         this.roomService = roomService;
-        this.modelMapper = modelMapper;
-        this.gptService = gptService;
+
     }
 
     @GetMapping("/health")
@@ -37,11 +35,13 @@ public class RoomController {
     }
 
     @PostMapping("/room")
-    public ResponseEntity<List<ShareTodo>> createRoom(@RequestBody CreateShareRoomDTO roomDTO) {
+    public ResponseEntity<Rooms> createRoom(@RequestBody CreateShareRoomDTO roomDTO) {
 
 
-        List<ShareTodo> generatedTodos = roomService.createRoom(roomDTO);
-        return ResponseEntity.ok(generatedTodos);
+        Rooms room = roomService.createRoom(roomDTO);
+        return ResponseEntity.ok(room);
+
+
 
     }
 

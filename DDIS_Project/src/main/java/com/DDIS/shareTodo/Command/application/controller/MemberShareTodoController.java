@@ -1,13 +1,13 @@
 package com.DDIS.shareTodo.Command.application.controller;
 
 import com.DDIS.shareTodo.Command.application.dto.CompleteTodoRequest;
+import com.DDIS.shareTodo.Command.application.dto.MemberShareTodoResponseDTO;
 import com.DDIS.shareTodo.Command.application.service.MemberShareTodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/member-share-todo")
@@ -29,5 +29,12 @@ public class MemberShareTodoController {
         memberShareTodoService.uncompleteTodo(request.getMemberShareTodoNum());
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/client/{clientNum}")
+    public ResponseEntity<List<MemberShareTodoResponseDTO>> getMemberShareTodosByMember(@PathVariable Integer clientNum){
+        List<MemberShareTodoResponseDTO> result = memberShareTodoService.getByClientNum(clientNum);
+        return ResponseEntity.ok(result);
+    }
+
 
 }

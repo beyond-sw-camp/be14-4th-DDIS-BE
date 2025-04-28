@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SaveShareTodoDTO {
+public class UpdateShareTodoDTO {
+    private Long shareTodoNum;
     private String shareTodoName;
-    private Long roomNum;
-    private int pinOrder;
+    private Integer pinOrder;
 }

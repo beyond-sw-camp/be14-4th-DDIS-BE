@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface ShareTodoRepository extends JpaRepository<ShareTodo, Long> {
 
-    List<ShareTodo> findByPost_PostNum(Long postNum);
 }

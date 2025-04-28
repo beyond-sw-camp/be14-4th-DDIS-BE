@@ -9,11 +9,4 @@ import lombok.Setter;
 public class CreateShareRoomDTO {
     private Long postNum;
     private int memberCount;
-    private boolean isActive;
-    private String title;
-    private String content;
-    private String colorRgb;
-    private int approveRequiredCount;
-    private String startDate;
-    private String endDate;
 }
