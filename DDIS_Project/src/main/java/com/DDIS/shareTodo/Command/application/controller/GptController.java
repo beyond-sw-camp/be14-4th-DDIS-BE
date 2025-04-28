@@ -1,12 +1,11 @@
 package com.DDIS.shareTodo.Command.application.controller;
 
-import com.DDIS.shareTodo.Command.application.service.GptService;
+import com.DDIS.approve.Command.application.dto.GenerateTodoRequest;
+import com.DDIS.shareTodo.Command.application.service.RoomService;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.ShareTodo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,10 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GptController {
 
-    private final GptService gptService;
+    private final RoomService roomService;
 
     @PostMapping("/generate-todos")
-    public List<ShareTodo> generateTodos(@RequestBody String topic) {
-        return gptService.generateTodoList(topic);
+    public ResponseEntity<Void> generateAndAssignTodos(@RequestBody GenerateTodoRequest request) {
+        roomService.generateAndSaveGptTodos(request.getRoomNum(), request.getTopic());
+        return ResponseEntity.ok().build();
     }
 }

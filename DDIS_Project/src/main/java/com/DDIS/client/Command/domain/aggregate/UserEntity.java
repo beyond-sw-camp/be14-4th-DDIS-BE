@@ -55,4 +55,12 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<ClientRoleEntity> clientRoles = new ArrayList<>();
+
+    public void updateNickname(String newNickname) {
+        this.clientNickname = newNickname;
+    }
+
+    public void updateEmail(String newEmail) {
+        this.clientEmail = newEmail;
+    }
 }

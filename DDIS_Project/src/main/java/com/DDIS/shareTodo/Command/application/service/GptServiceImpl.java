@@ -1,5 +1,6 @@
 package com.DDIS.shareTodo.Command.application.service;
 
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.ShareTodo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,17 +22,18 @@ public class GptServiceImpl implements GptService {
     private String OPENAI_API_KEY;
 
     @Override
-    public List<ShareTodo> generateTodoList(String topic) {
+    public List<ShareTodo> generateTodoList(Rooms room, String topic) {
         String prompt = createPrompt(topic);
         String gptResponse = requestGpt(prompt);
 
-        return parseResponseToTodos(topic, gptResponse);
+        return parseResponseToTodos(room, gptResponse);
     }
 
     private String createPrompt(String topic) {
         return String.format(
-                "'%s'을(를) 주제로 공동 Todo 리스트를 5개 만들어줘. " +
+                "'%s'을(를) 주제로 공동Todo 리스트를 5개 만들어줘. " +
                         "각 항목은 짧고 명확한 문장으로 해줘. " +
+                        "하루 단위로 할수 있는 것과 안된다면 일주일 단위도 좋아" +
                         "답변은 '1. ~~~', '2. ~~~' 이런 식으로 번호를 붙여서 줘.",
                 topic
         );
@@ -64,7 +66,7 @@ public class GptServiceImpl implements GptService {
         return response.getBody();
     }
 
-    private List<ShareTodo> parseResponseToTodos(String topic, String gptResponse) {
+    private List<ShareTodo> parseResponseToTodos(Rooms room, String gptResponse) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(gptResponse);
@@ -79,14 +81,16 @@ public class GptServiceImpl implements GptService {
             List<ShareTodo> todos = new ArrayList<>();
             String[] lines = content.split("\n");
 
+            int order = 1; // ✅ pinOrder 1부터 시작
+
             for (String line : lines) {
                 String todoName = line.replaceAll("^\\d+\\.\\s*", "").trim();
                 if (!todoName.isEmpty()) {
                     todos.add(ShareTodo.builder()
                             .shareTodoNum(null)
                             .shareTodoName(todoName)
-                            .post(null)
-                            .pinOrder(0)
+                            .rooms(room)          // ✅ 방 연결
+                            .pinOrder(order++)   // ✅ 순차 증가
                             .build());
                 }
             }
