@@ -63,4 +63,8 @@ public class UserEntity {
     public void updateEmail(String newEmail) {
         this.clientEmail = newEmail;
     }
+
+    public void changePassword(String encodedPassword) {
+        this.clientPwd = encodedPassword;
+    }
 }
