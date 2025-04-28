@@ -7,15 +7,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "posts")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
+public class Post{
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +56,13 @@ public class Post {
         @Builder.Default
         @Column(nullable = false)
         private Boolean isClosed = false;
+
+        @CreatedDate
+        @Column(updatable = false)
+        private LocalDateTime createdDate;  // 작성일
+
+        @LastModifiedDate
+        private LocalDateTime updatedDate;
 
         @Column
         private String deleteDate; // 삭제일시
@@ -106,14 +119,5 @@ public class Post {
             this.applicantCount -= 1;
         }
     }
-
-//    // 저장하거나 수정할 때 null 자동으로 false로 세팅
-//    @PrePersist
-//    @PreUpdate
-//    public void prePersistOrUpdate() {
-//        if (this.isClosed == null) {
-//            this.isClosed = false;
-//        }
-//    }
 
 }

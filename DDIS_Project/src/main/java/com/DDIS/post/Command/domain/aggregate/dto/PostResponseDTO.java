@@ -1,9 +1,12 @@
 package com.DDIS.post.Command.domain.aggregate.dto;
 
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -18,6 +21,12 @@ public class PostResponseDTO {
         private String status; // 모집중 / 모집마감
         private String categoryName;
         private String writerName;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        private LocalDateTime createdDate;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        private LocalDateTime updatedDate;
 
         @Builder
         public PostResponseDTO(Long postNum, String title, String content, String period,
@@ -50,4 +59,5 @@ public class PostResponseDTO {
                         .writerName(post.getClientNum().getClientName())
                         .build();
         }
+
 }

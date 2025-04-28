@@ -14,6 +14,7 @@ public class ApplicantController {
 
     private final ApplicantService applicantService;
 
+    // 1. 모집신청
     @PostMapping("/{postNum}")
     public ResponseEntity<Void> applyToPost(@PathVariable Long postNum,
                                             @RequestParam Long clientNum) {
@@ -21,6 +22,7 @@ public class ApplicantController {
         return ResponseEntity.ok().build();
     }
 
+    // 2. 신청취소
     @DeleteMapping("/{postNum}")
     public ResponseEntity<Void> cancelApplication(@PathVariable Long postNum,
                                                   @RequestParam Long clientNum) {
