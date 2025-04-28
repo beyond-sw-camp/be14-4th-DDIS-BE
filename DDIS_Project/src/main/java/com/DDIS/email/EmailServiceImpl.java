@@ -50,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("[DDIS] 이메일 인증번호입니다.");
-        message.setText("당신의 인증번호는 " + code + " 입니다.\n3분 안에 입력해주세요!");
+        message.setText("당신의 인증번호는 " + code + " 입니다.\n5분 안에 입력해주세요!");
         mailSender.send(message);
     }
 }
