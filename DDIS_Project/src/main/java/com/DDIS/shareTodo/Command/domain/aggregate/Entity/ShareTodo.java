@@ -25,7 +25,4 @@ public class ShareTodo {
     @JoinColumn(name = "room_num")
     private Rooms rooms;
 
-    @Column(name = "pin_order")
-    private int pinOrder;
-
 }

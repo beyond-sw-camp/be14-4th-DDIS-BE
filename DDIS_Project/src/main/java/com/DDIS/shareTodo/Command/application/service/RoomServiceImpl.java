@@ -81,7 +81,6 @@ public class RoomServiceImpl implements RoomService {
             ShareTodo shareTodo = ShareTodo.builder()
                     .shareTodoName(dto.getShareTodoName())
                     .rooms(room)
-                    .pinOrder(dto.getPinOrder())
                     .build();
             shareTodoRepository.save(shareTodo);
             savedTodos.add(shareTodo);
@@ -110,7 +109,6 @@ public class RoomServiceImpl implements RoomService {
             ShareTodo newTodo = ShareTodo.builder()
                     .shareTodoName(todo.getShareTodoName())
                     .rooms(room)
-                    .pinOrder(todo.getPinOrder())
                     .build();
             shareTodoRepository.save(newTodo);
             savedTodos.add(newTodo);
@@ -124,10 +122,7 @@ public class RoomServiceImpl implements RoomService {
                 .map(mst -> MemberShareTodoResponseDTO.builder()
                         .memberShareTodoNum(mst.getMemberShareTodoNum())  // 진짜 저장된 PK
                         .shareTodoNum(mst.getShareTodoNum().getShareTodoNum())
-                        .shareTodoName(mst.getShareTodoNum().getShareTodoName())
-                        .isCompleted(mst.isCompleted())
-                        .completionTime(mst.getCompletionTime())
-                        .build())
+                        .shareTodoName(mst.getShareTodoNum().getShareTodoName()).build())
                 .toList();
     }
 
@@ -140,8 +135,6 @@ public class RoomServiceImpl implements RoomService {
                 MemberShareTodo memberShareTodo = MemberShareTodo.builder()
                         .memberNum(member)
                         .shareTodoNum(todo)
-                        .isCompleted(false)
-                        .completionTime(null)
                         .build();
                 memberShareTodoRepository.save(memberShareTodo);
                 result.add(memberShareTodo);

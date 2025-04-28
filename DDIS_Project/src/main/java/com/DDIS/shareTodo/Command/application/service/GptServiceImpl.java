@@ -90,7 +90,6 @@ public class GptServiceImpl implements GptService {
                             .shareTodoNum(null)
                             .shareTodoName(todoName)
                             .rooms(room)          // ✅ 방 연결
-                            .pinOrder(order++)   // ✅ 순차 증가
                             .build());
                 }
             }
