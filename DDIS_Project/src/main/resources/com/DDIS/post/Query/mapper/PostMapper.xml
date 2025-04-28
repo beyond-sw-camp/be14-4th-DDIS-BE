@@ -138,4 +138,28 @@
         ORDER BY p.recruitment_start_date DESC
     </select>
 
+
+    <!-- 공동방 생성을 위한 방장 조회 -->
+    <!-- 게시글 하나 조회 -->
+    <select id="findPostById" resultType="com.DDIS.post.Query.dto.PostCreateTodoRoomDTO">
+        SELECT
+            post_num,
+            client_num,
+            recruitment_end_date,
+            applicant_count,
+            recruitment_limit,
+            is_closed
+        FROM posts
+        WHERE post_num = #{postNum}
+          AND delete_date IS NULL
+    </select>
+
+    <!-- 모집글 마감 처리 -->
+    <update id="closePost">
+        UPDATE posts
+        SET is_closed = true,
+            updated_date = NOW()
+        WHERE post_num = #{postNum}
+    </update>
+
 </mapper>
