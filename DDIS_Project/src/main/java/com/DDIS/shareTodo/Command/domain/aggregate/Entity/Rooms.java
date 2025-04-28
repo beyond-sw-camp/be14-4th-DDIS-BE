@@ -1,7 +1,11 @@
 package com.DDIS.shareTodo.Command.domain.aggregate.Entity;
 
+import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -40,5 +44,9 @@ public class Rooms {
 
     @Column(name = "content")
     private String content;
+
+    // ✅ rooms(부모) → chatRoom(자식) 연관관계 설정 추가
+    @OneToMany(mappedBy = "rooms", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatRoomEntity> chatRooms = new ArrayList<>();
 
 }

@@ -1,6 +1,7 @@
 package com.DDIS.shareTodo.Command.application.service;
 
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
+import com.DDIS.chatRoom.Command.application.service.ChatRoomService;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import com.DDIS.post.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
@@ -27,6 +28,7 @@ public class RoomServiceImpl implements RoomService {
     private final ShareTodoRepository shareTodoRepository;
     private final MemberShareTodoRepository memberShareTodoRepository;
     private final GptService gptService;
+    private final ChatRoomService chatRoomService;
     ModelMapper modelMapper;
 
 
@@ -46,6 +48,7 @@ public class RoomServiceImpl implements RoomService {
                            ShareTodoRepository shareTodoRepository,
                            MemberShareTodoRepository memberShareTodoRepository,
                            GptService gptService,
+                           ChatRoomService chatRoomService,
                            ModelMapper modelMapper) {
         this.roomRepository = roomRepository;
         this.postRepository = postRepository;
@@ -53,6 +56,7 @@ public class RoomServiceImpl implements RoomService {
         this.shareTodoRepository = shareTodoRepository;
         this.memberShareTodoRepository = memberShareTodoRepository;
         this.gptService = gptService;
+        this.chatRoomService = chatRoomService;
         this.modelMapper = modelMapper;
     }
 
@@ -79,6 +83,9 @@ public class RoomServiceImpl implements RoomService {
                 content(posts.getPostContent()).build();
 
         roomRepository.save(rooms);
+        Rooms savedRoom = roomRepository.save(rooms);
+
+        chatRoomService.createChatRoom(savedRoom);
 
 
         List<ShareTodo> todoList = gptService.generateTodoList(posts.getPostTitle());

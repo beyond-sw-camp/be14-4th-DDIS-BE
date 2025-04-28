@@ -17,9 +17,10 @@ public class ChatRoomController {
         this.chatRoomService = chatRoomService;
     }
 
-    // ✅ 채팅방 생성
-    @PostMapping("/create")
-    public ChatRoomResponseDTO createRoom(@RequestBody ChatRoomRequestDTO requestDTO) {
-        return chatRoomService.createRoom(requestDTO);
-    }
+//    // ✅ 채팅방 생성
+//    @PostMapping("/create")
+//    public ChatRoomResponseDTO createRoom(@RequestBody ChatRoomRequestDTO requestDTO) {
+////        return chatRoomService.createRoom(requestDTO);
+//        return chatRoomService.createChatRoom(requestDTO);
+//    }
 }

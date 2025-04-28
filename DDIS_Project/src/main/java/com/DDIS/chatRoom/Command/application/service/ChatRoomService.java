@@ -26,25 +26,37 @@ public class ChatRoomService {
     }
 
     // 채팅방 생성
-    public ChatRoomResponseDTO createRoom(ChatRoomRequestDTO dto) {
-        String now = LocalDateTime.now().format(FORMATTER);
-        Rooms room = roomRepository.findById(dto.getRoom_num())
-                .orElseThrow(() -> new IllegalArgumentException("방 정보 없음"));
+//    public ChatRoomResponseDTO createRoom(ChatRoomRequestDTO dto) {
+//        String now = LocalDateTime.now().format(FORMATTER);
+//        Rooms room = roomRepository.findById(dto.getRoom_num())
+//                .orElseThrow(() -> new IllegalArgumentException("방 정보 없음"));
+//
+//        ChatRoomEntity chatRoom = new ChatRoomEntity();
+//        chatRoom.setChatRoomName(dto.getChatroom_name());
+//        chatRoom.setChatType(dto.getChatroom_type());
+//        chatRoom.setRoomNum(room);
+//        chatRoom.setCreatedTime(now);
+//
+//        ChatRoomEntity saved = chatRoomRepository.save(chatRoom);
+//
+//        return new ChatRoomResponseDTO(
+//                saved.getChatRoomId(),
+//                saved.getChatRoomName(),
+//                saved.getChatType(),
+//                saved.getRoomNum().getRoomNum(),
+//                saved.getCreatedTime()
+//        );
+//    }
+
+    public void createChatRoom(Rooms savedRoom) {
 
         ChatRoomEntity chatRoom = new ChatRoomEntity();
-        chatRoom.setChatRoomName(dto.getChatroom_name());
-        chatRoom.setChatType(dto.getChatroom_type());
-        chatRoom.setRoomNum(room);
-        chatRoom.setCreatedTime(now);
+        chatRoom.setRoomNum(savedRoom.getRoomNum());
+        chatRoom.setChatRoomName(savedRoom.getTitle());
+//        chatRoom.setChatType(savedRoom.get());
+        chatRoom.setRooms(savedRoom); // savedRoom은 Room 저장 결과
+        chatRoom.setCreatedTime(savedRoom.getStartDate());
 
-        ChatRoomEntity saved = chatRoomRepository.save(chatRoom);
-
-        return new ChatRoomResponseDTO(
-                saved.getChatRoomId(),
-                saved.getChatRoomName(),
-                saved.getChatType(),
-                saved.getRoomNum().getRoomNum(),
-                saved.getCreatedTime()
-        );
+        chatRoomRepository.save(chatRoom);
     }
 }

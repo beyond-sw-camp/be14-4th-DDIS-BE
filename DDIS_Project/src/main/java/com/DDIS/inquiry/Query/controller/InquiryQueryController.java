@@ -47,8 +47,8 @@ public class InquiryQueryController {
     }
 
     // 답변 단일 조회
-    @GetMapping("/response/{responseNum}")
-    public InquiryResponseQueryDTO getResponse(@PathVariable Long responseNum) {
-        return inquiryResponseQueryService.getResponse(responseNum);
+    @GetMapping("/response/{inquiryNum}")
+    public InquiryResponseQueryDTO getResponse(@PathVariable Long inquiryNum) {
+        return inquiryResponseQueryService.getResponse(inquiryNum);
     }
 }
