@@ -4,7 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- DTO필드와 컬럼을 매핑-->
 <mapper namespace="com.DDIS.post.Query.mapper.PostMapper">
-    <resultMap id="PostResultMap" type="com.DDIS.post.Query.dto.PostDTO">
+    <!--관리자용-->
+    <resultMap id="PostResultMap" type="com.DDIS.post.Query.dto.AdminPostDTO">
         <id property="postNum" column="post_num"/>
         <result property="postTitle" column="post_title"/>
         <result property="postContent" column="post_content"/>
@@ -19,7 +20,23 @@
         <result property="clientName" column="client_name"/>
     </resultMap>
 
-    <!-- 전체 조회 SQL (명시적으로 전부 나열)-->
+    <!--사용자용-->
+    <resultMap id="PublicPostResultMap" type="com.DDIS.post.Query.dto.PublicPostDTO">
+        <id property="postNum" column="post_num"/>
+        <result property="postTitle" column="post_title"/>
+        <result property="postContent" column="post_content"/>
+        <result property="recruitmentStartDate" column="recruitment_start_date"/>
+        <result property="recruitmentEndDate" column="recruitment_end_date"/>
+        <result property="activityTime" column="activity_time"/>
+        <result property="recruitmentLimit" column="recruitment_limit"/>
+        <result property="applicantCount" column="applicant_count"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="password" column="post_password"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="clientName" column="client_name"/>
+    </resultMap>
+
+    <!-- 1. 전체 조회 (관리자)-->
     <select id="findAllPosts" resultMap="PostResultMap">
         SELECT
             p.post_num,
@@ -39,6 +56,73 @@
                  LEFT JOIN clients cl ON p.client_num = cl.client_num
         WHERE p.is_public = TRUE
     </select>
+
+    <!-- 2. 전체공개 모집게시글 조회 (public 전용, password 제외) -->
+    <select id="findPublicPosts" resultMap="PublicPostResultMap">
+        SELECT
+            p.post_num,
+            p.post_title,
+            p.post_content,
+            p.recruitment_start_date,
+            p.recruitment_end_date,
+            p.activity_time,
+            p.recruitment_limit,
+            p.applicant_count,
+            p.is_public,
+            c.category_name,
+            u.client_name
+        FROM posts p
+                 JOIN post_categories c ON p.category_num = c.category_num
+                 JOIN clients u ON p.client_num = u.client_num
+        WHERE p.is_public = true
+          AND (p.delete_date IS NULL OR p.delete_date = false)
+    </select>
+
+    <!-- 3. 카테고리별 -->
+    <select id="findPostsByCategory" resultMap="PublicPostResultMap">
+        SELECT
+            p.post_num,
+            p.post_title,
+            p.post_content,
+            p.recruitment_start_date,
+            p.recruitment_end_date,
+            p.activity_time,
+            p.recruitment_limit,
+            p.applicant_count,
+            p.is_public,
+            c.category_name,
+            u.client_name
+        FROM posts p
+                 JOIN post_categories c ON p.category_num = c.category_num
+                 JOIN clients u ON p.client_num = u.client_num
+        WHERE p.category_num = #{categoryNum}
+          AND p.is_public = true
+          AND (p.delete_date IS NULL OR TRIM(p.delete_date) = false)
+    </select>
+
+    <!-- 4. 모집일 기준 최신순 조회-->
+    <select id="findPostsOrderByStartDateDesc" resultMap="PublicPostResultMap">
+        SELECT
+            p.post_num,
+            p.post_title,
+            p.post_content,
+            p.recruitment_start_date,
+            p.recruitment_end_date,
+            p.activity_time,
+            p.recruitment_limit,
+            p.applicant_count,
+            p.is_public,
+            p.post_password,
+            c.category_name,
+            u.client_name
+        FROM posts p
+                 JOIN post_categories c ON p.category_num = c.category_num
+                 JOIN clients u ON p.client_num = u.client_num
+        WHERE p.is_public = true
+          AND (p.delete_date IS NULL OR TRIM(p.delete_date) = false)
+        ORDER BY p.recruitment_start_date DESC
+    </select>
+
 
 
 </mapper>
