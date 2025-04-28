@@ -2,7 +2,7 @@ package com.DDIS.postCategory.Command.application.controller;
 
 import com.DDIS.postCategory.Command.application.dto.CategoryCreateRequestDTO;
 import com.DDIS.postCategory.Command.application.dto.CategoryUpdateRequestDTO;
-import com.DDIS.postCategory.Command.domain.service.PostCategoryService;
+import com.DDIS.postCategory.Command.application.service.PostCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

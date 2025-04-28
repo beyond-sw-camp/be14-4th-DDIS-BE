@@ -1,4 +1,4 @@
-package com.DDIS.postCategory.Command.domain.service;
+package com.DDIS.postCategory.Command.application.service;
 
 public interface PostCategoryService {
 
