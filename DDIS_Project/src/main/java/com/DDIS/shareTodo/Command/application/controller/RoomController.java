@@ -42,6 +42,7 @@ public class RoomController {
         return ResponseEntity.ok(room);
 
 
+
     }
 
     @PostMapping("/room/share-todo")
@@ -49,11 +50,5 @@ public class RoomController {
         roomService.saveShareTodos(todoList);
         return ResponseEntity.ok("공동 Todo 저장 완료!");
     }
-
-
-
-
-
-
 
 }

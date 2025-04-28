@@ -1,16 +1,23 @@
 package com.DDIS.post.Query.service;
 
-import com.DDIS.post.Query.dto.PostDTO;
+import com.DDIS.post.Query.dto.AdminPostDTO;
+import com.DDIS.post.Query.dto.PublicPostDTO;
+
 import java.util.List;
 
 public interface PostService {
 
-    // 모집게시글 전체조회
-    List<PostDTO> findAllPost();
+    // 1. 모든 모집게시글 조회 (관리자 조회 시)
+    List<AdminPostDTO> findAllPost();
 
-    // 모집게시글 전체공개 조회
+    // 2. 모집게시글 전체공개 조회 (public)
+    List<PublicPostDTO> findPublicPost();
 
-    // 모집게시글 비공개 조회시 비밀번호..입력?로직
+    // 3. 카테고리별 조회 (public)
+    List<PublicPostDTO> findPostsByCategory(Long categoryNum);
+
+    // 4. 최신 모집일 기준 정렬 조회
+    List<PublicPostDTO> findPostsOrderByStartDateDesc();
 
 
 
