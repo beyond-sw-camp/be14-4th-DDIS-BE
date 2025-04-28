@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("personalTodo")
+@RequestMapping("personal-todos")
 @RequiredArgsConstructor
 public class PersonalTodoQueryController {
 
