@@ -8,4 +8,6 @@ public interface ClientService {
     LoginResponseVO login(LoginRequestVO requestVO);
 
     UpdateProfileResponseVO updateProfile(UpdateProfileRequestVO vo);
+
+    PasswordResetResponseVO resetPassword(PasswordResetRequestVO vo);
 }

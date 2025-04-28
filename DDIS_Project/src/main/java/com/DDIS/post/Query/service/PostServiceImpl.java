@@ -34,5 +34,4 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PublicPostDTO> findPostsOrderByStartDateDesc() { return postMapper.findPostsOrderByStartDateDesc();}
 
-
 }

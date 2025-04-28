@@ -1,7 +1,10 @@
 package com.DDIS.post.Command.domain.aggregate.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -16,6 +19,10 @@ public class PostCreateRequestDTO {
     private String postPassword;
     private Long categoryNum;
     private Long clientNum;
+
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDateTime createdDate;
 
 }
 

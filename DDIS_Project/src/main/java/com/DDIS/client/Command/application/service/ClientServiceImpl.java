@@ -12,6 +12,7 @@ import com.DDIS.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Optional;
 
@@ -24,18 +25,31 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRoleRepository clientRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RedisTemplate<String, String> redisTemplate;
+
 
     // 회원 가입 메서드
     @Override
     public SignupResponseVO signup(SignupRequestVO vo) {
+
+        // 1. 이메일 인증 여부 체크
+        String verified = redisTemplate.opsForValue().get("verified:" + vo.getClientEmail());
+
+        if (!"true".equals(verified)) {
+            return new SignupResponseVO("이메일 인증이 완료되지 않았습니다.");
+        }
+
+        // 2. 아이디 중복 체크
         if (clientRepository.findByClientId(vo.getClientId()).isPresent()) {
             return new SignupResponseVO("이미 존재하는 아이디입니다.");
         }
 
+        // 3. 비밀번호 유효성 검사
         if (!isValidPassword(vo.getClientPwd())) {
             return new SignupResponseVO("비밀번호는 대소문자와 숫자를 포함해 8자리 이상이어야 합니다.");
         }
 
+        // 4. 회원 저장 로직
         UserEntity user = UserEntity.builder()
                 .clientName(vo.getClientName())
                 .clientId(vo.getClientId())
@@ -119,6 +133,38 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(user);
 
         return new UpdateProfileResponseVO("회원 정보가 성공적으로 수정되었습니다.");
+    }
+
+    // 비밀번호 재설정 메서드
+    @Override
+    public PasswordResetResponseVO resetPassword(PasswordResetRequestVO vo) {
+        // 1. 이메일 인증 여부 체크
+        String verified = redisTemplate.opsForValue().get("verified:" + vo.getEmail());
+
+        if (!"true".equals(verified)) {
+            return new PasswordResetResponseVO("이메일 인증이 완료되지 않았습니다.");
+        }
+
+
+        // 2. 비밀번호 유효성 검사 추가
+        if (!isValidPassword(vo.getNewPassword())) {
+            return new PasswordResetResponseVO("비밀번호는 대소문자와 숫자를 포함하여 8자 이상이어야 합니다.");
+        }
+
+        // 3. 사용자 조회
+        Optional<UserEntity> optionalUser = clientRepository.findByClientEmail(vo.getEmail());
+
+        if (optionalUser.isEmpty()) {
+            return new PasswordResetResponseVO("해당 이메일로 등록된 사용자가 없습니다.");
+        }
+
+        UserEntity user = optionalUser.get();
+
+        // 4. 새 비밀번호 암호화 후 저장
+        user.changePassword(passwordEncoder.encode(vo.getNewPassword()));
+        clientRepository.save(user);
+
+        return new PasswordResetResponseVO("비밀번호가 성공적으로 변경되었습니다.");
     }
 }
 

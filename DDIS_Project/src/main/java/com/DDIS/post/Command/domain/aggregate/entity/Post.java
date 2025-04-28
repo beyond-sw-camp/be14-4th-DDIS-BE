@@ -7,8 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "posts")
 @Getter
@@ -17,75 +21,68 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Post {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long postNum;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_num")
+    private Long postNum;
 
-        @Column(nullable = false, length = 255)
-        private String postTitle;
+    @Column(name = "post_title", nullable = false, length = 255)
+    private String postTitle;
 
-        @Column(nullable = false, length = 255)
-        private String postContent;
+    @Column(name = "post_content", nullable = false, length = 255)
+    private String postContent;
 
-        @Column(nullable = false)
-        private String recruitmentStartDate;
+    @Column(name = "recruitment_start_date", nullable = false)
+    private String recruitmentStartDate;
 
-        @Column(nullable = false)
-        private String recruitmentEndDate;
+    @Column(name = "recruitment_end_date", nullable = false)
+    private String recruitmentEndDate;
 
-        @Column(nullable = false)
-        private Integer activityTime;
+    @Column(name = "activity_time", nullable = false)
+    private Integer activityTime;
 
-        @Column(nullable = false)
-        private Integer recruitmentLimit;
+    @Column(name = "recruitment_limit", nullable = false)
+    private Integer recruitmentLimit;
 
-        @Column(nullable = false)
-        private Boolean isPublic;
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic;
 
-        @Column(nullable = false)
-        private Integer applicantCount = 0; // 작성 시 무조건 0명
+    @Builder.Default
+    @Column(name = "applicant_count", nullable = false)
+    private Integer applicantCount = 0; // 기본 0명
 
-        private String postPassword;
+    @Column(name = "post_password")
+    private String postPassword;
 
-        @Builder.Default
-        @Column(nullable = false)
-        private Boolean isClosed = false;
+    @Builder.Default
+    @Column(name = "is_closed", nullable = false)
+    private Boolean isClosed = false; // 기본 false
 
-        @Column
-        private String deleteDate; // 삭제일시
+    @Column(name = "created_date", nullable = false)
+    private String createdDate;  // 작성일
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "category_num")
-        private PostCategoryEntity categoryNum;
+    @Column(name = "updated_date")
+    private String updatedDate;  // 수정일
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "client_num")
-        private UserEntity clientNum;
+    @Column(name = "delete_date")
+    private String deleteDate; // 삭제일 (Soft Delete)
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_num")
+    private PostCategoryEntity categoryNum;
 
-    public Post(String postTitle, String postContent, String recruitmentStartDate,
-                String recruitmentEndDate, Integer activityTime, Integer recruitmentLimit,
-                Boolean isPublic, String postPassword, PostCategoryEntity category, UserEntity client) {
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-        this.recruitmentStartDate = recruitmentStartDate;
-        this.recruitmentEndDate = recruitmentEndDate;
-        this.activityTime = activityTime;
-        this.recruitmentLimit = recruitmentLimit;
-        this.isPublic = isPublic;
-        this.applicantCount = 0;
-        this.postPassword = postPassword;
-        this.isClosed = false;
-        this.categoryNum = category;  // ⭐ FK 객체
-        this.clientNum = client;      // ⭐ FK 객체
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_num")
+    private UserEntity clientNum;
 
+    // 모집글 수정
     public void updatePost(String postTitle, String postContent) {
         this.postTitle = postTitle;
         this.postContent = postContent;
+        this.updatedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    // 모집게시글 삭제
+    // 모집글 소프트 삭제
     public void softDelete(String deleteDate) {
         this.deleteDate = deleteDate;
     }
@@ -95,7 +92,7 @@ public class Post {
         this.applicantCount += 1;
     }
 
-    // 신청마감
+    // 모집 마감 처리
     public void closeRecruitment() {
         this.isClosed = true;
     }
@@ -107,13 +104,6 @@ public class Post {
         }
     }
 
-//    // 저장하거나 수정할 때 null 자동으로 false로 세팅
-//    @PrePersist
-//    @PreUpdate
-//    public void prePersistOrUpdate() {
-//        if (this.isClosed == null) {
-//            this.isClosed = false;
-//        }
-//    }
-
+    public void setUpdatedDate(String now) {
+    }
 }
