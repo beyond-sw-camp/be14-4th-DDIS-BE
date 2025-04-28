@@ -54,4 +54,10 @@ public class ClientController {
         PasswordResetResponseVO response = clientService.resetPassword(vo);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/find-ID")
+    public ResponseEntity<FindIDResponseVO> findID(@RequestBody FindIDRequestVO vo) {
+        FindIDResponseVO response = clientService.findID(vo);
+        return ResponseEntity.ok(response);
+    }
 }
