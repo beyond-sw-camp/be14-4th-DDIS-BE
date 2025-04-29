@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class AppConfig {
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();         // service 계층에서 평문을 꺼낸 후 넣기 위한 bean
+    public PasswordEncoder passwordEncoder() {      // 비밀번호 암호화를 위한 인터페이스
+        return new BCryptPasswordEncoder();         // 보안성이 높은 해시 알고리즘 제공
     }
 }
