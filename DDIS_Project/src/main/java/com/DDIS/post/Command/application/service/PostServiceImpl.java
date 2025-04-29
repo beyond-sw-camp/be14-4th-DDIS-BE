@@ -88,12 +88,11 @@ public class PostServiceImpl implements PostService {
                 .clientNum(client)
                 .applicantCount(0)
                 .isClosed(false)
-                .createdDate(nowDateTime) // ✅ createdDate 추가
+                .createdDate(nowDateTime)
                 .build();
 
         postRepository.save(post);
     }
-
 
     // 3. 모집게시글 수정
     @Override
@@ -102,14 +101,15 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postNum)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
-        // TODO: 시큐리티 적용 후 작성자 확인 다시 추가
-//    if (!post.getClientNum().getClientNum().equals(requesterId)) {
-//        throw new RuntimeException("작성자만 수정할 수 있습니다.");
-//    }
+        // 모집 마감 여부 체크
+        if (Boolean.TRUE.equals(post.getIsClosed())) {
+            throw new RuntimeException("모집이 마감된 게시글은 수정할 수 없습니다.");
+        }
 
+        // 게시글 수정
         post.updatePost(request.getPostTitle(), request.getPostContent());
 
-        // ✅ 수정 시간 (updatedDate) 세팅
+        // 수정일 업데이트
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         post.setUpdatedDate(now);
     }
