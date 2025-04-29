@@ -86,6 +86,7 @@ public class ClientServiceImpl implements ClientService {
     // 로그인 메서드
     @Override
     public LoginResponseVO login(LoginRequestVO vo) {
+        // 사용자 ID로 조회
         Optional<UserEntity> optionalUser = clientRepository.findByClientId(vo.getClientId());
 
         if (optionalUser.isEmpty()) {
@@ -94,10 +95,12 @@ public class ClientServiceImpl implements ClientService {
 
         UserEntity user = optionalUser.get();
 
+        // 비밀번호 확인
         if (!passwordEncoder.matches(vo.getClientPwd(), user.getClientPwd())) {
             return new LoginResponseVO(null, "비밀번호가 일치하지 않습니다.");
         }
 
+        // JWT 토큰 생성
         String token = jwtUtil.generateToken(user.getClientId(), user.getClientType());
 
         return new LoginResponseVO(token, "로그인 성공");
@@ -165,6 +168,21 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(user);
 
         return new PasswordResetResponseVO("비밀번호가 성공적으로 변경되었습니다.");
+    }
+
+    // mypage 조회 메서드
+    @Override
+    public MypageResponseVO getMyPage(String clientId) {
+        UserEntity user = clientRepository.findByClientId(clientId)
+                .orElseThrow(() -> new RuntimeException("해당 사용자가 존재하지 않습니다."));
+
+        return new MypageResponseVO(
+                user.getClientId(),
+                user.getClientEmail(),
+                user.getClientBirth(),
+                user.getClientNickname(),
+                user.getClientColorRgb()
+        );
     }
 }
 

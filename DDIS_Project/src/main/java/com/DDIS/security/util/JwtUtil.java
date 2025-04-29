@@ -5,18 +5,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 
+
+// JWT 생성/ 검증 도구
+
 @Component
 public class JwtUtil {
 
     private final String secret;
     private final long expiration;
 
+    // 토큰 유효 시간 설정
     public JwtUtil(@Value("${token.secret}") String secret,
                    @Value("${token.expiration_time}") long expiration) {
         this.secret = secret;
         this.expiration = expiration;
     }
 
+    // 토큰 생성 메서드
     public String generateToken(String clientId, String role) {
         return Jwts.builder()
                 .setSubject(clientId)
@@ -26,6 +31,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    // 토큰 유효성 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(secret.getBytes()).build()
@@ -36,8 +42,13 @@ public class JwtUtil {
         }
     }
 
+    // 토큰에서 사용자 ID 추출
     public String getClientId(String token) {
-        return Jwts.parserBuilder().setSigningKey(secret.getBytes()).build()
-                .parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder()
+                .setSigningKey(secret.getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 }
