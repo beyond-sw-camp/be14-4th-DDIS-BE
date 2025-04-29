@@ -44,6 +44,13 @@ public class ApproveServiceImpl implements ApproveService {
         MemberShareTodo memberShareTodo = memberShareTodoRepository.findById(approveDTO.getMemberShareTodoNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버공동투두 없음"));
 
+        boolean exists = approveRepository.existsByMemberNumAndMemberShareTodoNum(
+                approveDTO.getMemberNum(), approveDTO.getMemberShareTodoNum()
+        );
+
+        if (exists) {
+            throw new RuntimeException("이미 승인 요청이 존재합니다.");
+        }
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         Approve approve = Approve.builder()

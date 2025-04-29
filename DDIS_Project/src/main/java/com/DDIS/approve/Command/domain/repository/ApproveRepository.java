@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ApproveRepository extends JpaRepository<Approve,Long> {
 
+    boolean existsByMemberNumAndMemberShareTodoNum(Long memberNum, Long memberShareTodoNum);
 }
