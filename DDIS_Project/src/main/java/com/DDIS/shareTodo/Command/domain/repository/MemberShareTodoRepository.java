@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface MemberShareTodoRepository extends JpaRepository<MemberShareTodo, Long> {
-    List<MemberShareTodo> findByMemberNum_ClientNum(Integer clientNum);
+    List<MemberShareTodo> findByMemberNum_Client_ClientNum(Integer clientNum);
 
     List<MemberShareTodo> findByShareTodo_ShareTodoNum(Long shareTodoNum);
 }

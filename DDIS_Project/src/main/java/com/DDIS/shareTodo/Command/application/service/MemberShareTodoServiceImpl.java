@@ -35,7 +35,7 @@ public class MemberShareTodoServiceImpl implements MemberShareTodoService{
 
     @Override
     public List<MemberShareTodoResponseDTO> getByClientNum(Integer clientNum) {
-        List<MemberShareTodo> list = memberShareTodoRepository.findByMemberNum_ClientNum(clientNum);
+        List<MemberShareTodo> list = memberShareTodoRepository.findByMemberNum_Client_ClientNum(clientNum);
         return list.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
