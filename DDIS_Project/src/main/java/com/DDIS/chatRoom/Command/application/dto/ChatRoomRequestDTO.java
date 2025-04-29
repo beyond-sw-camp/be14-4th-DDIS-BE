@@ -8,8 +8,8 @@ import lombok.*;
 @Setter
 @ToString
 public class ChatRoomRequestDTO {
-    private String chatroom_name;
-    private String chatroom_type;
-    private Long room_num;
+    private String chatRoomName;
+    private String chatRoomType;
+    private Long chatRoomNum;
 
 }

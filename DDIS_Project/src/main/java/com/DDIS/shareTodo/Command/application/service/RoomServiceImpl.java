@@ -1,6 +1,12 @@
 package com.DDIS.shareTodo.Command.application.service;
 
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
+import com.DDIS.chatRoom.Command.application.dto.ChatRoomRequestDTO;
+import com.DDIS.chatRoom.Command.application.service.ChatRoomService;
+import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
+import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomUserEntity;
+import com.DDIS.chatRoom.Command.domain.repository.ChatRoomRepository;
+import com.DDIS.chatRoom.Command.domain.repository.ChatRoomUserRepository;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import com.DDIS.post.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
@@ -19,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +37,8 @@ public class RoomServiceImpl implements RoomService {
     private final ShareTodoRepository shareTodoRepository;
     private final MemberShareTodoRepository memberShareTodoRepository;
     private final GptService gptService;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomUserRepository chatRoomUserRepository;
 
     private static final List<String> colorPalette = List.of(
             "#FF6D7F", "#505FD4", "#50D4C6"
@@ -39,6 +48,7 @@ public class RoomServiceImpl implements RoomService {
         return colorPalette.get(new Random().nextInt(colorPalette.size()));
     }
 
+    // 공투방 생성
     @Override
     @Transactional
     public Rooms createRoom(CreateShareRoomDTO roomDTO) {
@@ -63,8 +73,40 @@ public class RoomServiceImpl implements RoomService {
                 .build();
 
         roomRepository.save(rooms);
+
+        // ✅ ChatRoom 생성
+        ChatRoomEntity chatRoom = createChatRoom(rooms);
+
+        // ✅ ChatRoomUser 등록 (방 만든 사람을 등록)
+        createChatRoomUser(chatRoom, roomDTO.getClientNum());
+
         return rooms;
     }
+
+    // ChatRoom 생성
+    private ChatRoomEntity  createChatRoom(Rooms rooms) {
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        ChatRoomEntity chatRoom = new ChatRoomEntity();
+        chatRoom.setChatRoomName(rooms.getTitle());
+        chatRoom.setChatRoomType("공동"); // 필요시 다른 타입으로 변경 가능
+        chatRoom.setRoomNum(rooms);
+        chatRoom.setCreatedTime(now);
+
+        return chatRoomRepository.save(chatRoom); // 저장하고 리턴
+    }
+
+    private void createChatRoomUser(ChatRoomEntity chatRoom, Long clientNum) {
+        ChatRoomUserEntity chatRoomUser = ChatRoomUserEntity.builder()
+                .chatRoom(chatRoom)
+                .clientNum(clientNum)
+                .role("회원")
+                .lastMsgNum(null) // 아직 읽은 메시지 없음
+                .build();
+
+        chatRoomUserRepository.save(chatRoomUser);
+    }
+
 
     @Override
     @Transactional
