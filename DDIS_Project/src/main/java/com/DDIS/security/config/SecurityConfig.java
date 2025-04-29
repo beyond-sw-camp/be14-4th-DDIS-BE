@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))    // 세션 사용 안 함
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/clients/signup", "/clients/login").permitAll()
+                        .requestMatchers("/clients/signup", "/clients/login","/**").permitAll()
                                                                                     // 회원가입, 로그인만 인증 없이 허용
                         .anyRequest().authenticated())                              // 나머지는 인증 필요
 

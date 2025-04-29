@@ -49,34 +49,32 @@ public class ApproveServiceImpl implements ApproveService {
         MemberShareTodo memberShareTodo = memberShareTodoRepository.findById(approveDTO.getMemberShareTodoNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버공동투두 없음"));
 
-        MemberShareTodo todo = memberShareTodoRepository.findById(approveDTO.getMemberShareTodoNum())
-                .orElseThrow(() -> new IllegalArgumentException("해당 공유투두 없음"));
-        boolean exists = approveRepository.existsByMemberNumAndMemberShareTodoNum(
-                member, todo
-        );
-
-        if (exists) {
-            throw new RuntimeException("이미 승인 요청이 존재합니다.");
-        }
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-
-
+        // 복합키 ID 생성
         MemberShareTodoDateId id = new MemberShareTodoDateId(
                 approveDTO.getTodoDate(),
                 approveDTO.getMemberShareTodoNum()
         );
 
-        if (approveDTO.getTodoDate() == null || approveDTO.getMemberShareTodoNum() == null) {
-            throw new IllegalArgumentException("todoDate 또는 memberShareTodoNum이 비어있습니다.");
+// 날짜 엔티티 가져오기
+        MemberShareTodoDate todoDateEntity = memberShareTodoDateRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 TODO 없음"));
+
+// ✅ member는 중복 조건에 필요 없음. 핵심은 이 조합
+        boolean exists = approveRepository.existsByMemberShareTodoNumAndMemberShareTodoDate(
+                memberShareTodo, todoDateEntity
+        );
+
+        if (exists) {
+            throw new RuntimeException("해당 TODO 날짜에 이미 승인 요청이 존재합니다.");
         }
 
-        MemberShareTodoDate todoDateEntity =
-                memberShareTodoDateRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 TODO 없음"));
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        if (todoDateEntity.getTodoDate() == null) {
-            throw new IllegalStateException("todoDateEntity의 todoDate가 비어있습니다.");
+
+
+
+        if (approveDTO.getTodoDate() == null || approveDTO.getMemberShareTodoNum() == null) {
+            throw new IllegalArgumentException("todoDate 또는 memberShareTodoNum이 비어있습니다.");
         }
 
         Approve approve = Approve.builder()
