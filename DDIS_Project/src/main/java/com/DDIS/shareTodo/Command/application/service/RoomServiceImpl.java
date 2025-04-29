@@ -9,6 +9,8 @@ import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomUserEntity;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomRepository;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomUserRepository;
+import com.DDIS.client.Command.domain.repository.ClientRepository;
+import com.DDIS.client.Command.domain.repository.ClientsRepository;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import com.DDIS.post.Command.domain.repository.PostRepository;
 import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
@@ -42,6 +44,7 @@ public class RoomServiceImpl implements RoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final ApplicantRepository applicantRepository;
+    private final ClientsRepository clientsRepository;
 
     private static final List<String> colorPalette = List.of(
             "#FF6D7F", "#505FD4", "#50D4C6"
@@ -58,9 +61,7 @@ public class RoomServiceImpl implements RoomService {
         String randomColor = pickRandomColor();
         Long postNum = roomDTO.getPostNum();
 
-        // 게시글 엔티티 찾아오기
-        Post post = postRepository.findById(postNum)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));
+
 
 // 여기서 하나씩 반복
 
@@ -73,6 +74,8 @@ public class RoomServiceImpl implements RoomService {
         String formattedStartDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime endDate = now.plusDays(posts.getActivityTime());
         String formattedEndDate = endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Clients client = clientsRepository.findById(posts.getClientNum().getClientNum())
+                .orElseThrow(() -> new IllegalArgumentException("클라이언트 정보 없음"));
 
         // 방 생성
         Rooms rooms = Rooms.builder()
@@ -98,20 +101,27 @@ public class RoomServiceImpl implements RoomService {
         int memberCount = 0;
 
         for (ApplicantEntity applicant : applicants) {
+            Clients clients = clientsRepository.findById(applicant.getClientNum())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 클라이언트 없음"));
+
+
             Members member = Members.builder()
                     .room(rooms)
-                    .postNum(postNum)
-                    .clientNum(applicant.getClientNum())
+                    .post(posts)
+                    .client(clients)
                     .build();
             memberRepository.save(member);
             memberCount++;
         }
 
+        Rooms roomnum = roomRepository.findById(postNum)
+                .orElseThrow(() -> new IllegalArgumentException("해당 방 없음"));
+
         // 게시글 작성자도 멤버로 포함 (방장)
         Members leader = Members.builder()
-                .roomNum(rooms.getRoomNum())
-                .postNum(postNum)
-                .clientNum(posts.getClient().getClientNum())
+                .room(roomnum)
+                .post(posts)
+                .client(client)
                 .build();
         memberRepository.save(leader);
         memberCount++;
