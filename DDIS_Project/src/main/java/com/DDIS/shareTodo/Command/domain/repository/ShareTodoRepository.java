@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ShareTodoRepository extends JpaRepository<ShareTodo, Long> {
 
+    List<ShareTodo> findByRooms_RoomNum(Long roomNum);
 }

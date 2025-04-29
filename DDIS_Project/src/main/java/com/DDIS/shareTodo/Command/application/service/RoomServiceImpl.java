@@ -2,6 +2,8 @@ package com.DDIS.shareTodo.Command.application.service;
 
 import com.DDIS.applicant.Command.domain.aggregate.ApplicantEntity;
 import com.DDIS.applicant.Command.domain.repository.ApplicantRepository;
+import com.DDIS.approve.Command.domain.aggregate.Entity.Approve;
+import com.DDIS.approve.Command.domain.repository.ApproveRepository;
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
 import com.DDIS.chatRoom.Command.application.dto.ChatRoomRequestDTO;
 import com.DDIS.chatRoom.Command.application.service.ChatRoomService;
@@ -13,9 +15,7 @@ import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.client.Command.domain.repository.ClientsRepository;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import com.DDIS.post.Command.domain.repository.PostRepository;
-import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
-import com.DDIS.shareTodo.Command.application.dto.MemberShareTodoResponseDTO;
-import com.DDIS.shareTodo.Command.application.dto.SaveShareTodoDTO;
+import com.DDIS.shareTodo.Command.application.dto.*;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.*;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoRepository;
 import com.DDIS.shareTodo.Command.domain.repository.RoomRepository;
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +46,7 @@ public class RoomServiceImpl implements RoomService {
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final ApplicantRepository applicantRepository;
     private final ClientsRepository clientsRepository;
+    private final ApproveRepository approveRepository;
 
     private static final List<String> colorPalette = List.of(
             "#FF6D7F", "#505FD4", "#50D4C6"
@@ -220,6 +222,16 @@ public class RoomServiceImpl implements RoomService {
                 .toList();
     }
 
+    @Override
+    public List<ResponseRoomDTO> getRoomsByClientNum(Long clientNum) {
+        return memberRepository.findByClient_ClientNum(clientNum)
+                .stream()
+                .map(Members::getRoom)       // members에서 room 추출
+                .distinct()                  // 중복 제거
+                .map(ResponseRoomDTO::from)    // DTO 변환
+                .collect(Collectors.toList());
+    }
+
     private List<MemberShareTodo> assignTodosToMembers(Rooms room, List<ShareTodo> shareTodos) {
         List<Members> members = memberRepository.findByRoom_RoomNum(room.getRoomNum());
         List<MemberShareTodo> result = new ArrayList<>();
@@ -236,4 +248,23 @@ public class RoomServiceImpl implements RoomService {
         }
         return result;
     }
+
+    @Override
+    public RoomDetailDTO getRoomDataByRoomNum(Long roomNum) {
+        // 1. 해당 방의 투두 목록 조회
+        List<ShareTodo> todos = shareTodoRepository.findByRooms_RoomNum(roomNum);
+        List<ShareTodoDTO> todoDTOs = todos.stream()
+                .map(ShareTodoDTO::new)
+                .collect(Collectors.toList());
+
+        // 2. 해당 방의 승인 목록 조회
+        List<Approve> approves = approveRepository.findByRoomNum(roomNum);
+        List<ApproveDTO> approveDTOs = approves.stream()
+                .map(ApproveDTO::new)
+                .collect(Collectors.toList());
+
+        // 3. 통합 DTO 리턴
+        return new RoomDetailDTO(todoDTOs, approveDTOs);
+    }
+
 }

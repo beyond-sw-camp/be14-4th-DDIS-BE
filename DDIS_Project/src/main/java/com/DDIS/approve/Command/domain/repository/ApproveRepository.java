@@ -7,9 +7,13 @@ import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Members;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ApproveRepository extends JpaRepository<Approve,Long> {
 
 
     boolean existsByMemberShareTodoNumAndMemberShareTodoDate(MemberShareTodo memberShareTodo, MemberShareTodoDate todoDateEntity);
+
+    List<Approve> findByRoomNum(Long roomNum);
 }
