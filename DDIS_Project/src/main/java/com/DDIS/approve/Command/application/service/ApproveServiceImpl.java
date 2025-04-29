@@ -7,7 +7,10 @@ import com.DDIS.approve.Command.domain.aggregate.Entity.Approve;
 import com.DDIS.approve.Command.domain.repository.ApproveRepository;
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodoDate;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodoDateId;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Members;
+import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoDateRepository;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +29,14 @@ public class ApproveServiceImpl implements ApproveService {
     private final ApproveRepository approveRepository;
     private final MemberRepository memberRepository;
     private final MemberShareTodoRepository memberShareTodoRepository;
+    private final MemberShareTodoDateRepository memberShareTodoDateRepository;
 
     @Autowired
-    public ApproveServiceImpl(ApproveRepository approveRepository, MemberRepository memberRepository, MemberShareTodoRepository memberShareTodoRepository) {
+    public ApproveServiceImpl(ApproveRepository approveRepository, MemberRepository memberRepository, MemberShareTodoRepository memberShareTodoRepository, MemberShareTodoDateRepository memberShareTodoDateRepository) {
         this.approveRepository = approveRepository;
         this.memberRepository = memberRepository;
         this.memberShareTodoRepository = memberShareTodoRepository;
+        this.memberShareTodoDateRepository = memberShareTodoDateRepository;
     }
 
 
@@ -44,9 +49,36 @@ public class ApproveServiceImpl implements ApproveService {
         MemberShareTodo memberShareTodo = memberShareTodoRepository.findById(approveDTO.getMemberShareTodoNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버공동투두 없음"));
 
+        // 복합키 ID 생성
+        MemberShareTodoDateId id = new MemberShareTodoDateId(
+                approveDTO.getTodoDate(),
+                approveDTO.getMemberShareTodoNum()
+        );
+
+// 날짜 엔티티 가져오기
+        MemberShareTodoDate todoDateEntity = memberShareTodoDateRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 TODO 없음"));
+
+// ✅ member는 중복 조건에 필요 없음. 핵심은 이 조합
+        boolean exists = approveRepository.existsByMemberShareTodoNumAndMemberShareTodoDate(
+                memberShareTodo, todoDateEntity
+        );
+
+        if (exists) {
+            throw new RuntimeException("해당 TODO 날짜에 이미 승인 요청이 존재합니다.");
+        }
+
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
+
+
+
+        if (approveDTO.getTodoDate() == null || approveDTO.getMemberShareTodoNum() == null) {
+            throw new IllegalArgumentException("todoDate 또는 memberShareTodoNum이 비어있습니다.");
+        }
+
         Approve approve = Approve.builder()
+                .roomNum(approveDTO.getRoomNum())
                 .memberNum(member)
                 .memberShareTodoNum(memberShareTodo)
                 .approveTitle(approveDTO.getApproveTitle())
@@ -54,6 +86,7 @@ public class ApproveServiceImpl implements ApproveService {
                 .approveTime(now) // LocalDateTime이면 그대로
                 .approvePermitCount(0)
                 .approveRefuseCount(0)
+                .todoDate(approveDTO.getTodoDate())
                 .build();
 
         Approve saved = approveRepository.save(approve);

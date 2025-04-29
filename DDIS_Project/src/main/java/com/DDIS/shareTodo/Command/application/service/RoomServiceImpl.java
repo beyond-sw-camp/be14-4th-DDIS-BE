@@ -1,5 +1,7 @@
 package com.DDIS.shareTodo.Command.application.service;
 
+import com.DDIS.applicant.Command.domain.aggregate.ApplicantEntity;
+import com.DDIS.applicant.Command.domain.repository.ApplicantRepository;
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
 import com.DDIS.chatRoom.Command.application.dto.ChatRoomRequestDTO;
 import com.DDIS.chatRoom.Command.application.service.ChatRoomService;
@@ -39,6 +41,7 @@ public class RoomServiceImpl implements RoomService {
     private final GptService gptService;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
+    private final ApplicantRepository applicantRepository;
 
     private static final List<String> colorPalette = List.of(
             "#FF6D7F", "#505FD4", "#50D4C6"
@@ -54,34 +57,73 @@ public class RoomServiceImpl implements RoomService {
     public Rooms createRoom(CreateShareRoomDTO roomDTO) {
         String randomColor = pickRandomColor();
         Long postNum = roomDTO.getPostNum();
+
+        // 게시글 엔티티 찾아오기
+        Post post = postRepository.findById(postNum)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));
+
+// 여기서 하나씩 반복
+
+
+            // 게시글 가져오기
         Post posts = postRepository.findById(postNum)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음"));
 
         LocalDateTime now = LocalDateTime.now();
-        String formatted = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String formattedStartDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime endDate = now.plusDays(posts.getActivityTime());
         String formattedEndDate = endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
+        // 방 생성
         Rooms rooms = Rooms.builder()
-                .roomNum(postNum)
-                .memberCount(roomDTO.getMemberCount())
+                .roomNum(postNum) // postNum을 PK로 사용하는 구조면 그대로
+                .memberCount(0) // 일단 0으로 초기화, 아래에서 갱신
                 .colorRgb(randomColor)
-                .startDate(formatted)
+                .startDate(formattedStartDate)
                 .endDate(formattedEndDate)
                 .title(posts.getPostTitle())
                 .content(posts.getPostContent())
+                .isActive(true)
+                .approveRequiredCount(0) // 아래에서 갱신
                 .build();
 
         roomRepository.save(rooms);
 
-        // ✅ ChatRoom 생성
+        // 채팅방 생성 및 방장 등록
         ChatRoomEntity chatRoom = createChatRoom(rooms);
-
-        // ✅ ChatRoomUser 등록 (방 만든 사람을 등록)
         createChatRoomUser(chatRoom, roomDTO.getClientNum());
+
+        // 게시글 작성자를 포함한 지원자 목록 가져오기
+        List<ApplicantEntity> applicants = applicantRepository.findByPostNum(postNum);
+        int memberCount = 0;
+
+        for (ApplicantEntity applicant : applicants) {
+            Members member = Members.builder()
+                    .room(rooms)
+                    .postNum(postNum)
+                    .clientNum(applicant.getClientNum())
+                    .build();
+            memberRepository.save(member);
+            memberCount++;
+        }
+
+        // 게시글 작성자도 멤버로 포함 (방장)
+        Members leader = Members.builder()
+                .roomNum(rooms.getRoomNum())
+                .postNum(postNum)
+                .clientNum(posts.getClient().getClientNum())
+                .build();
+        memberRepository.save(leader);
+        memberCount++;
+
+        // 인원수 및 승인 필수 인원 업데이트
+        rooms.setMemberCount(memberCount);
+        rooms.setApproveRequiredCount(Math.max(1, memberCount / 2));
+        roomRepository.save(rooms);
 
         return rooms;
     }
+
 
     // ChatRoom 생성
     private ChatRoomEntity  createChatRoom(Rooms rooms) {
@@ -123,7 +165,6 @@ public class RoomServiceImpl implements RoomService {
             ShareTodo shareTodo = ShareTodo.builder()
                     .shareTodoName(dto.getShareTodoName())
                     .rooms(room)
-                    .pinOrder(dto.getPinOrder())
                     .build();
             shareTodoRepository.save(shareTodo);
             savedTodos.add(shareTodo);
@@ -152,7 +193,6 @@ public class RoomServiceImpl implements RoomService {
             ShareTodo newTodo = ShareTodo.builder()
                     .shareTodoName(todo.getShareTodoName())
                     .rooms(room)
-                    .pinOrder(todo.getPinOrder())
                     .build();
             shareTodoRepository.save(newTodo);
             savedTodos.add(newTodo);
@@ -165,11 +205,8 @@ public class RoomServiceImpl implements RoomService {
         return memberShareTodos.stream()
                 .map(mst -> MemberShareTodoResponseDTO.builder()
                         .memberShareTodoNum(mst.getMemberShareTodoNum())  // 진짜 저장된 PK
-                        .shareTodoNum(mst.getShareTodoNum().getShareTodoNum())
-                        .shareTodoName(mst.getShareTodoNum().getShareTodoName())
-                        .isCompleted(mst.isCompleted())
-                        .completionTime(mst.getCompletionTime())
-                        .build())
+                        .shareTodoNum(mst.getShareTodo().getShareTodoNum())
+                        .shareTodoName(mst.getShareTodo().getShareTodoName()).build())
                 .toList();
     }
 
@@ -181,9 +218,7 @@ public class RoomServiceImpl implements RoomService {
             for (ShareTodo todo : shareTodos) {
                 MemberShareTodo memberShareTodo = MemberShareTodo.builder()
                         .memberNum(member)
-                        .shareTodoNum(todo)
-                        .isCompleted(false)
-                        .completionTime(null)
+                        .shareTodo(todo)
                         .build();
                 memberShareTodoRepository.save(memberShareTodo);
                 result.add(memberShareTodo);
