@@ -43,8 +43,8 @@ public class MemberShareTodoServiceImpl implements MemberShareTodoService{
     private MemberShareTodoResponseDTO toDTO(MemberShareTodo memberShareTodo) {
         return MemberShareTodoResponseDTO.builder()
                 .memberShareTodoNum(memberShareTodo.getMemberShareTodoNum())
-                .shareTodoNum(memberShareTodo.getShareTodoNum().getShareTodoNum())   // 방 번호
-                .shareTodoName(memberShareTodo.getShareTodoNum().getShareTodoName())         // 방 제목
+                .shareTodoNum(memberShareTodo.getShareTodo().getShareTodoNum())   // 방 번호
+                .shareTodoName(memberShareTodo.getShareTodo().getShareTodoName())         // 방 제목
                 .build();
     }
 }

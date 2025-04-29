@@ -19,7 +19,7 @@ public class MemberShareTodo {
 
     @ManyToOne
     @JoinColumn(name = "share_todo_num")
-    private ShareTodo shareTodoNum;
+    private ShareTodo shareTodo;
 
     @ManyToOne
     @JoinColumn(name = "member_num")

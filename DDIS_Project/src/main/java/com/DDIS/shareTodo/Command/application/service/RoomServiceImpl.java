@@ -163,8 +163,8 @@ public class RoomServiceImpl implements RoomService {
         return memberShareTodos.stream()
                 .map(mst -> MemberShareTodoResponseDTO.builder()
                         .memberShareTodoNum(mst.getMemberShareTodoNum())  // 진짜 저장된 PK
-                        .shareTodoNum(mst.getShareTodoNum().getShareTodoNum())
-                        .shareTodoName(mst.getShareTodoNum().getShareTodoName()).build())
+                        .shareTodoNum(mst.getShareTodo().getShareTodoNum())
+                        .shareTodoName(mst.getShareTodo().getShareTodoName()).build())
                 .toList();
     }
 
@@ -176,7 +176,7 @@ public class RoomServiceImpl implements RoomService {
             for (ShareTodo todo : shareTodos) {
                 MemberShareTodo memberShareTodo = MemberShareTodo.builder()
                         .memberNum(member)
-                        .shareTodoNum(todo)
+                        .shareTodo(todo)
                         .build();
                 memberShareTodoRepository.save(memberShareTodo);
                 result.add(memberShareTodo);
