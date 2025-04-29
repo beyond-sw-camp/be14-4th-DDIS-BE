@@ -28,35 +28,23 @@ public class ChatRoomService {
     // 채팅방 생성
 //    public ChatRoomResponseDTO createRoom(ChatRoomRequestDTO dto) {
 //        String now = LocalDateTime.now().format(FORMATTER);
-//        Rooms room = roomRepository.findById(dto.getRoom_num())
+//        Rooms room = roomRepository.findById(dto.getChatRoomNum())
 //                .orElseThrow(() -> new IllegalArgumentException("방 정보 없음"));
 //
 //        ChatRoomEntity chatRoom = new ChatRoomEntity();
-//        chatRoom.setChatRoomName(dto.getChatroom_name());
-//        chatRoom.setChatType(dto.getChatroom_type());
+//        chatRoom.setChatRoomName(dto.getChatRoomName());
+//        chatRoom.setChatRoomType(dto.getChatRoomType());
 //        chatRoom.setRoomNum(room);
 //        chatRoom.setCreatedTime(now);
 //
 //        ChatRoomEntity saved = chatRoomRepository.save(chatRoom);
 //
 //        return new ChatRoomResponseDTO(
-//                saved.getChatRoomId(),
+//                saved.getChatRoomNum(),
 //                saved.getChatRoomName(),
-//                saved.getChatType(),
+//                saved.getChatRoomType(),
 //                saved.getRoomNum().getRoomNum(),
 //                saved.getCreatedTime()
 //        );
 //    }
-
-    public void createChatRoom(Rooms savedRoom) {
-
-        ChatRoomEntity chatRoom = new ChatRoomEntity();
-        chatRoom.setRoomNum(savedRoom.getRoomNum());
-        chatRoom.setChatRoomName(savedRoom.getTitle());
-//        chatRoom.setChatType(savedRoom.get());
-        chatRoom.setRooms(savedRoom); // savedRoom은 Room 저장 결과
-        chatRoom.setCreatedTime(savedRoom.getStartDate());
-
-        chatRoomRepository.save(chatRoom);
-    }
 }

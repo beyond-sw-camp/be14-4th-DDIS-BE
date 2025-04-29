@@ -4,6 +4,8 @@ package com.DDIS.post.Command.application.service;
 import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.post.Command.domain.aggregate.dto.PostCreateRequestDTO;
+import com.DDIS.post.Command.domain.aggregate.dto.PostResearchDTO;
+import com.DDIS.post.Command.domain.aggregate.dto.PostResponseDTO;
 import com.DDIS.post.Command.domain.aggregate.dto.PostUpdateRequestDTO;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
 import com.DDIS.post.Command.domain.repository.PostRepository;
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("commandPostServiceImpl")
 @RequiredArgsConstructor
@@ -67,14 +70,15 @@ public class PostServiceImpl implements PostService {
         UserEntity client = clientRepository.findById(dto.getClientNum())
                 .orElseThrow(() -> new IllegalArgumentException("작성자를 찾을 수 없습니다."));
 
-        // 현재 날짜
-        String now = LocalDate.now().toString();
+        // 현재 날짜 (작성일용)
+        String nowDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         // 모집게시글 저장
         Post post = Post.builder()
                 .postTitle(dto.getPostTitle())
                 .postContent(dto.getPostContent())
-                .recruitmentStartDate(now)
+                .recruitmentStartDate(nowDate)
                 .recruitmentEndDate(dto.getRecruitmentEndDate())
                 .activityTime(dto.getActivityTime())
                 .recruitmentLimit(dto.getRecruitmentLimit())
@@ -84,6 +88,7 @@ public class PostServiceImpl implements PostService {
                 .clientNum(client)
                 .applicantCount(0)
                 .isClosed(false)
+                .createdDate(nowDateTime)
                 .build();
 
         postRepository.save(post);
@@ -96,13 +101,17 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postNum)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
-        // TODO: 시큐리티 적용 후 작성자 확인 다시 추가
-//        if (!post.getClientNum().getClientNum().equals(requesterId)) {
-//            throw new RuntimeException("작성자만 수정할 수 있습니다.");
-//        }
+        // 모집 마감 여부 체크
+        if (Boolean.TRUE.equals(post.getIsClosed())) {
+            throw new RuntimeException("모집이 마감된 게시글은 수정할 수 없습니다.");
+        }
 
-
+        // 게시글 수정
         post.updatePost(request.getPostTitle(), request.getPostContent());
+
+        // 수정일 업데이트
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        post.setUpdatedDate(now);
     }
 
     // 4. 모집게시글 삭제
@@ -113,14 +122,28 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
         // TODO: 시큐리티 적용 후 작성자 확인 다시 추가
-//        if (!post.getClientNum().getClientNum().equals(requesterId)) {
-//            throw new RuntimeException("작성자만 삭제할 수 있습니다.");
-//        }
+//    if (!post.getClientNum().getClientNum().equals(requesterId)) {
+//        throw new RuntimeException("작성자만 삭제할 수 있습니다.");
+//    }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String now = LocalDateTime.now().format(formatter);
-
+        // ✅ 삭제 시간 (deleteDate) 세팅
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         post.softDelete(now);
+    }
+
+
+    // 5. 모집게시글 검색(제목, 내용)
+    @Override
+    public List<PostResearchDTO> searchPosts(String keyword) {
+        List<Post> posts = postRepository.findByPostTitleContainingOrPostContentContaining(keyword, keyword);
+
+        return posts.stream()
+                .map(post -> new PostResearchDTO(
+                        post.getPostNum(),
+                        post.getPostTitle(),
+                        post.getPostContent()
+                ))
+                .collect(Collectors.toList());
     }
 
 }

@@ -19,9 +19,6 @@ public class ShareTodoServiceImpl implements ShareTodoService {
         if (dto.getShareTodoName() != null) {
             todo.setShareTodoName(dto.getShareTodoName());
         }
-        if (dto.getPinOrder() != null) {
-            todo.setPinOrder(dto.getPinOrder());
-        }
 
         shareTodoRepository.save(todo);
 

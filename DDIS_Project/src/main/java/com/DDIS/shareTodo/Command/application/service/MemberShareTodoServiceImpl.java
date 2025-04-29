@@ -23,8 +23,6 @@ public class MemberShareTodoServiceImpl implements MemberShareTodoService{
         MemberShareTodo todo = memberShareTodoRepository.findById(memberShareTodoNum)
                 .orElseThrow(() -> new IllegalArgumentException("공동투두 없음"));
 
-        todo.setCompleted(true);
-        todo.setCompletionTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     @Override
@@ -33,13 +31,11 @@ public class MemberShareTodoServiceImpl implements MemberShareTodoService{
         MemberShareTodo todo = memberShareTodoRepository.findById(memberShareTodoNum)
                 .orElseThrow(() -> new IllegalArgumentException("공동투두 없음"));
 
-        todo.setCompleted(false);
-        todo.setCompletionTime(null);
     }
 
     @Override
     public List<MemberShareTodoResponseDTO> getByClientNum(Integer clientNum) {
-        List<MemberShareTodo> list = memberShareTodoRepository.findByMemberNum_ClientNum(clientNum);
+        List<MemberShareTodo> list = memberShareTodoRepository.findByMemberNum_Client_ClientNum(clientNum);
         return list.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
@@ -47,10 +43,8 @@ public class MemberShareTodoServiceImpl implements MemberShareTodoService{
     private MemberShareTodoResponseDTO toDTO(MemberShareTodo memberShareTodo) {
         return MemberShareTodoResponseDTO.builder()
                 .memberShareTodoNum(memberShareTodo.getMemberShareTodoNum())
-                .shareTodoNum(memberShareTodo.getShareTodoNum().getShareTodoNum())   // 방 번호
-                .shareTodoName(memberShareTodo.getShareTodoNum().getShareTodoName())         // 방 제목
-                .isCompleted(memberShareTodo.isCompleted())                          // 완료 여부
-                .completionTime(memberShareTodo.getCompletionTime())                 // 완료 시간
+                .shareTodoNum(memberShareTodo.getShareTodo().getShareTodoNum())   // 방 번호
+                .shareTodoName(memberShareTodo.getShareTodo().getShareTodoName())         // 방 제목
                 .build();
     }
 }

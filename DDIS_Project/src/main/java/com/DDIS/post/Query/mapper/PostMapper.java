@@ -3,6 +3,7 @@
 package com.DDIS.post.Query.mapper;
 
 import com.DDIS.post.Query.dto.AdminPostDTO;
+import com.DDIS.post.Query.dto.PostCreateTodoRoomDTO;
 import com.DDIS.post.Query.dto.PublicPostDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,5 +25,8 @@ public interface PostMapper {
     // 4. 등록일 최신순 조회
     List<PublicPostDTO> findPostsOrderByStartDateDesc();
 
+    // 5. 작성자 공동방 생성
+    PostCreateTodoRoomDTO findPostById(Long postNum);
+    void closePost(Long postNum);
 
 }

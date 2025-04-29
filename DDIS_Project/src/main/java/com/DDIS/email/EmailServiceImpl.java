@@ -21,8 +21,8 @@ public class EmailServiceImpl implements EmailService {
         // 1. 인증번호 생성
         String code = generateRandomCode();
 
-        // 2. Redis에 email -> code 저장 (TTL: 3분)
-        redisTemplate.opsForValue().set(email, code, 3, TimeUnit.MINUTES);
+        // 2. Redis에 email -> code 저장 (TTL: 5분)
+        redisTemplate.opsForValue().set(email, code, 5, TimeUnit.MINUTES);
 
         // 3. 메일 발송
         sendEmail(email, code);
@@ -32,8 +32,12 @@ public class EmailServiceImpl implements EmailService {
     public boolean verifyCode(String email, String code) {
         String savedCode = redisTemplate.opsForValue().get(email);
 
-        // Redis에 저장된 인증번호가 존재하고, 입력값과 같으면 true
-        return savedCode != null && savedCode.equals(code);
+        if (savedCode != null && savedCode.equals(code)) {
+            // 인증 성공 시, verified 상태로 Redis에 다시 저장
+            redisTemplate.opsForValue().set("verified:" + email, "true", 10, TimeUnit.MINUTES);
+            return true;
+        }
+        return false;
     }
 
     private String generateRandomCode() {
@@ -46,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("[DDIS] 이메일 인증번호입니다.");
-        message.setText("당신의 인증번호는 " + code + " 입니다.\n3분 안에 입력해주세요!");
+        message.setText("당신의 인증번호는 " + code + " 입니다.\n5분 안에 입력해주세요!");
         mailSender.send(message);
     }
 }

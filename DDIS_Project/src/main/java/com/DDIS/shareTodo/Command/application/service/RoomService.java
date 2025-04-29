@@ -1,7 +1,6 @@
 package com.DDIS.shareTodo.Command.application.service;
 
-import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
-import com.DDIS.shareTodo.Command.application.dto.SaveShareTodoDTO;
+import com.DDIS.shareTodo.Command.application.dto.*;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.ShareTodo;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,9 @@ public interface RoomService {
     void saveShareTodos(List<SaveShareTodoDTO> todoList);
     // RoomService.java
     Rooms findRoomByRoomNum(Long roomNum);
-    void generateAndSaveGptTodos(Long roomNum, String topic);
+    List<MemberShareTodoResponseDTO> generateAndSaveGptTodos(Long roomNum, String topic);
 
+    List<ResponseRoomDTO> getRoomsByClientNum(Long clientNum);
+
+    RoomDetailDTO getRoomDataByRoomNum(Long roomNum);
 }

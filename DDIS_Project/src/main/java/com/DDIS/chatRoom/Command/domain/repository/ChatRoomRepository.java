@@ -8,6 +8,4 @@ import java.util.Optional;
 
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> {
-    // 필요 시 room_num으로 조회하는 메서드도 만들 수 있음
-//    Optional<ChatRoomEntity> findByRoomNum(Long roomNum);
 }

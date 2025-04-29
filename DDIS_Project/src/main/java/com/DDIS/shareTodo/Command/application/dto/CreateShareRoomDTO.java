@@ -9,4 +9,5 @@ import lombok.Setter;
 public class CreateShareRoomDTO {
     private Long postNum;
     private int memberCount;
+    private Long clientNum;
 }

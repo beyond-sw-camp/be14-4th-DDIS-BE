@@ -1,10 +1,16 @@
 package com.DDIS.post.Query.service;
 
 import com.DDIS.post.Query.dto.AdminPostDTO;
+import com.DDIS.post.Query.dto.PostCloseResponseDTO;
+import com.DDIS.post.Query.dto.PostCreateTodoRoomDTO;
 import com.DDIS.post.Query.dto.PublicPostDTO;
 import com.DDIS.post.Query.mapper.PostMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 // 비즈니스 로직 처리
@@ -34,5 +40,45 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PublicPostDTO> findPostsOrderByStartDateDesc() { return postMapper.findPostsOrderByStartDateDesc();}
 
+    // 5. 공동 방 생성을 위한 조회
+    @Override
+    @Transactional
+    public PostCloseResponseDTO checkAndClosePost(Long postNum, Long requesterClientNum) {
+        PostCreateTodoRoomDTO post = postMapper.findPostById(postNum);
+
+        if (post == null) {
+            throw new RuntimeException("게시글이 존재하지 않습니다.");
+        }
+
+        // 본인이 쓴 글인지 확인
+        if (!post.getClientNum().equals(requesterClientNum)) {
+            throw new RuntimeException("본인이 작성한 글만 조회할 수 있습니다.");
+        }
+
+        boolean shouldClose = false;
+
+        // 모집 마감일 체크
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = LocalDate.parse(post.getRecruitmentEndDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        if (today.isAfter(endDate)) {
+            shouldClose = true;
+        }
+
+        // 모집 인원 체크
+        if (post.getApplicantCount() != null &&
+                post.getApplicantCount() >= post.getRecruitmentLimit()) {
+            shouldClose = true;
+        }
+
+        // 조건 충족하고, 아직 닫히지 않은 경우
+        if (shouldClose && !post.getIsClosed()) {
+            postMapper.closePost(postNum);
+            return new PostCloseResponseDTO(postNum, true);
+        } else {
+            return new PostCloseResponseDTO(postNum, post.getIsClosed());
+        }
+
+    }
 
 }

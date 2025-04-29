@@ -7,5 +7,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShareTodoCreateDTO {
     private String shareTodoName;
-    private Integer pinOrder;           // 고정순서
 }
