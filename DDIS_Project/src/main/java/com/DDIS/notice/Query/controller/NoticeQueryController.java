@@ -22,13 +22,13 @@ public class NoticeQueryController {
         this.noticeQueryService = noticeQueryService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<NoticeQueryDTO>> getAllNotices() {
         List<NoticeQueryDTO> list = noticeQueryService.getAllNotices();
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/{noticeCode}")
+    @GetMapping("/get/{noticeCode}")
     public ResponseEntity<NoticeQueryDTO> getNoticeByNoticeCode(@PathVariable("noticeCode") Long noticeNum) {
         NoticeQueryDTO result= noticeQueryService.getNoticeDetail(noticeNum);
         return ResponseEntity.ok(result);

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-public class ChatRoomLogController {
+public class  ChatRoomLogController {
     private final ChatRoomLogService chatRoomLogService;
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -23,13 +23,13 @@ public class ChatRoomLogController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/pub/chat/send")
+    @MessageMapping("/chat/send")
     public void sendMessage(@Payload ChatRoomLogRequestDTO requestDTO) {
         // DB에 저장
-        ChatRoomLogResponseDTO responseDTO = chatRoomLogService.saveMessage(requestDTO);
+        chatRoomLogService.saveMessage(requestDTO);
 
         // 구독자들에게 실시간 브로드캐스트
-        messagingTemplate.convertAndSend("/sub/chatroom/" + responseDTO.getRoomNum(), responseDTO);
+        messagingTemplate.convertAndSend("/sub/chatroom/" + requestDTO.getChatRoomNum(), requestDTO);
     }
 
     // 메시지 단건(1개) 삭제
