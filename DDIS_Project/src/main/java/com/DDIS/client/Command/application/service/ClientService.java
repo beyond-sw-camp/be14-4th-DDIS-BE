@@ -10,4 +10,6 @@ public interface ClientService {
     UpdateProfileResponseVO updateProfile(UpdateProfileRequestVO vo);
 
     PasswordResetResponseVO resetPassword(PasswordResetRequestVO vo);
+
+    FindIDResponseVO findID(FindIDRequestVO vo);
 }

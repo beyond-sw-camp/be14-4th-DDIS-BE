@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PasswordResetResponseVO {
+public class FindIDResponseVO {
+    private String clientId;
     private String message;
 }
