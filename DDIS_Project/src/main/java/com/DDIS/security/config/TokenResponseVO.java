@@ -1,13 +1,11 @@
-package com.DDIS.client.Command.domain.vo;
+package com.DDIS.security.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
-public class LoginResponseVO {
+public class TokenResponseVO {
     private String accessToken;
     private String refreshToken;
     private String message;

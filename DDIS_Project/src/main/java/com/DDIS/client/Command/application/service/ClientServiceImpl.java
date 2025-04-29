@@ -8,6 +8,7 @@ import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.client.Command.domain.repository.ClientRoleRepository;
 import com.DDIS.client.Command.domain.repository.RoleRepository;
 import com.DDIS.client.Command.domain.vo.*;
+import com.DDIS.security.config.TokenResponseVO;
 import com.DDIS.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -89,18 +90,28 @@ public class ClientServiceImpl implements ClientService {
         Optional<UserEntity> optionalUser = clientRepository.findByClientId(vo.getClientId());
 
         if (optionalUser.isEmpty()) {
-            return new LoginResponseVO(null, "존재하지 않는 사용자입니다.");
+            return new LoginResponseVO(null, null, "존재하지 않는 사용자입니다.");
         }
 
         UserEntity user = optionalUser.get();
 
         if (!passwordEncoder.matches(vo.getClientPwd(), user.getClientPwd())) {
-            return new LoginResponseVO(null, "비밀번호가 일치하지 않습니다.");
+            return new LoginResponseVO(null, null, "비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtUtil.generateToken(user.getClientId(), user.getClientType());
+        String accessToken = jwtUtil.generateToken(user.getClientId(), user.getClientType());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getClientId());
 
-        return new LoginResponseVO(token, "로그인 성공");
+        // Redis에 저장 (key: refresh:clientId)
+        redisTemplate.opsForValue().set(
+                "refresh:" + user.getClientId(),
+                refreshToken,
+                7, java.util.concurrent.TimeUnit.DAYS// TTL 7일
+        );
+
+        return new LoginResponseVO(accessToken, refreshToken, "로그인 성공");
+
+
     }
 
     // 비밀번호 유효성 검사 메서드
@@ -206,6 +217,32 @@ public class ClientServiceImpl implements ClientService {
                 user.getClientNickname(),
                 user.getClientColorRgb()
         );
+    }
+
+    @Override
+    public TokenResponseVO refreshAccessToken(String refreshToken) {
+        if (!jwtUtil.validateToken(refreshToken)) {
+            throw new RuntimeException("유효하지 않은 Refresh Token입니다.");
+        }
+
+        String clientId = jwtUtil.getClientId(refreshToken);
+
+        // Redis에서 저장된 리프레시 토큰 확인
+        String storedRefreshToken = redisTemplate.opsForValue().get("refresh:" + clientId);
+
+        if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
+            throw new RuntimeException("Refresh Token이 일치하지 않습니다.");
+        }
+
+        // 새 AccessToken 생성
+        String newAccessToken = jwtUtil.generateToken(clientId, "ROLE_USER");
+
+        return new TokenResponseVO(newAccessToken, refreshToken, "Access Token 재발급 완료");
+    }
+
+    @Override
+    public void logout(String clientId) {
+        redisTemplate.delete("refresh:" + clientId);
     }
 }
 
