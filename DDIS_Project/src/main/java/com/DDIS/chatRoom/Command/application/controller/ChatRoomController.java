@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chat/rooms")
+@RequestMapping("/chat-rooms")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
@@ -18,8 +18,8 @@ public class ChatRoomController {
     }
 
     // ✅ 채팅방 생성
-    @PostMapping("/create")
-    public ChatRoomResponseDTO createRoom(@RequestBody ChatRoomRequestDTO requestDTO) {
-        return chatRoomService.createRoom(requestDTO);
-    }
+//    @PostMapping("/create")
+//    public ChatRoomResponseDTO createRoom(@RequestBody ChatRoomRequestDTO requestDTO) {
+//        return chatRoomService.createRoom(requestDTO);
+//    }
 }

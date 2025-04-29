@@ -2,14 +2,12 @@
 package com.DDIS.post.Query.controller;
 
 import com.DDIS.post.Query.dto.AdminPostDTO;
+import com.DDIS.post.Query.dto.PostCloseResponseDTO;
 import com.DDIS.post.Query.dto.PublicPostDTO;
 import com.DDIS.post.Query.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -66,5 +64,13 @@ public class PostController {
 
         return ResponseEntity.ok(posts); // 200 OK
     }
+
+    // 5. 방장이 글 조회할 때 호출
+     @GetMapping("/{postNum}/check-close")
+        public PostCloseResponseDTO checkPostCloseStatus(
+                @PathVariable Long postNum,
+                @RequestParam Long clientNum) {
+            return postService.checkAndClosePost(postNum, clientNum);
+        }
 
 }

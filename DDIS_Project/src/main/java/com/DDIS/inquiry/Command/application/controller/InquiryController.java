@@ -39,13 +39,13 @@ public class InquiryController {
     }
 
     // 답변 등록
-    @PostMapping("/create/response")
+    @PostMapping("/response/create")
     public void createResponse(@RequestBody InquiryResponseRequestDTO requestDTO) {
         inquiryResponseService.createResponse(requestDTO);
     }
 
     // 답변 수정
-    @PutMapping("/update/response/{responseNum}")
+    @PutMapping("/response/update/{responseNum}")
     public ResponseEntity<String> updateResponse(@PathVariable Long responseNum,
                                                 @RequestBody InquiryResponseRequestDTO dto) {
         inquiryResponseService.updateResponse(responseNum, dto);
@@ -53,7 +53,7 @@ public class InquiryController {
     }
 
     // 답변 삭제
-    @DeleteMapping("/delete/response/{responseNum}")
+    @DeleteMapping("/response/delete/{responseNum}")
     public void deleteResponse(@PathVariable Long responseNum) {
         inquiryResponseService.deleteResponse(responseNum);
     }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/inquiry")
+@RequestMapping("/inquiries")
 public class InquiryQueryController {
 
     private final InquiryQueryService inquiryQueryService;
@@ -27,27 +27,27 @@ public class InquiryQueryController {
     }
 
     // 전체 문의사항 조회
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<InquiryQueryDTO>> getAllInquiry() {
         List<InquiryQueryDTO> list = inquiryQueryService.getAllInquiry();
         return ResponseEntity.ok(list);
     }
 
     // 특정 문의사항 조회
-    @GetMapping("/{inquiryNum}")
+    @GetMapping("/get/{inquiryNum}")
     public ResponseEntity<InquiryQueryDTO> getInquiryByInquiryNum(@PathVariable("inquiryNum") Long inquiryNum) {
         InquiryQueryDTO result= inquiryQueryService.getInquiryDetail(inquiryNum);
         return ResponseEntity.ok(result);
     }
 
     // 답변 전체 조회
-    @GetMapping("/response")
+    @GetMapping("/response/all")
     public List<InquiryResponseQueryDTO> getAllResponses() {
         return inquiryResponseQueryService.getAllResponses();
     }
 
     // 답변 단일 조회
-    @GetMapping("/response/{responseNum}")
+    @GetMapping("/response/get/{responseNum}")
     public InquiryResponseQueryDTO getResponse(@PathVariable Long responseNum) {
         return inquiryResponseQueryService.getResponse(responseNum);
     }
