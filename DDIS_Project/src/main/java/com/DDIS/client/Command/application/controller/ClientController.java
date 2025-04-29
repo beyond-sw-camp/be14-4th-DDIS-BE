@@ -3,9 +3,11 @@ package com.DDIS.client.Command.application.controller;
 import com.DDIS.client.Command.application.service.ClientService;
 import com.DDIS.client.Command.domain.repository.ClientRepository;
 import com.DDIS.client.Command.domain.vo.*;
+import com.DDIS.security.config.TokenResponseVO;
 import com.DDIS.security.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,6 +78,22 @@ public class ClientController {
         // 3. clientId로 마이페이지 조회
         MypageResponseVO response = clientService.getMyPage(clientId);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String clientId = jwtUtil.getClientId(token);
+
+        clientService.logout(clientId); // 🔥 Service 호출
+
+        return ResponseEntity.ok("로그아웃 되었습니다.");
+    }
+
+    @PostMapping("/clients/refresh")
+    public ResponseEntity<TokenResponseVO> refresh(@RequestBody String refreshToken) {
+        TokenResponseVO response = clientService.refreshAccessToken(refreshToken);
         return ResponseEntity.ok(response);
     }
 }
