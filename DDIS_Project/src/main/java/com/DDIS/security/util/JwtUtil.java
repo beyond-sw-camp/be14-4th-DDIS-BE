@@ -13,12 +13,16 @@ public class JwtUtil {
 
     private final String secret;
     private final long expiration;
+    private final long refreshExpiration;
+
 
     // 토큰 유효 시간 설정
     public JwtUtil(@Value("${token.secret}") String secret,
-                   @Value("${token.expiration_time}") long expiration) {
+                   @Value("${token.expiration_time}") long expiration,
+                   @Value("${token.refresh_expiration_time}") long refreshExpiration) {
         this.secret = secret;
         this.expiration = expiration;
+        this.refreshExpiration = refreshExpiration;
     }
 
     // 토큰 생성 메서드
@@ -50,5 +54,14 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    // Refresh token 생성 메서드 추가
+    public String generateRefreshToken(String clientId) {
+        return Jwts.builder()
+                .setSubject(clientId)
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(SignatureAlgorithm.HS256, secret.getBytes())
+                .compact();
     }
 }

@@ -1,6 +1,7 @@
 package com.DDIS.client.Command.application.service;
 
 import com.DDIS.client.Command.domain.vo.*;
+import com.DDIS.security.config.TokenResponseVO;
 
 public interface ClientService {
     SignupResponseVO signup(SignupRequestVO vo);
@@ -14,4 +15,8 @@ public interface ClientService {
     FindIDResponseVO findID(FindIDRequestVO vo);
 
     MypageResponseVO getMyPage(String clientId);
+
+    TokenResponseVO refreshAccessToken(String refreshToken);
+
+    void logout(String clientId);
 }

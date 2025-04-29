@@ -34,9 +34,16 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))    // 세션 사용 안 함
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/clients/signup", "/clients/login","/**").permitAll()
-                                                                                    // 회원가입, 로그인만 인증 없이 허용
-                        .anyRequest().authenticated())                              // 나머지는 인증 필요
+
+                        .requestMatchers(
+                                "/clients/signup",
+                                "/clients/login",
+                                "/mails/**",               // 이메일 인증 관련 경로 전체 허용
+                                "/clients/verify-code",    // 회원가입, 로그인만 인증 없이 허용
+                                "/**"
+                        ).permitAll()
+                        .anyRequest().authenticated())       // 나머지는 인증 필요
+
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 등록
