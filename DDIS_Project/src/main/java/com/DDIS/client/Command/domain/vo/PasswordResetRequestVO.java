@@ -10,5 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PasswordResetRequestVO {
     private String clientEmail;
+    private String clientName;
     private String newPassword;
 }

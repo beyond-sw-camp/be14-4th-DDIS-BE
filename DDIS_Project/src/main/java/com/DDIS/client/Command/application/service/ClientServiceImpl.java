@@ -135,11 +135,12 @@ public class ClientServiceImpl implements ClientService {
         return new UpdateProfileResponseVO("회원 정보가 성공적으로 수정되었습니다.");
     }
 
+
     // 비밀번호 재설정 메서드
     @Override
     public PasswordResetResponseVO resetPassword(PasswordResetRequestVO vo) {
         // 1. 이메일 인증 여부 체크
-        String verified = redisTemplate.opsForValue().get("verified:" + vo. getClientEmail());
+        String verified = redisTemplate.opsForValue().get("verified:" + vo.getClientEmail());
 
         if (!"true".equals(verified)) {
             return new PasswordResetResponseVO("이메일 인증이 완료되지 않았습니다.");
