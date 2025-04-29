@@ -86,7 +86,6 @@ public class ClientServiceImpl implements ClientService {
     // 로그인 메서드
     @Override
     public LoginResponseVO login(LoginRequestVO vo) {
-        // 사용자 ID로 조회
         Optional<UserEntity> optionalUser = clientRepository.findByClientId(vo.getClientId());
 
         if (optionalUser.isEmpty()) {
@@ -95,12 +94,10 @@ public class ClientServiceImpl implements ClientService {
 
         UserEntity user = optionalUser.get();
 
-        // 비밀번호 확인
         if (!passwordEncoder.matches(vo.getClientPwd(), user.getClientPwd())) {
             return new LoginResponseVO(null, "비밀번호가 일치하지 않습니다.");
         }
 
-        // JWT 토큰 생성
         String token = jwtUtil.generateToken(user.getClientId(), user.getClientType());
 
         return new LoginResponseVO(token, "로그인 성공");
@@ -142,7 +139,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public PasswordResetResponseVO resetPassword(PasswordResetRequestVO vo) {
         // 1. 이메일 인증 여부 체크
-        String verified = redisTemplate.opsForValue().get("verified:" + vo.getEmail());
+        String verified = redisTemplate.opsForValue().get("verified:" + vo. getClientEmail());
 
         if (!"true".equals(verified)) {
             return new PasswordResetResponseVO("이메일 인증이 완료되지 않았습니다.");
@@ -155,7 +152,7 @@ public class ClientServiceImpl implements ClientService {
         }
 
         // 3. 사용자 조회
-        Optional<UserEntity> optionalUser = clientRepository.findByClientEmail(vo.getEmail());
+        Optional<UserEntity> optionalUser = clientRepository.findByClientEmail(vo.getClientEmail());
 
         if (optionalUser.isEmpty()) {
             return new PasswordResetResponseVO("해당 이메일로 등록된 사용자가 없습니다.");
@@ -168,6 +165,31 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(user);
 
         return new PasswordResetResponseVO("비밀번호가 성공적으로 변경되었습니다.");
+    }
+
+    // 아이디 찾기 메서드
+    @Override
+    public FindIDResponseVO findID(FindIDRequestVO vo) {
+        // 1. 이메일 인증 여부 체크
+        String verified = redisTemplate.opsForValue().get("verified:" + vo.getClientEmail());
+
+        if (!"true".equals(verified)) {
+            return new FindIDResponseVO(null,"이메일 인증이 완료되지 않았습니다 !");
+        }
+
+        // 2. DB에 이름 조회
+        Optional<UserEntity> optionalUser = clientRepository.
+                findByClientNameAndClientEmail(vo.getClientName(), vo.getClientEmail());
+
+        if (optionalUser.isEmpty()) {
+            return new FindIDResponseVO(null, "해당 정보와 일치하는 사용자가 없습니다.");
+        }
+
+        UserEntity user = optionalUser.get();
+
+        // 3. Response에 값 전달
+        return new FindIDResponseVO(user.getClientId(),"입력하신 정보로 찾은 아이디입니다." );
+
     }
 
     // mypage 조회 메서드

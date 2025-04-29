@@ -59,6 +59,12 @@ public class ClientController {
     }
 
     // 마이 페이지 조회 API
+    @GetMapping("/find-ID")
+    public ResponseEntity<FindIDResponseVO> findID(@RequestBody FindIDRequestVO vo) {
+        FindIDResponseVO response = clientService.findID(vo);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/mypage")
     public ResponseEntity<MypageResponseVO> getMyPage(HttpServletRequest request) {
         // 1. Authorization 헤더에서 토큰 추출

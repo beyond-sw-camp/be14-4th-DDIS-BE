@@ -11,5 +11,7 @@ public interface ClientService {
 
     PasswordResetResponseVO resetPassword(PasswordResetRequestVO vo);
 
+    FindIDResponseVO findID(FindIDRequestVO vo);
+
     MypageResponseVO getMyPage(String clientId);
 }
