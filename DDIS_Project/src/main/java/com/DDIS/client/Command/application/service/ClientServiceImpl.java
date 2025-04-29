@@ -135,11 +135,12 @@ public class ClientServiceImpl implements ClientService {
         return new UpdateProfileResponseVO("회원 정보가 성공적으로 수정되었습니다.");
     }
 
+
     // 비밀번호 재설정 메서드
     @Override
     public PasswordResetResponseVO resetPassword(PasswordResetRequestVO vo) {
         // 1. 이메일 인증 여부 체크
-        String verified = redisTemplate.opsForValue().get("verified:" + vo. getClientEmail());
+        String verified = redisTemplate.opsForValue().get("verified:" + vo.getClientEmail());
 
         if (!"true".equals(verified)) {
             return new PasswordResetResponseVO("이메일 인증이 완료되지 않았습니다.");
@@ -190,6 +191,21 @@ public class ClientServiceImpl implements ClientService {
         // 3. Response에 값 전달
         return new FindIDResponseVO(user.getClientId(),"입력하신 정보로 찾은 아이디입니다." );
 
+    }
+
+    // mypage 조회 메서드
+    @Override
+    public MypageResponseVO getMyPage(String clientId) {
+        UserEntity user = clientRepository.findByClientId(clientId)
+                .orElseThrow(() -> new RuntimeException("해당 사용자가 존재하지 않습니다."));
+
+        return new MypageResponseVO(
+                user.getClientId(),
+                user.getClientEmail(),
+                user.getClientBirth(),
+                user.getClientNickname(),
+                user.getClientColorRgb()
+        );
     }
 }
 
