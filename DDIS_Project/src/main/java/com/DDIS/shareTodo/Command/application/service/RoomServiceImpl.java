@@ -144,7 +144,7 @@ public class RoomServiceImpl implements RoomService {
         ChatRoomEntity chatRoom = new ChatRoomEntity();
         chatRoom.setChatRoomName(rooms.getTitle());
         chatRoom.setChatRoomType("공동"); // 필요시 다른 타입으로 변경 가능
-        chatRoom.setRoomNum(rooms);
+        chatRoom.setRooms(rooms);
         chatRoom.setCreatedTime(now);
 
         return chatRoomRepository.save(chatRoom); // 저장하고 리턴

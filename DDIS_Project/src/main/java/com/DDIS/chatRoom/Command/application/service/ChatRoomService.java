@@ -5,7 +5,9 @@ import com.DDIS.chatRoom.Command.application.dto.ChatRoomResponseDTO;
 import com.DDIS.chatRoom.Command.domain.aggregate.entity.ChatRoomEntity;
 import com.DDIS.chatRoom.Command.domain.repository.ChatRoomRepository;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
+import com.DDIS.shareTodo.Command.domain.repository.MembersRepository;
 import com.DDIS.shareTodo.Command.domain.repository.RoomRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,15 +16,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final MembersRepository membersRepository;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final RoomRepository roomRepository;
 
-    public ChatRoomService(ChatRoomRepository chatRoomRepository, RoomRepository roomRepository) {
+    public ChatRoomService(ChatRoomRepository chatRoomRepository, MembersRepository membersRepository) {
         this.chatRoomRepository = chatRoomRepository;
-        this.roomRepository = roomRepository;
+        this.membersRepository = membersRepository;
+    }
+    public boolean canAccessChatRoom(Long chatRoomNum, Long clientNum) {
+        ChatRoomEntity chatRoom = chatRoomRepository.findById(chatRoomNum)
+                .orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
+
+        Long roomNum = chatRoom.getRoom().getRoomNum();
+        return membersRepository.existsByRoomRoomNumAndClientClientNum(roomNum, clientNum);
     }
 
     // 채팅방 생성

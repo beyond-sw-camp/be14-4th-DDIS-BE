@@ -18,9 +18,9 @@ public class ChatRoomEntity {
     @Column(name = "chatroom_num")
     private Long chatRoomNum;
 
-//    @ManyToOne
-    @JoinColumn(name = "room_num")
-    private Long roomNum;
+////    @ManyToOne
+//    @JoinColumn(name = "room_num")
+//    private Long roomNum;
 
     @Column(name = "chatroom_name")
     private String chatRoomName;
