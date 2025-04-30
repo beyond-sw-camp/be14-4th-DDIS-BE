@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chatroom")
+@RequestMapping("/chat-room")
 @RequiredArgsConstructor
 public class ChatRoomQueryController {
 
@@ -21,7 +21,7 @@ public class ChatRoomQueryController {
 
 
     // ✅ 전체 채팅방 목록 조회
-    @GetMapping("/allChatRoom")
+    @GetMapping("/all-chat-room")
     public List<ChatRoomQueryDTO> getAllRooms() {
         return chatRoomQueryService.getAllRooms();
     }

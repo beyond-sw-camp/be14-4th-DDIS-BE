@@ -1,19 +1,19 @@
 package com.DDIS.approve.Command.domain.aggregate.Entity;
 
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodoDate;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Members;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-
+@Table(name = "approves")
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @ToString
-@Table(name = "approves")
 public class Approve {
 
     @Id
@@ -21,13 +21,30 @@ public class Approve {
     @Column(name = "approve_num")
     private Long approveNum;
 
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_num")
+    private Members memberNum;
+
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_share_todo_num")
     private MemberShareTodo memberShareTodoNum;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_num")
-    private Members memberNum;
+    @JoinColumns({
+            @JoinColumn(name = "todo_date", referencedColumnName = "todo_date", insertable = false, updatable = false),
+            @JoinColumn(name = "member_share_todo_num", referencedColumnName = "member_share_todo_num", insertable = false, updatable = false)
+
+    })
+    private MemberShareTodoDate memberShareTodoDate;
+
+    @Column(name = "room_num")
+    private Long roomNum;
+
+    @Column(name = "todo_date", nullable = false)
+    private String todoDate;
 
     @Column(name = "approve_title")
     private String approveTitle;
@@ -43,6 +60,5 @@ public class Approve {
 
     @Column(name = "approve_refuse_count")
     private int approveRefuseCount;
-
-
 }
+

@@ -10,21 +10,24 @@
         <result property="reportStatus" column="report_status"/>
         <result property="reportType" column="report_type"/>
         <result property="clientNum" column="client_num"/>
+        <result property="clientNickname" column="client_nickname"/>
         <result property="reportTypeNum" column="report_type_num"/>
         <result property="isAccepted" column="is_accepted"/>
     </resultMap>
 
     <select id="selectAllReports" resultMap="reportResultMap">
         SELECT
-               report_num
-             , report_content
-             , report_time
-             , report_status
-             , report_type
-             , client_num
-             , report_type_num
-             , is_accepted
-          FROM reports
+               r.report_num
+             , r.report_content
+             , r.report_time
+             , r.report_status
+             , r.report_type
+             , r.client_num
+             , c.client_nickname
+             , r.report_type_num
+             , r.is_accepted
+          FROM reports r
+          JOIN clients c ON r.client_num = c.client_num
          ORDER BY report_num DESC;
     </select>
 </mapper>

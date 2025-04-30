@@ -1,49 +1,58 @@
 package com.DDIS.security.filter;
 
+// 토큰 인증 필터, 요청마다 JWT 인증 처리
 import com.DDIS.security.util.JwtUtil;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        // 1. 토큰 추출
+        String token = resolveToken(request);
 
-        // Authorization 헤더에서 JWT 추출
-        String token = httpRequest.getHeader("Authorization");
+        // 2. 유효성 검사 후 인증 객체 생성
+        if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
+            String clientId = jwtUtil.getClientId(token);
 
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // "Bearer " 제거
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(clientId, null, null);
 
-            if (jwtUtil.validateToken(token)) {
-                String clientId = jwtUtil.getClientId(token);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // 사용자 인증 객체 생성
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(clientId, null, null);
-
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-
-                // SecurityContext에 인증 정보 저장
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
+            // 3. 인증 객체 저장
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        // 필터 체인 계속 실행
-        chain.doFilter(request, response);
+        // 다음 필터로 전달
+        filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearer) && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        return null;
     }
 }

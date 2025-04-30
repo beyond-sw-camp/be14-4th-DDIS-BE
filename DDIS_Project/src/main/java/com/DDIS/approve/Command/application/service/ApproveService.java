@@ -15,4 +15,5 @@ public interface ApproveService {
 
     List<ApproveResponseDTO> getAllApproves();
     ApproveResponseDTO getApprove(Long id);
+    List<ApproveResponseDTO> getUnvotedApproves(Long memberNum, Long roomNum);
 }

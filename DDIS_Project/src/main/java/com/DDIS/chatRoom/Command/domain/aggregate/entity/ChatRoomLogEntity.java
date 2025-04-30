@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@Builder
 public class ChatRoomLogEntity {
 
     @Id
@@ -20,7 +21,7 @@ public class ChatRoomLogEntity {
 
     @ManyToOne
     @JoinColumn(name = "chatroom_num")
-    private ChatRoomEntity roomNum;
+    private ChatRoomEntity chatRoomNum;
 
     @Column(name = "client_num")
     private Long sender;
@@ -31,10 +32,10 @@ public class ChatRoomLogEntity {
     @Column(name = "send_time")
     private String sendTime;
 
-    public ChatRoomLogEntity(ChatRoomEntity roomNum, Long sender, String message, String sendTime) {
-        this.roomNum = roomNum;
-        this.sender = sender;
-        this.message = message;
-        this.sendTime = sendTime;
-    }
+//    public ChatRoomLogEntity(ChatRoomEntity chatRoomNum, Long sender, String message, String sendTime) {
+//        this.chatRoomNum = chatRoomNum;
+//        this.sender = sender;
+//        this.message = message;
+//        this.sendTime = sendTime;
+//    }
 }

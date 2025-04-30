@@ -27,48 +27,27 @@ public class ChatRoomLogService {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    public ChatRoomLogResponseDTO saveMessage(ChatRoomLogRequestDTO requestDTO) {
+    public void saveMessage(ChatRoomLogRequestDTO requestDTO) {
         System.out.println("💬 saveMessage 호출: " + requestDTO);
 
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(requestDTO.getChatRoomNum())
+                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
 
-        String formattedTime = requestDTO.getSendTime().format(String.valueOf(FORMATTER));
+        String formattedTime = requestDTO.getSendTime().format(FORMATTER);
 
-        // DB 저장
-        ChatRoomLogEntity entity = new ChatRoomLogEntity(
-                requestDTO.getRoomNum(),
-                requestDTO.getSender(),
-                requestDTO.getMessage(),
-                formattedTime
-        );
-        ChatRoomLogEntity saved = chatRoomLogRepository.save(entity);
+        ChatRoomLogEntity entity = ChatRoomLogEntity.builder()
+                .chatRoomNum(chatRoomEntity)
+                .sender(requestDTO.getSender())
+                .message(requestDTO.getMessage())
+                .sendTime(formattedTime)
+                .build();
 
-        return new ChatRoomLogResponseDTO(
-                saved.getRoomNum(),
-                saved.getSender(),
-                saved.getMessage(),
-                saved.getSendTime()
-        );
+        chatRoomLogRepository.save(entity);
     }
 
-    // 메시지 리스트 조회 (DTO 변환)
-    public List<ChatRoomLogResponseDTO> getMessagesByRoomAsDTO(ChatRoomEntity roomNum) {
-        return chatRoomLogRepository.findByRoomNumOrderBySendTimeAsc(roomNum).stream()
-                .map(log -> new ChatRoomLogResponseDTO(
-                        log.getRoomNum(),
-                        log.getSender(),
-                        log.getMessage(),
-                        log.getSendTime()
-                ))
-                .toList();
-    }
 
     public void deleteMessage(Long logId) {
         chatRoomLogRepository.deleteById(logId);
     }
 
-    public void deleteMessagesByRoom(Long roomNum) {
-        ChatRoomEntity chatRoom = chatRoomRepository.findById(roomNum)
-                .orElseThrow(() -> new IllegalArgumentException("채팅방 없음"));
-        chatRoomLogRepository.deleteByRoomNum(chatRoom);
-    }
 }

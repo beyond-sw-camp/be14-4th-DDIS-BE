@@ -1,5 +1,6 @@
 package com.DDIS.report.Command.domain.aggregate.entity;
 
+import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,13 +30,14 @@ public class ReportEntity {
     @Column(name = "report_type", nullable = false)
     private String reportType;
 
-    @Column(name = "client_num", nullable = false)
-    private Long clientNum;
-
     @Column(name = "report_type_num", nullable = false)
     private Long reportTypeNum;
 
     @Column(name = "is_accepted")
     private Boolean isAccepted;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_num")
+    private UserEntity client;
 
 }

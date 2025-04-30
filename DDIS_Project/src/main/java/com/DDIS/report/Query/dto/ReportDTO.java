@@ -17,6 +17,7 @@ public class ReportDTO {
     private Boolean reportStatus;
     private String reportType;
     private Long clientNum;
+    private String clientNickname;
     private Long reportTypeNum;
     private Boolean isAccepted;
 

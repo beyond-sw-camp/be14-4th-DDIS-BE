@@ -11,4 +11,7 @@ public interface FollowQueryService {
     List<FollowQueryDTO> getAllFollowers(Long clientNum);
 
     List<FollowQueryDTO> getAllFollowings(Long clientNum);
+
+    public Long findClientNumByClientId(String clientId);
+
 }

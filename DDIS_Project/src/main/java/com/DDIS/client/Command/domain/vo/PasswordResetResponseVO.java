@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PasswordResetResponseVO {
-    private final String message;
+    private String message;
 }

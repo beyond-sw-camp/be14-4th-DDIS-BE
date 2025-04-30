@@ -4,6 +4,7 @@ import com.DDIS.approve.Command.application.dto.ApproveResponseDTO;
 import com.DDIS.approve.Command.application.dto.CreateApproveDTO;
 import com.DDIS.approve.Command.application.dto.UpdateApproveStatusDTO;
 import com.DDIS.approve.Command.application.service.ApproveService;
+import com.DDIS.approve.Command.domain.repository.MemberApproveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,13 @@ import java.util.List;
 public class ApproveController {
 
      private ApproveService approveService;
+     private MemberApproveRepository memberApproveRepository;
 
 
     @Autowired
-    public ApproveController( ApproveService approveService) {
+    public ApproveController( ApproveService approveService, MemberApproveRepository memberApproveRepository) {
         this.approveService = approveService;
+        this.memberApproveRepository = memberApproveRepository;
     }
 
 
@@ -46,5 +49,18 @@ public class ApproveController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/approve/unvoted")
+    public ResponseEntity<?> getUnvotedApproves(
+            @RequestParam Long memberNum,
+            @RequestParam Long roomNum
+    ) {
+        return ResponseEntity.ok(approveService.getUnvotedApproves(memberNum, roomNum));
+    }
+
+    @GetMapping("/approve/handled")
+    public ResponseEntity<List<Long>> getHandledApproveIds(@RequestParam Long memberNum) {
+        List<Long> handled = memberApproveRepository.findApproveIdsByMemberNum(memberNum);
+        return ResponseEntity.ok(handled);
+    }
 
 }
