@@ -1,0 +1,26 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddis-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ddis
+  template:
+    metadata:
+      labels:
+        app: ddis
+    spec:
+      containers:
+        - name: ddis-backend
+          image: tommy896989/k8s_ddis_boot:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ddis-config
+            - secretRef:
+                name: ddis-secret
