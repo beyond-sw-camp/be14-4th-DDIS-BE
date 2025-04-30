@@ -8,5 +8,4 @@ import lombok.Setter;
 public class SaveShareTodoDTO {
     private String shareTodoName;
     private Long roomNum;
-    private int pinOrder;
 }

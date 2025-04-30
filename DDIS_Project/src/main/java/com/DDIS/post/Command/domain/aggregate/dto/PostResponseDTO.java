@@ -1,9 +1,12 @@
 package com.DDIS.post.Command.domain.aggregate.dto;
 
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -19,10 +22,20 @@ public class PostResponseDTO {
         private String categoryName;
         private String writerName;
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        private String createdDate;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        private String updatedDate;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        private String deleteDate;
+
         @Builder
         public PostResponseDTO(Long postNum, String title, String content, String period,
                                Integer activityTime, Integer applicants, Integer limit,
-                               String status, String categoryName, String writerName) {
+                               String status, String categoryName, String writerName,
+                               String createdDate, String updatedDate, String deleteDate) {
                 this.postNum = postNum;
                 this.title = title;
                 this.content = content;
@@ -33,6 +46,9 @@ public class PostResponseDTO {
                 this.status = status;
                 this.categoryName = categoryName;
                 this.writerName = writerName;
+                this.createdDate = createdDate;
+                this.updatedDate = updatedDate;
+                this.deleteDate = deleteDate;
         }
 
         // Entity → DTO 변환
@@ -48,6 +64,9 @@ public class PostResponseDTO {
                         .status(Boolean.TRUE.equals(post.getIsClosed()) ? "모집마감" : "모집중")
                         .categoryName(post.getCategoryNum().getCategoryName())
                         .writerName(post.getClientNum().getClientName())
+                        .createdDate(post.getCreatedDate())
+                        .updatedDate(post.getUpdatedDate())
+                        .deleteDate(post.getDeleteDate())
                         .build();
         }
 }

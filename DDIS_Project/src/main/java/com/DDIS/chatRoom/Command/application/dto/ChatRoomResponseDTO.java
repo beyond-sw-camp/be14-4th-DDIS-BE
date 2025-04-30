@@ -8,9 +8,9 @@ import lombok.*;
 @Setter
 @ToString
 public class ChatRoomResponseDTO {
-    private Long chatroom_num;
-    private String chatroom_name;
-    private String chatroom_type;
-    private Long room_num;
-    private String created_time;
+    private Long chatRoomNum;
+    private String chatRoomName;
+    private String chatRoomType;
+    private Long roomNum;
+    private String createdTime;
 }

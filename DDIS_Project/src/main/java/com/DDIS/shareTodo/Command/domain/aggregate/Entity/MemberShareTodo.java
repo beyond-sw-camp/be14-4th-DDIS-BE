@@ -19,15 +19,9 @@ public class MemberShareTodo {
 
     @ManyToOne
     @JoinColumn(name = "share_todo_num")
-    private ShareTodo shareTodoNum;
+    private ShareTodo shareTodo;
 
     @ManyToOne
     @JoinColumn(name = "member_num")
     private Members memberNum;
-
-    @Column(name = "is_completed")
-    private boolean isCompleted;
-
-    @Column(name = "completion_time")
-    private String completionTime;
 }

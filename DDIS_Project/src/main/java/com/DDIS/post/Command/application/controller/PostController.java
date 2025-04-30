@@ -1,6 +1,7 @@
 package com.DDIS.post.Command.application.controller;
 
 import com.DDIS.post.Command.domain.aggregate.dto.PostCreateRequestDTO;
+import com.DDIS.post.Command.domain.aggregate.dto.PostResearchDTO;
 import com.DDIS.post.Command.domain.aggregate.dto.PostResponseDTO;
 import com.DDIS.post.Command.domain.aggregate.dto.PostUpdateRequestDTO;
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController("postCommandController")
 @RequiredArgsConstructor
 @RequestMapping("/posts")
@@ -18,7 +21,7 @@ public class PostController {
 
     private final PostService postService;
 
-    // 1. 모집 게시글 조회
+    // 1. 조회
     @GetMapping("/findPost/{postNum}")
     public ResponseEntity<PostResponseDTO> getPrivatePost(
             @PathVariable Long postNum,
@@ -27,9 +30,10 @@ public class PostController {
         log.info("비공개 게시글 조회 요청 - postNum: {}, 입력된 비밀번호: {}", postNum, password);
 
         Post post = postService.getPost(postNum, password);
-        return ResponseEntity.ok(PostResponseDTO.fromEntity(post)); }
+        return ResponseEntity.ok(PostResponseDTO.fromEntity(post));
+    }
 
-    // 2. 모집 게시글 작성
+    // 2. 작성
     @PostMapping("/createPost")
     public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO dto) { postService.createPost(dto);
         return ResponseEntity.ok("모집 게시글 작성 완료!");
@@ -49,5 +53,12 @@ public class PostController {
 
         postService.deletePost(postNum, null);
         return ResponseEntity.ok().build();
+    }
+
+    // 5. 검색
+    @GetMapping("/search")
+    public ResponseEntity<List<PostResearchDTO>> searchPosts(@RequestParam String keyword) {
+        List<PostResearchDTO> results = postService.searchPosts(keyword);
+        return ResponseEntity.ok(results);
     }
 }

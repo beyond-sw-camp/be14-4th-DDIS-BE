@@ -1,6 +1,7 @@
 package com.DDIS.post.Query.service;
 
 import com.DDIS.post.Query.dto.AdminPostDTO;
+import com.DDIS.post.Query.dto.PostCloseResponseDTO;
 import com.DDIS.post.Query.dto.PublicPostDTO;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public interface PostService {
     // 4. 최신 모집일 기준 정렬 조회
     List<PublicPostDTO> findPostsOrderByStartDateDesc();
 
-
+    // 5. 방장 공동방 생성을 위한 조회
+    PostCloseResponseDTO checkAndClosePost(Long postNum, Long requesterClientNum);
 
 }
