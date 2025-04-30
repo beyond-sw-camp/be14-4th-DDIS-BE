@@ -4,7 +4,9 @@ import com.DDIS.approve.Command.application.dto.ApproveResponseDTO;
 import com.DDIS.approve.Command.application.dto.CreateApproveDTO;
 import com.DDIS.approve.Command.application.dto.UpdateApproveStatusDTO;
 import com.DDIS.approve.Command.domain.aggregate.Entity.Approve;
+import com.DDIS.approve.Command.domain.aggregate.Entity.MemberApprove;
 import com.DDIS.approve.Command.domain.repository.ApproveRepository;
+import com.DDIS.approve.Command.domain.repository.MemberApproveRepository;
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodoDate;
@@ -22,26 +24,29 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @Transactional
 public class ApproveServiceImpl implements ApproveService {
     private final ApproveRepository approveRepository;
     private final MemberRepository memberRepository;
+    private final MemberApproveRepository memberApproveRepository;
     private final MemberShareTodoRepository memberShareTodoRepository;
     private final MemberShareTodoDateRepository memberShareTodoDateRepository;
 
     @Autowired
-    public ApproveServiceImpl(ApproveRepository approveRepository, MemberRepository memberRepository, MemberShareTodoRepository memberShareTodoRepository, MemberShareTodoDateRepository memberShareTodoDateRepository) {
+    public ApproveServiceImpl(ApproveRepository approveRepository,
+                              MemberRepository memberRepository,
+                              MemberApproveRepository memberApproveRepository,
+                              MemberShareTodoRepository memberShareTodoRepository,
+                              MemberShareTodoDateRepository memberShareTodoDateRepository) {
         this.approveRepository = approveRepository;
         this.memberRepository = memberRepository;
+        this.memberApproveRepository = memberApproveRepository;
         this.memberShareTodoRepository = memberShareTodoRepository;
         this.memberShareTodoDateRepository = memberShareTodoDateRepository;
     }
 
-
     @Override
-    @Transactional
     public Long createApprove(CreateApproveDTO approveDTO) {
         Members member = memberRepository.findById(approveDTO.getMemberNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버 없음"));
@@ -49,17 +54,14 @@ public class ApproveServiceImpl implements ApproveService {
         MemberShareTodo memberShareTodo = memberShareTodoRepository.findById(approveDTO.getMemberShareTodoNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버공동투두 없음"));
 
-        // 복합키 ID 생성
         MemberShareTodoDateId id = new MemberShareTodoDateId(
                 approveDTO.getTodoDate(),
                 approveDTO.getMemberShareTodoNum()
         );
 
-// 날짜 엔티티 가져오기
         MemberShareTodoDate todoDateEntity = memberShareTodoDateRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 TODO 없음"));
 
-// ✅ member는 중복 조건에 필요 없음. 핵심은 이 조합
         boolean exists = approveRepository.existsByMemberShareTodoNumAndMemberShareTodoDate(
                 memberShareTodo, todoDateEntity
         );
@@ -70,20 +72,13 @@ public class ApproveServiceImpl implements ApproveService {
 
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-
-
-
-        if (approveDTO.getTodoDate() == null || approveDTO.getMemberShareTodoNum() == null) {
-            throw new IllegalArgumentException("todoDate 또는 memberShareTodoNum이 비어있습니다.");
-        }
-
         Approve approve = Approve.builder()
                 .roomNum(approveDTO.getRoomNum())
                 .memberNum(member)
                 .memberShareTodoNum(memberShareTodo)
                 .approveTitle(approveDTO.getApproveTitle())
                 .approveContent(approveDTO.getApproveContent())
-                .approveTime(now) // LocalDateTime이면 그대로
+                .approveTime(now)
                 .approvePermitCount(0)
                 .approveRefuseCount(0)
                 .todoDate(approveDTO.getTodoDate())
@@ -91,14 +86,22 @@ public class ApproveServiceImpl implements ApproveService {
 
         Approve saved = approveRepository.save(approve);
         return saved.getApproveNum();
-
     }
 
     @Override
-    @Transactional
     public void updateApproveStatus(UpdateApproveStatusDTO dto) {
         Approve approve = approveRepository.findById(dto.getApproveNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 approve가 존재하지 않습니다."));
+
+        Members member = memberRepository.findById(dto.getMemberNum())
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
+
+        boolean alreadyApproved = memberApproveRepository
+                .existsByApprove_ApproveNumAndMember_MemberNum(dto.getApproveNum(), dto.getMemberNum());
+
+        if (alreadyApproved) {
+            throw new IllegalStateException("이미 승인 또는 거절한 사용자입니다.");
+        }
 
         switch (dto.getAction()) {
             case "permit" -> approve.setApprovePermitCount(approve.getApprovePermitCount() + 1);
@@ -106,7 +109,16 @@ public class ApproveServiceImpl implements ApproveService {
             default -> throw new IllegalArgumentException("허용되지 않은 액션입니다.");
         }
 
+        MemberApprove record = MemberApprove.builder()
+                .approve(approve)
+                .member(member)
+                .approveStatus("permit".equals(dto.getAction()))
+                .build();
+
+        memberApproveRepository.save(record);
+        approveRepository.save(approve);
     }
+
     @Override
     public List<ApproveResponseDTO> getAllApproves() {
         List<Approve> approves = approveRepository.findAll();
@@ -131,5 +143,13 @@ public class ApproveServiceImpl implements ApproveService {
                 .approveContent(approve.getApproveContent())
                 .approveTime(approve.getApproveTime())
                 .build();
+    }
+
+    @Override
+    public List<ApproveResponseDTO> getUnvotedApproves(Long memberNum, Long roomNum) {
+        List<Approve> approves = approveRepository.findUnvotedApprovesByMember(memberNum, roomNum);
+        return approves.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 }
