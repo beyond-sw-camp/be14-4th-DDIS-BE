@@ -7,7 +7,6 @@ import com.DDIS.security.config.TokenResponseVO;
 import com.DDIS.security.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,19 +53,20 @@ public class ClientController {
     }
 
     // 비밀번호 변경 API
-    @PostMapping("/reset-password")
+    @GetMapping("/reset-password")
     public ResponseEntity<PasswordResetResponseVO> resetPassword(@RequestBody PasswordResetRequestVO vo) {
         PasswordResetResponseVO response = clientService.resetPassword(vo);
         return ResponseEntity.ok(response);
     }
 
-    // 마이 페이지 조회 API
-    @GetMapping("/find-ID")
+    // ID 찾기 API
+    @PostMapping("/find-ID")
     public ResponseEntity<FindIDResponseVO> findID(@RequestBody FindIDRequestVO vo) {
         FindIDResponseVO response = clientService.findID(vo);
         return ResponseEntity.ok(response);
     }
 
+    // 마이 페이지 조회 API
     @GetMapping("/mypage")
     public ResponseEntity<MypageResponseVO> getMyPage(HttpServletRequest request) {
         // 1. Authorization 헤더에서 토큰 추출
