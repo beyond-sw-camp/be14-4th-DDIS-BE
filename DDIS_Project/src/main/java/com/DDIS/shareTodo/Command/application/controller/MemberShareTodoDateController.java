@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/member-share-todo-date")
 @RequiredArgsConstructor
@@ -16,7 +18,7 @@ public class MemberShareTodoDateController {
     private final MemberShareTodoDateService service;
 
     @PostMapping("/generate")
-    public ResponseEntity<Void> generateTodoDates(@RequestBody GenerateTodoDatesRequest request) {
+    public ResponseEntity<?> generateTodoDates(@RequestBody List<GenerateTodoDatesRequest> request) {
         service.generateTodoDates(request);
         return ResponseEntity.ok().build();
     }
