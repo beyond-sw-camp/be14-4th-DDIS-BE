@@ -32,14 +32,12 @@ public class EmailServiceImpl implements EmailService {
     public boolean verifyCode(String email, String code) {
         String savedCode = redisTemplate.opsForValue().get(email);
 
-        // Redis에 저장된 인증번호가 존재하고, 입력값과 같으면 true
-        return savedCode != null && savedCode.equals(code);
-    }
-
-    private String generateRandomCode() {
-        Random random = new Random();
-        int number = random.nextInt(900000) + 100000; // 6자리 랜덤 숫자
-        return String.valueOf(number);
+        if (savedCode != null && savedCode.equals(code)) {
+            // 인증 성공 시 "verified:" 키로 저장
+            redisTemplate.opsForValue().set("verified:" + email, "true", 10, TimeUnit.MINUTES);
+            return true;
+        }
+        return false;
     }
 
     private void sendEmail(String email, String code) {
@@ -48,5 +46,11 @@ public class EmailServiceImpl implements EmailService {
         message.setSubject("[DDIS] 이메일 인증번호입니다.");
         message.setText("당신의 인증번호는 " + code + " 입니다.\n3분 안에 입력해주세요!");
         mailSender.send(message);
+    }
+
+    private String generateRandomCode() {
+        Random random = new Random();
+        int number = random.nextInt(900000) + 100000; // 6자리 랜덤 숫자
+        return String.valueOf(number);
     }
 }
