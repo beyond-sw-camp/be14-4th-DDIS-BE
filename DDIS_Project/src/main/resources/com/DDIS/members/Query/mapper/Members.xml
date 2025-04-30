@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.DDIS.shareTodo.Query.dao.MembersMapper">
+    <resultMap id="MembersResultMap" type="com.DDIS.shareTodo.Query.dto.MembersQueryDTO">
+        <id property="memberNum" column="member_num"/>
+        <result property="roomNum" column="room_num"/>
+        <result property="postNum" column="post_num"/>
+        <result property="clientNum" column="client_num"/>
+    </resultMap>
+
+    <!-- roomNum + clientNum으로 memberNum 조회 -->
+    <select id="findMemberNumByRoomAndClient" resultMap="MembersResultMap">
+        SELECT member_num
+        FROM members
+        WHERE room_num = #{roomNum}
+          AND client_num = #{clientNum}
+    </select>
+
+</mapper>

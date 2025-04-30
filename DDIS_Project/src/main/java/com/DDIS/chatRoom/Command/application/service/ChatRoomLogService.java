@@ -32,48 +32,24 @@ public class ChatRoomLogService {
         this.membersRepository = membersRepository;
     }
 
-//    public void saveMessage(ChatRoomLogRequestDTO requestDTO) {
-//        System.out.println("💬 saveMessage 호출: " + requestDTO);
-//
-//        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(requestDTO.getChatRoomNum())
-//                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
-//
-//        String formattedTime = requestDTO.getSendTime().format(String.valueOf(FORMATTER));
-//
-//        ChatRoomLogEntity entity = ChatRoomLogEntity.builder()
-//                .chatRoomNum(chatRoomEntity)
-//                .sender(requestDTO.getSender())
-//                .message(requestDTO.getMessage())
-//                .sendTime(formattedTime)
-//                .build();
-//
-//        chatRoomLogRepository.save(entity);
-//    }
-
-    // ChatRoomLogService.java
-
+    @Transactional
     public void saveMessage(ChatRoomLogRequestDTO dto) {
-        // 🔍 1. sender가 해당 room에 속한지 확인
-//        Members member = membersRepository.findByRoom_RoomNumAndClient_ClientNum(dto.getChatRoomNum(), dto.getSender())
-//                .orElseThrow(() -> new IllegalArgumentException("채팅방에 속하지 않은 사용자입니다."));
+        System.out.println("🔥 저장 시도: " + dto);
 
         ChatRoomEntity chatRoom = chatRoomRepository.findById(dto.getChatRoomNum())
-                .orElseThrow(() -> new RuntimeException("채팅방 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("채팅방 없음"));
 
-        // ✅ 2. 시간 포맷 처리
-        String formattedTime = dto.getSendTime().format(String.valueOf(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
-        // ✅ 3. 로그 저장
-        ChatRoomLogEntity log = ChatRoomLogEntity.builder()
-//                .chatRoomNum(chatRoomRepository.findById(dto.getChatRoomNum()).orElseThrow())
+        ChatRoomLogEntity entity = ChatRoomLogEntity.builder()
                 .chatRoomNum(chatRoom)
                 .sender(dto.getSender())
                 .message(dto.getMessage())
-                .sendTime(formattedTime)
+                .sendTime(dto.getSendTime().toString())
                 .build();
 
-        chatRoomLogRepository.save(log);
+        chatRoomLogRepository.save(entity);
+        System.out.println("✅ 저장 완료!");
     }
+
 
 
 

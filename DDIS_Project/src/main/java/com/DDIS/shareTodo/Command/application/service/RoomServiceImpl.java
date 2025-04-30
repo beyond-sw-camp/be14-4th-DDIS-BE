@@ -116,6 +116,18 @@ public class RoomServiceImpl implements RoomService {
             memberCount++;
         }
 
+        // 🔹 2. 채팅방 유저들 등록 (공통 Room의 모든 멤버 대상으로)
+        List<Members> roomMembers = memberRepository.findByRoom_RoomNum(rooms.getRoomNum());
+        for (Members member : roomMembers) {
+            ChatRoomUserEntity chatRoomUser = ChatRoomUserEntity.builder()
+                    .chatRoom(chatRoom)
+                    .clientNum((long) member.getClient().getClientNum())  // 해당 멤버의 사용자 ID
+                    .role("회원")
+                    .lastMsgNum(null)
+                    .build();
+            chatRoomUserRepository.save(chatRoomUser);
+        }
+
         Rooms roomnum = roomRepository.findById(postNum)
                 .orElseThrow(() -> new IllegalArgumentException("해당 방 없음"));
 
