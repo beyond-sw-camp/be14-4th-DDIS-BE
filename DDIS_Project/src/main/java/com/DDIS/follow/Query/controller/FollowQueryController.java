@@ -18,15 +18,19 @@ public class FollowQueryController {
 
     private final FollowQueryService followQueryService;
 
-    @GetMapping("/{clientNum}/followers")
-    public ResponseEntity<List<FollowQueryDTO>> getAllFollowers(@PathVariable Long clientNum) {
+    @GetMapping("/{clientId}/followers")
+    public ResponseEntity<List<FollowQueryDTO>> getAllFollowers(@PathVariable String clientId) {
+        Long clientNum = followQueryService.findClientNumByClientId(clientId);
         List<FollowQueryDTO> followers = followQueryService.getAllFollowers(clientNum);
         return ResponseEntity.ok(followers);
     }
 
-    @GetMapping("/{clientNum}/followings")
-    public ResponseEntity<List<FollowQueryDTO>> getAllFollowings(@PathVariable Long clientNum) {
+
+    @GetMapping("/{clientId}/followings")
+    public ResponseEntity<List<FollowQueryDTO>> getAllFollowings(@PathVariable String clientId) {
+        Long clientNum = followQueryService.findClientNumByClientId(clientId);
         List<FollowQueryDTO> followings = followQueryService.getAllFollowings(clientNum);
         return ResponseEntity.ok(followings);
     }
+
 }
