@@ -9,7 +9,7 @@ public class ReportRegistRequest {
 
     private String reportContent;
     private String reportType;
-    private Long clientNum;
+    private String clientId;
     private Long reportTypeNum;
 
 }

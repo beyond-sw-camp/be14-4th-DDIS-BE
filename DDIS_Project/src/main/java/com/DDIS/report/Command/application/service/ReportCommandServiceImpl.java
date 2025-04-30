@@ -28,12 +28,16 @@ public class ReportCommandServiceImpl implements ReportCommandService {
     @Override
     public Long registerReport(ReportRegistRequest request) {
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        UserEntity user = clientRepository.findByClientId(request.getClientId())
+                .orElseThrow(() -> new RuntimeException("해당 clientId의 사용자 없음"));
+
         ReportEntity reportEntity = ReportEntity.builder()
                 .reportContent(request.getReportContent())
                 .reportTime(now)
                 .reportStatus(false)
                 .reportType(request.getReportType())
-                .clientNum(request.getClientNum())
+                .client(user)
                 .reportTypeNum(request.getReportTypeNum())
                 .isAccepted(null)
                 .build();
