@@ -12,5 +12,5 @@ public interface InquiryResponseMapper {
     List<InquiryResponseQueryDTO> selectAllResponses();
 
     // 특정 답변 조회 (by response_num)
-    InquiryResponseQueryDTO selectResponse(Long responseNum);
+    InquiryResponseQueryDTO selectResponse(Long inquiryNum);
 }
