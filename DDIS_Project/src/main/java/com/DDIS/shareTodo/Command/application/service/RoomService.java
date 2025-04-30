@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface RoomService {
     Rooms createRoom(CreateShareRoomDTO roomDTO);
-    void saveShareTodos(List<SaveShareTodoDTO> todoList);
+    List<ShareTodoResponseDTO> saveShareTodos(List<SaveShareTodoDTO> todoList);
     // RoomService.java
     Rooms findRoomByRoomNum(Long roomNum);
     List<MemberShareTodoResponseDTO> generateAndSaveGptTodos(Long roomNum, String topic);

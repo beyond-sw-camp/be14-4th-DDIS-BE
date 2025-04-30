@@ -5,6 +5,7 @@ import com.DDIS.chatRoom.Command.application.service.ChatRoomService;
 import com.DDIS.shareTodo.Command.application.dto.CreateShareRoomDTO;
 import com.DDIS.shareTodo.Command.application.dto.ResponseRoomDTO;
 import com.DDIS.shareTodo.Command.application.dto.SaveShareTodoDTO;
+import com.DDIS.shareTodo.Command.application.dto.ShareTodoResponseDTO;
 import com.DDIS.shareTodo.Command.application.service.GptService;
 import com.DDIS.shareTodo.Command.application.service.RoomService;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Rooms;
@@ -45,9 +46,9 @@ public class RoomController {
     }
 
     @PostMapping("/room/share-todo")
-    public ResponseEntity<?> saveShareTodos(@RequestBody List<SaveShareTodoDTO> todoList) {
-        roomService.saveShareTodos(todoList);
-        return ResponseEntity.ok("공동 Todo 저장 완료!");
+    public ResponseEntity<List<ShareTodoResponseDTO>> saveShareTodos(@RequestBody List<SaveShareTodoDTO> todoList) {
+        List<ShareTodoResponseDTO> responseList = roomService.saveShareTodos(todoList); // 응답 리스트 받아오기
+        return ResponseEntity.ok(responseList); // 프론트는 이걸 JSON 배열로 받음
     }
 
     @GetMapping("/room/member/{clientNum}")
