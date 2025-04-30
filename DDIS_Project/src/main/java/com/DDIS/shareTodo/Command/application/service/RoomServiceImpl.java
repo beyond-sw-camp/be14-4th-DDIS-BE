@@ -272,4 +272,12 @@ public class RoomServiceImpl implements RoomService {
         return new RoomDetailDTO(todoDTOs, approveDTOs);
     }
 
+    @Override
+    public void updateApproveRequiredCount(Long roomNum, Integer count) {
+        Rooms room = roomRepository.findById(roomNum)
+                .orElseThrow(() -> new IllegalArgumentException("방을 찾을 수 없습니다."));
+        room.setApproveRequiredCount(count);
+        roomRepository.save(room);
+    }
+
 }

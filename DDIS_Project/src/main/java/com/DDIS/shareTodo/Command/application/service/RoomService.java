@@ -18,4 +18,6 @@ public interface RoomService {
     List<ResponseRoomDTO> getRoomsByClientNum(Long clientNum);
 
     RoomDetailDTO getRoomDataByRoomNum(Long roomNum);
+
+    void updateApproveRequiredCount(Long roomNum, Integer count);
 }
