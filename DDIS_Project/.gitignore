@@ -1,8 +1,14 @@
 # === Gradle 관련 ===
 .gradle/
 build/
-!/gradle/wrapper/gradle-wrapper.jar
-!/gradle/wrapper/gradle-wrapper.properties
+
+# gradle-wrapper 폴더는 제외하지 않으면 내부 파일도 무시됨
+!gradle/
+!gradle/wrapper/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# gradlew 실행 스크립트는 루트에 있음
 !gradlew
 !gradlew.bat
 
