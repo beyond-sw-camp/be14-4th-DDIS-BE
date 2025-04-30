@@ -22,6 +22,10 @@ public class MemberShareTodoDate {
     @Column(name = "member_share_todo_num")
     private Long memberShareTodoNum;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_share_todo_num", insertable = false, updatable = false)
+    private MemberShareTodo memberShareTodo;
+
     @Column(name = "is_done")
     private boolean isDone;
 

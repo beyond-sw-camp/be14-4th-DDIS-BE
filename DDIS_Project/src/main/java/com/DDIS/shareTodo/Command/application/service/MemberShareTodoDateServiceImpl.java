@@ -1,5 +1,8 @@
 package com.DDIS.shareTodo.Command.application.service;
 
+import com.DDIS.approve.Command.domain.aggregate.Entity.Approve;
+import com.DDIS.approve.Command.domain.repository.ApproveRepository;
+import com.DDIS.shareTodo.Command.application.dto.DoneLogResponse;
 import com.DDIS.shareTodo.Command.application.dto.GenerateTodoDatesRequest;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
 import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodoDate;
@@ -11,12 +14,15 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MemberShareTodoDateServiceImpl implements MemberShareTodoDateService {
     private final MemberShareTodoDateRepository repository;
     private final MemberShareTodoRepository memberShareTodoRepository;
+    private final MemberShareTodoDateRepository memberShareTodoDateRepository;
+    private final ApproveRepository approveRepository;
 
     public void generateTodoDates(List<GenerateTodoDatesRequest> requestList) {
 
@@ -52,4 +58,32 @@ public class MemberShareTodoDateServiceImpl implements MemberShareTodoDateServic
 
         repository.saveAll(allDates);
     }
+
+    @Override
+    public List<DoneLogResponse> getDoneLogs(Long roomNum, String date) {
+        List<MemberShareTodoDate> doneList = memberShareTodoDateRepository
+                .findDoneTodos(date, roomNum);
+
+        return doneList.stream()
+                .map(todoDate -> {
+                    MemberShareTodo mst = memberShareTodoRepository
+                            .findById(todoDate.getMemberShareTodoNum())
+                            .orElseThrow(() -> new IllegalArgumentException("MemberShareTodo 없음"));
+
+                    String nickname = mst.getMemberNum().getClient().getClientNickname();
+                    String todoName = mst.getShareTodo().getShareTodoName();
+
+                    // approveTime 대신 해당 memberShareTodoNum으로 approve 조회
+                    Approve approve = approveRepository
+                            .findByMemberShareTodoNum(mst.getMemberShareTodoNum())
+                            .orElse(null); // 혹시 없을 수도 있으니 null-safe
+
+                    String approveTime = approve != null ? approve.getApproveTime() : null;
+
+                    return new DoneLogResponse(nickname, todoName, approveTime);
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

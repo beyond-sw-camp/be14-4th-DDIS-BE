@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class RoomController {
@@ -60,6 +61,16 @@ public class RoomController {
     @GetMapping("/room/{roomNum}/data")
     public ResponseEntity<?> getRoomData(@PathVariable Long roomNum) {
         return ResponseEntity.ok(roomService.getRoomDataByRoomNum(roomNum));
+    }
+
+    @PatchMapping("/rooms/{roomNum}/approve-count")
+    public ResponseEntity<?> updateApproveCount(
+            @PathVariable Long roomNum,
+            @RequestBody Map<String, Integer> body
+    ) {
+        Integer count = body.get("approveRequiredCount");
+        roomService.updateApproveRequiredCount(roomNum, count);
+        return ResponseEntity.ok().build();
     }
 
 }
