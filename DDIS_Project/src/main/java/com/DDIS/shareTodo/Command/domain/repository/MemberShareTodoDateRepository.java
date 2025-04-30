@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberShareTodoDateRepository extends JpaRepository<MemberShareTodoDate, MemberShareTodoDateId> {
@@ -27,4 +28,16 @@ public interface MemberShareTodoDateRepository extends JpaRepository<MemberShare
             @Param("roomNum") Long roomNum,
             @Param("clientNum") Long clientNum,
             @Param("todoDate") String todoDate);
+
+    Optional<MemberShareTodoDate> findByTodoDateAndMemberShareTodoNum(String dateStr, Long memberShareTodoNum);
+
+
+    @Query("""
+    SELECT m FROM MemberShareTodoDate m
+    WHERE m.todoDate = :todoDate
+    AND m.memberShareTodo.shareTodo.rooms.roomNum = :roomNum
+    AND m.isDone = true
+""")
+    List<MemberShareTodoDate> findDoneTodos(@Param("todoDate") String todoDate, @Param("roomNum") Long roomNum);
+
 }

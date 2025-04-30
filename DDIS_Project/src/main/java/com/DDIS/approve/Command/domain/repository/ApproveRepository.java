@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ApproveRepository extends JpaRepository<Approve,Long> {
@@ -18,6 +19,10 @@ public interface ApproveRepository extends JpaRepository<Approve,Long> {
     boolean existsByMemberShareTodoNumAndMemberShareTodoDate(MemberShareTodo memberShareTodo, MemberShareTodoDate todoDateEntity);
 
     List<Approve> findByRoomNum(Long roomNum);
+    @Query("SELECT a FROM Approve a WHERE a.memberShareTodoNum.memberShareTodoNum = :memberShareTodoNum")
+    Optional<Approve> findByMemberShareTodoNum(@Param("memberShareTodoNum") Long memberShareTodoNum);
+
+
 
     @Query("""
     SELECT a 
@@ -30,4 +35,6 @@ public interface ApproveRepository extends JpaRepository<Approve,Long> {
     AND a.roomNum = :roomNum
 """)
     List<Approve> findUnvotedApprovesByMember(@Param("memberNum") Long memberNum, @Param("roomNum") Long roomNum);
+
+
 }

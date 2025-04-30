@@ -53,7 +53,7 @@ public class ClientController {
     }
 
     // 비밀번호 변경 API
-    @GetMapping("/reset-password")
+    @PostMapping("/reset-password")
     public ResponseEntity<PasswordResetResponseVO> resetPassword(@RequestBody PasswordResetRequestVO vo) {
         PasswordResetResponseVO response = clientService.resetPassword(vo);
         return ResponseEntity.ok(response);

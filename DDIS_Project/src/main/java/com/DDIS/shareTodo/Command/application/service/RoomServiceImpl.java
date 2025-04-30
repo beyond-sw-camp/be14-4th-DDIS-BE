@@ -164,7 +164,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public void saveShareTodos(List<SaveShareTodoDTO> todoList) {
+    public List<ShareTodoResponseDTO> saveShareTodos(List<SaveShareTodoDTO> todoList) {
         if (todoList.isEmpty()) {
             throw new IllegalArgumentException("저장할 Todo가 없습니다.");
         }
@@ -173,6 +173,8 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(() -> new IllegalArgumentException("방을 찾을 수 없습니다."));
 
         List<ShareTodo> savedTodos = new ArrayList<>();
+        List<ShareTodoResponseDTO> responseList = new ArrayList<>();
+
         for (SaveShareTodoDTO dto : todoList) {
             ShareTodo shareTodo = ShareTodo.builder()
                     .shareTodoName(dto.getShareTodoName())
@@ -180,9 +182,12 @@ public class RoomServiceImpl implements RoomService {
                     .build();
             shareTodoRepository.save(shareTodo);
             savedTodos.add(shareTodo);
+            responseList.add(new ShareTodoResponseDTO(shareTodo.getShareTodoNum()));
         }
 
         assignTodosToMembers(room, savedTodos);
+
+        return responseList;
     }
 
     @Override
@@ -265,6 +270,14 @@ public class RoomServiceImpl implements RoomService {
 
         // 3. 통합 DTO 리턴
         return new RoomDetailDTO(todoDTOs, approveDTOs);
+    }
+
+    @Override
+    public void updateApproveRequiredCount(Long roomNum, Integer count) {
+        Rooms room = roomRepository.findById(roomNum)
+                .orElseThrow(() -> new IllegalArgumentException("방을 찾을 수 없습니다."));
+        room.setApproveRequiredCount(count);
+        roomRepository.save(room);
     }
 
 }
