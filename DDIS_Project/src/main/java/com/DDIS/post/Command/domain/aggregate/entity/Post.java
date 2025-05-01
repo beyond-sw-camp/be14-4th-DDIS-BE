@@ -35,13 +35,7 @@ public class Post {
     @Column(name = "recruitment_end_date", nullable = false)
     private String recruitmentEndDate; // 모집 마감일
 
-    @Column(name = "start_date")
-    private String startDate; // 활동 시작일
-
-    @Column(name = "end_date")
-    private String endDate; // 활동 종료일
-
-    @Column(name = "activity_time")
+    @Column(name = "activity_time",  nullable = false)
     private Integer activityTime;
 
     @Column(name = "recruitment_limit", nullable = false)

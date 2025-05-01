@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,10 +58,6 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void createPost(PostCreateRequestDTO dto) {
-
-        // 유효성 검사: activityTime은 7, 14, 21, 30만 허용
-
-
         // 카테고리, 작성자 조회
         PostCategoryEntity category = categoryRepository.findById(dto.getCategoryNum())
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
@@ -74,10 +71,33 @@ public class PostServiceImpl implements PostService {
             throw new IllegalArgumentException("작성자 ID는 필수입니다.");
         }
 
+        // 날짜 입력값 유효성 검사
+        if (dto.getStartDate() == null || dto.getEndDate() == null ||
+                dto.getStartDate().isBlank() || dto.getEndDate().isBlank()) {
+            throw new IllegalArgumentException("활동 시작일과 종료일은 필수입니다.");
+        }
 
-        // 현재 날짜 (작성일용)
+//        // 날짜 포맷 지정
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//
+//        LocalDate startDate;
+//        LocalDate endDate;
+//        try {
+//            startDate = LocalDate.parse(dto.getStartDate(), formatter);
+//            endDate = LocalDate.parse(dto.getEndDate(), formatter);
+//        } catch (Exception e) {
+//            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다. (예: 2025-05-02)", e);
+//        }
+//
+//        // 활동 일수 계산 (절댓값 처리)
+//        int activity = Math.abs((int) ChronoUnit.DAYS.between(startDate, endDate));
+//        if (activity == 0) {
+//            activity = 1; // 최소 1일
+//        }
+//
+        // 현재 날짜
         String nowDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         // 모집게시글 저장
         Post post = Post.builder()
@@ -85,7 +105,7 @@ public class PostServiceImpl implements PostService {
                 .postContent(dto.getPostContent())
                 .recruitmentStartDate(nowDate)
                 .recruitmentEndDate(dto.getRecruitmentEndDate())
-                .activityTime(dto.getActivityTime())
+                .activityTime(7)
                 .recruitmentLimit(dto.getRecruitmentLimit())
                 .isPublic(dto.getIsPublic())
                 .postPassword(dto.getPostPassword())
@@ -98,6 +118,7 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
     }
+
 
     @Override
     @Transactional
