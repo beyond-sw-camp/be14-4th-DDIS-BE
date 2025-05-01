@@ -17,17 +17,34 @@ public interface ApproveRepository extends JpaRepository<Approve,Long> {
 
 
     boolean existsByMemberShareTodoNumAndMemberShareTodoDate(MemberShareTodo memberShareTodo, MemberShareTodoDate todoDateEntity);
+    @Query("""
+        SELECT a FROM Approve a
+        WHERE a.roomNum = :roomNum
+        AND NOT EXISTS (
+            SELECT 1 FROM MemberApprove ma
+            WHERE ma.approve = a
+            AND ma.member.memberNum = :memberNum
+        )
+    """)
+    List<Approve> findUnapprovedByMember(
+            @Param("roomNum") Long roomNum,
+            @Param("memberNum") Long memberNum
+    );
 
-    List<Approve> findByRoomNum(Long roomNum);
+
     @Query("SELECT a FROM Approve a WHERE a.memberShareTodoNum.memberShareTodoNum = :memberShareTodoNum")
-    Optional<Approve> findByMemberShareTodoNum(@Param("memberShareTodoNum") Long memberShareTodoNum);
+    List<Approve> findByMemberShareTodoNum(@Param("memberShareTodoNum") Long memberShareTodoNum);
+
+
+
 
 
 
     @Query("""
     SELECT a 
-    FROM Approve a 
-    WHERE a.approveNum NOT IN (
+    FROM Approve a
+    WHERE a.roomNum = :roomNum
+    AND a.approveNum NOT IN (
         SELECT ma.approve.approveNum 
         FROM MemberApprove ma 
         WHERE ma.member.memberNum = :memberNum

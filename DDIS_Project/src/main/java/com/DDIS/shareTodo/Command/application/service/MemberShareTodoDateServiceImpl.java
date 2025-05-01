@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -61,26 +62,26 @@ public class MemberShareTodoDateServiceImpl implements MemberShareTodoDateServic
 
     @Override
     public List<DoneLogResponse> getDoneLogs(Long roomNum, String date) {
-        List<MemberShareTodoDate> doneList = memberShareTodoDateRepository
-                .findDoneTodos(date, roomNum);
+        List<MemberShareTodoDate> doneList = memberShareTodoDateRepository.findDoneTodos(date, roomNum);
+        System.out.println("✅ 완료된 투두 개수: " + doneList.size());
+
 
         return doneList.stream()
-                .map(todoDate -> {
-                    MemberShareTodo mst = memberShareTodoRepository
-                            .findById(todoDate.getMemberShareTodoNum())
+                .flatMap(todoDate -> {
+                    MemberShareTodo mst = memberShareTodoRepository.findById(todoDate.getMemberShareTodoNum())
                             .orElseThrow(() -> new IllegalArgumentException("MemberShareTodo 없음"));
 
                     String nickname = mst.getMemberNum().getClient().getClientNickname();
                     String todoName = mst.getShareTodo().getShareTodoName();
 
-                    // approveTime 대신 해당 memberShareTodoNum으로 approve 조회
-                    Approve approve = approveRepository
-                            .findByMemberShareTodoNum(mst.getMemberShareTodoNum())
-                            .orElse(null); // 혹시 없을 수도 있으니 null-safe
+                    List<Approve> approves = approveRepository.findByMemberShareTodoNum(mst.getMemberShareTodoNum());
 
-                    String approveTime = approve != null ? approve.getApproveTime() : null;
+                    if (approves.isEmpty()) {
+                        return Stream.of(new DoneLogResponse(nickname, todoName, null));
+                    }
 
-                    return new DoneLogResponse(nickname, todoName, approveTime);
+                    return approves.stream()
+                            .map(a -> new DoneLogResponse(nickname, todoName, a.getApproveTime()));
                 })
                 .collect(Collectors.toList());
     }

@@ -56,6 +56,13 @@ public class RoomServiceImpl implements RoomService {
         return colorPalette.get(new Random().nextInt(colorPalette.size()));
     }
 
+    @Override
+    public void updateApproveRequiredCount(Long roomNum, Integer count) {
+        Rooms room = roomRepository.findById(roomNum)
+                .orElseThrow(() -> new IllegalArgumentException("방을 찾을 수 없습니다."));
+        room.setApproveRequiredCount(count);
+        roomRepository.save(room);
+    }
     // 공투방 생성
     @Override
     @Transactional
@@ -267,29 +274,23 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomDetailDTO getRoomDataByRoomNum(Long roomNum) {
-        // 1. 해당 방의 투두 목록 조회
+    public RoomDetailDTO getRoomDataByRoomNum(Long roomNum, Long memberNum) {
+        // 1. 투두 목록 조회
         List<ShareTodo> todos = shareTodoRepository.findByRooms_RoomNum(roomNum);
         List<ShareTodoDTO> todoDTOs = todos.stream()
                 .map(ShareTodoDTO::new)
                 .collect(Collectors.toList());
 
-        // 2. 해당 방의 승인 목록 조회
-        List<Approve> approves = approveRepository.findByRoomNum(roomNum);
-        List<ApproveDTO> approveDTOs = approves.stream()
+        // 2. 승인 목록 조회 (아직 내가 처리하지 않은 승인만)
+        List<Approve> unapprovedApproves = approveRepository.findUnapprovedByMember(roomNum, memberNum);
+        List<ApproveDTO> approveDTOs = unapprovedApproves.stream()
                 .map(ApproveDTO::new)
                 .collect(Collectors.toList());
 
-        // 3. 통합 DTO 리턴
+        // 3. 리턴
         return new RoomDetailDTO(todoDTOs, approveDTOs);
     }
 
-    @Override
-    public void updateApproveRequiredCount(Long roomNum, Integer count) {
-        Rooms room = roomRepository.findById(roomNum)
-                .orElseThrow(() -> new IllegalArgumentException("방을 찾을 수 없습니다."));
-        room.setApproveRequiredCount(count);
-        roomRepository.save(room);
-    }
 
 }
+
