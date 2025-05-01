@@ -3,21 +3,18 @@ package com.DDIS.post.Command.domain.aggregate.entity;
 import com.DDIS.client.Command.domain.aggregate.UserEntity;
 import com.DDIS.postCategory.Command.domain.aggregate.entity.PostCategoryEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "posts")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class Post {
 
@@ -33,12 +30,18 @@ public class Post {
     private String postContent;
 
     @Column(name = "recruitment_start_date", nullable = false)
-    private String recruitmentStartDate;
+    private String recruitmentStartDate; // 모집 시작일
 
     @Column(name = "recruitment_end_date", nullable = false)
-    private String recruitmentEndDate;
+    private String recruitmentEndDate; // 모집 마감일
 
-    @Column(name = "activity_time", nullable = false)
+    @Column(name = "start_date")
+    private String startDate; // 활동 시작일
+
+    @Column(name = "end_date")
+    private String endDate; // 활동 종료일
+
+    @Column(name = "activity_time")
     private Integer activityTime;
 
     @Column(name = "recruitment_limit", nullable = false)
@@ -49,23 +52,23 @@ public class Post {
 
     @Builder.Default
     @Column(name = "applicant_count", nullable = false)
-    private Integer applicantCount = 0; // 기본 0명
+    private Integer applicantCount = 0;
 
     @Column(name = "post_password")
     private String postPassword;
 
     @Builder.Default
     @Column(name = "is_closed", nullable = false)
-    private Boolean isClosed = false; // 기본 false
+    private Boolean isClosed = false;
 
     @Column(name = "created_date", nullable = false)
-    private String createdDate;  // 작성일
+    private String createdDate;
 
     @Column(name = "updated_date")
-    private String updatedDate;  // 수정일
+    private String updatedDate;
 
     @Column(name = "delete_date")
-    private String deleteDate; // 삭제일 (Soft Delete)
+    private String deleteDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_num")
@@ -82,28 +85,25 @@ public class Post {
         this.updatedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    // 모집글 소프트 삭제
+    // 소프트 삭제
     public void softDelete(String deleteDate) {
         this.deleteDate = deleteDate;
     }
 
-    // 신청자 수 +1
+    // 신청자 수 증가
     public void increaseApplicantCount() {
         this.applicantCount += 1;
     }
 
-    // 모집 마감 처리
-    public void closeRecruitment() {
-        this.isClosed = true;
-    }
-
-    // 신청자 수 -1
+    // 신청자 수 감소
     public void decreaseApplicantCount() {
         if (this.applicantCount > 0) {
             this.applicantCount -= 1;
         }
     }
 
-    public void setUpdatedDate(String now) {
+    // 모집 마감
+    public void closeRecruitment() {
+        this.isClosed = true;
     }
 }

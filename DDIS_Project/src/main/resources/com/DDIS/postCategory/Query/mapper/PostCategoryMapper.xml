@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.DDIS.postCategory.Query.mapper.PostCategoryMapper">
+
+    <select id="findAllCategories" resultType="com.DDIS.postCategory.Query.dto.PostCategoryDTO">
+        SELECT category_num AS categoryNum,
+               category_name AS categoryName
+        FROM post_categories
+    </select>
+
+</mapper>
