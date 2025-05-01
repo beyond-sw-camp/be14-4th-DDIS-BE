@@ -1,12 +1,9 @@
 package com.DDIS.post.Command.domain.aggregate.dto;
 
 import com.DDIS.post.Command.domain.aggregate.entity.Post;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -14,59 +11,62 @@ public class PostResponseDTO {
         private Long postNum;
         private String title;
         private String content;
-        private String period; // 모집 시작일 ~ 종료일
-        private Integer activityTime;
         private Integer applicants;
         private Integer limit;
-        private String status; // 모집중 / 모집마감
+        private Boolean isClosed;
         private String categoryName;
         private String writerName;
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         private String createdDate;
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         private String updatedDate;
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         private String deleteDate;
 
+        private String startDate;         // 참여 시작일
+        private String endDate;           // 참여 종료일
+        private String recruitStartDate;  // 모집 시작일
+        private String recruitEndDate;    // 모집 종료일
+
         @Builder
-        public PostResponseDTO(Long postNum, String title, String content, String period,
-                               Integer activityTime, Integer applicants, Integer limit,
-                               String status, String categoryName, String writerName,
-                               String createdDate, String updatedDate, String deleteDate) {
+        public PostResponseDTO(Long postNum, String title, String content,
+                               Integer applicants, Integer limit, Boolean isClosed,
+                               String categoryName, String writerName,
+                               String createdDate, String updatedDate, String deleteDate,
+                               String startDate, String endDate,
+                               String recruitStartDate, String recruitEndDate) {
                 this.postNum = postNum;
                 this.title = title;
                 this.content = content;
-                this.period = period;
-                this.activityTime = activityTime;
                 this.applicants = applicants;
                 this.limit = limit;
-                this.status = status;
+                this.isClosed = isClosed;
                 this.categoryName = categoryName;
                 this.writerName = writerName;
                 this.createdDate = createdDate;
                 this.updatedDate = updatedDate;
                 this.deleteDate = deleteDate;
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.recruitStartDate = recruitStartDate;
+                this.recruitEndDate = recruitEndDate;
         }
 
-        // Entity → DTO 변환
         public static PostResponseDTO fromEntity(Post post) {
                 return PostResponseDTO.builder()
                         .postNum(post.getPostNum())
                         .title(post.getPostTitle())
                         .content(post.getPostContent())
-                        .period(post.getRecruitmentStartDate() + " ~ " + post.getRecruitmentEndDate())
-                        .activityTime(post.getActivityTime())
                         .applicants(post.getApplicantCount())
                         .limit(post.getRecruitmentLimit())
-                        .status(Boolean.TRUE.equals(post.getIsClosed()) ? "모집마감" : "모집중")
+                        .isClosed(post.getIsClosed())
                         .categoryName(post.getCategoryNum().getCategoryName())
                         .writerName(post.getClientNum().getClientName())
                         .createdDate(post.getCreatedDate())
                         .updatedDate(post.getUpdatedDate())
                         .deleteDate(post.getDeleteDate())
+                        .startDate(post.getRecruitmentStartDate())   // 참여 시작일 = 모집 시작일
+                        .endDate(post.getRecruitmentEndDate())       // 참여 종료일 = 모집 종료일
+                        .recruitStartDate(post.getRecruitmentStartDate())
+                        .recruitEndDate(post.getRecruitmentEndDate())
                         .build();
         }
 }
