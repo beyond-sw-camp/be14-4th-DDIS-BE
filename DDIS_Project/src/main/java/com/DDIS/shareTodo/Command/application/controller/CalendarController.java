@@ -6,11 +6,14 @@ import com.DDIS.shareTodo.Command.application.dto.DoneLogResponse;
 import com.DDIS.shareTodo.Command.application.service.CalendarService;
 import com.DDIS.shareTodo.Command.application.service.MemberShareTodoDateService;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoDateRepository;
+import com.DDIS.shareTodo.Command.domain.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/calendar")
@@ -18,6 +21,8 @@ import java.util.List;
 public class CalendarController {
     private final CalendarService calendarService;
     private final MemberShareTodoDateService memberShareTodoDateService;
+    private final MemberShareTodoDateRepository memberShareTodoDateRepository;
+    private final RoomRepository roomRepository;
 
     @GetMapping("/room/{roomNum}/todos")
     public ResponseEntity<List<DailyShareTodoDTO>> getRoomTodosByDate(
@@ -36,6 +41,15 @@ public class CalendarController {
         List<DoneLogResponse> logs = memberShareTodoDateService.getDoneLogs(roomNum, date);
         return ResponseEntity.ok(logs);
     }
+
+    @GetMapping("/room/{roomNum}/color-mapping")
+    public ResponseEntity<Map<String, String>> getDateColorMapping(
+            @PathVariable Long roomNum
+    ) {
+        Map<String, String> colorMapping = calendarService.getDateColorMap(roomNum);
+        return ResponseEntity.ok(colorMapping);
+    }
+
 }
 
 

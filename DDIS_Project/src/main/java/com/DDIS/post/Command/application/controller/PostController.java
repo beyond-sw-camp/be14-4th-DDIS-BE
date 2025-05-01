@@ -14,15 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController("postCommandController")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
-@RequestMapping("/posts")
+@RequestMapping("/post")
 @Slf4j
 public class PostController {
 
     private final PostService postService;
 
     // 1. 조회
-    @GetMapping("/findPost/{postNum}")
+    @GetMapping("/{postNum}")
     public ResponseEntity<PostResponseDTO> getPrivatePost(
             @PathVariable Long postNum,
             @RequestParam(required = false) String password
@@ -34,13 +35,13 @@ public class PostController {
     }
 
     // 2. 작성
-    @PostMapping("/createPost")
+    @PostMapping()
     public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO dto) { postService.createPost(dto);
         return ResponseEntity.ok("모집 게시글 작성 완료!");
     }
 
     // 3. 수정
-    @PatchMapping("/updatePost/{postNum}")
+    @PatchMapping("/{postNum}")
     public ResponseEntity<Void> updatePost(@PathVariable Long postNum,
                                            @RequestBody PostUpdateRequestDTO requestDTO) {
         postService.updatePost(postNum, requestDTO, null);
@@ -48,7 +49,7 @@ public class PostController {
     }
 
     // 4. 삭제
-    @DeleteMapping("/deletePost/{postNum}")
+    @DeleteMapping("/{postNum}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postNum) {
 
         postService.deletePost(postNum, null);

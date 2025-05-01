@@ -59,16 +59,21 @@ public class PostServiceImpl implements PostService {
     public void createPost(PostCreateRequestDTO dto) {
 
         // 유효성 검사: activityTime은 7, 14, 21, 30만 허용
-        List<Integer> validActivityTimes = List.of(7, 14, 21, 30);
-        if (!validActivityTimes.contains(dto.getActivityTime())) {
-            throw new IllegalArgumentException("활동 기간은 7일, 14일, 21일, 30일 중 하나여야 합니다.");
-        }
+
 
         // 카테고리, 작성자 조회
         PostCategoryEntity category = categoryRepository.findById(dto.getCategoryNum())
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
         UserEntity client = clientRepository.findById(dto.getClientNum())
                 .orElseThrow(() -> new IllegalArgumentException("작성자를 찾을 수 없습니다."));
+
+        if (dto.getCategoryNum() == null) {
+            throw new IllegalArgumentException("카테고리 ID는 필수입니다.");
+        }
+        if (dto.getClientNum() == null) {
+            throw new IllegalArgumentException("작성자 ID는 필수입니다.");
+        }
+
 
         // 현재 날짜 (작성일용)
         String nowDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -94,7 +99,6 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
-    // 3. 모집게시글 수정
     @Override
     @Transactional
     public void updatePost(Long postNum, PostUpdateRequestDTO request, Long requesterId) {
@@ -106,12 +110,16 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("모집이 마감된 게시글은 수정할 수 없습니다.");
         }
 
-        // 게시글 수정
-        post.updatePost(request.getPostTitle(), request.getPostContent());
+        // 작성자 본인 확인 (추가 권한 검사)
+        if (!post.getClientNum().getClientNum().equals(requesterId)) {
+            throw new RuntimeException("작성자 본인만 수정할 수 있습니다.");
+        }
 
-        // 수정일 업데이트
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        post.setUpdatedDate(now);
+        // 제목, 내용 수정 (updatedDate 포함됨)
+        post.updatePost(
+                request.getPostTitle(),
+                request.getPostContent()
+        );
     }
 
     // 4. 모집게시글 삭제

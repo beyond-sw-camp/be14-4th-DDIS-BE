@@ -8,5 +8,5 @@ spec:
   selector:
     app: ddis
   ports:
-    - port: 8080
+    - port: 8001
       targetPort: 8080

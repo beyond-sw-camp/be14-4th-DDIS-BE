@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class UpdateApproveStatusDTO {
     private Long approveNum;
-    private Long memberShareTodoNum;
     private Long memberNum;
     private String action;
 }

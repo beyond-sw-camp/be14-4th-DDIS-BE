@@ -10,10 +10,17 @@ spec:
   rules:
     - http:
         paths:
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ddis-frontend-service
+                port:
+                  number: 8000
           - path: /ddis(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: ddis-service
                 port:
-                  number: 8080
+                  number: 8001

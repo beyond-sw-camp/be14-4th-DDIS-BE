@@ -59,8 +59,10 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomNum}/data")
-    public ResponseEntity<?> getRoomData(@PathVariable Long roomNum) {
-        return ResponseEntity.ok(roomService.getRoomDataByRoomNum(roomNum));
+    public ResponseEntity<?> getRoomData(
+            @PathVariable Long roomNum,
+            @RequestParam Long memberNum) {
+        return ResponseEntity.ok(roomService.getRoomDataByRoomNum(roomNum, memberNum));
     }
 
     @PatchMapping("/rooms/{roomNum}/approve-count")
