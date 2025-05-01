@@ -8,12 +8,10 @@ import com.DDIS.approve.Command.domain.aggregate.Entity.MemberApprove;
 import com.DDIS.approve.Command.domain.repository.ApproveRepository;
 import com.DDIS.approve.Command.domain.repository.MemberApproveRepository;
 import com.DDIS.approve.Command.domain.repository.MemberRepository;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodo;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodoDate;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.MemberShareTodoDateId;
-import com.DDIS.shareTodo.Command.domain.aggregate.Entity.Members;
+import com.DDIS.shareTodo.Command.domain.aggregate.Entity.*;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoDateRepository;
 import com.DDIS.shareTodo.Command.domain.repository.MemberShareTodoRepository;
+import com.DDIS.shareTodo.Command.domain.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +30,21 @@ public class ApproveServiceImpl implements ApproveService {
     private final MemberApproveRepository memberApproveRepository;
     private final MemberShareTodoRepository memberShareTodoRepository;
     private final MemberShareTodoDateRepository memberShareTodoDateRepository;
+    private final RoomRepository roomRepository;
 
     @Autowired
     public ApproveServiceImpl(ApproveRepository approveRepository,
                               MemberRepository memberRepository,
                               MemberApproveRepository memberApproveRepository,
                               MemberShareTodoRepository memberShareTodoRepository,
-                              MemberShareTodoDateRepository memberShareTodoDateRepository) {
+                              MemberShareTodoDateRepository memberShareTodoDateRepository,
+                              RoomRepository roomRepository) {
         this.approveRepository = approveRepository;
         this.memberRepository = memberRepository;
         this.memberApproveRepository = memberApproveRepository;
         this.memberShareTodoRepository = memberShareTodoRepository;
         this.memberShareTodoDateRepository = memberShareTodoDateRepository;
+        this.roomRepository = roomRepository;
     }
 
     @Override
@@ -117,6 +118,29 @@ public class ApproveServiceImpl implements ApproveService {
 
         memberApproveRepository.save(record);
         approveRepository.save(approve);
+
+        if ("permit".equals(dto.getAction())) {
+            MemberShareTodo memberShareTodo = approve.getMemberShareTodoNum();
+
+            // 방 정보 조회
+            Rooms room = roomRepository.findById(approve.getRoomNum())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 방을 찾을 수 없습니다."));
+
+            // 승인 수 기준 이상일 때 처리
+            if (approve.getApprovePermitCount() >= room.getApproveRequiredCount()) {
+                // 날짜 추출 (approveTime이 "2025-04-30 11:34:57" 같은 형식일 경우)
+                String dateStr = approve.getTodoDate();
+
+                // memberShareTodoDate 조회
+                MemberShareTodoDate dateEntity = memberShareTodoDateRepository
+                        .findByTodoDateAndMemberShareTodoNum(dateStr, memberShareTodo.getMemberShareTodoNum())
+                        .orElseThrow(() -> new IllegalArgumentException("일치하는 날짜 데이터가 없습니다."));
+
+                dateEntity.setDone(true);
+                memberShareTodoDateRepository.save(dateEntity);
+            }
+        }
+
     }
 
     @Override

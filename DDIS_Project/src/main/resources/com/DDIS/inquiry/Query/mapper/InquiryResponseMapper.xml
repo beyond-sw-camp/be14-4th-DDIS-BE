@@ -29,7 +29,7 @@
             response_content,
             response_time
         FROM inquiry_responses
-        WHERE response_num = #{responseNum}
+        WHERE inquiry_num = #{inquiryNum}
     </select>
 
 </mapper>

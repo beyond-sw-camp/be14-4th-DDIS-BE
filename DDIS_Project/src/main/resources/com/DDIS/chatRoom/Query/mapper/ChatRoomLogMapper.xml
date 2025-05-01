@@ -24,4 +24,27 @@
         WHERE message_num = #{messageNum}
         ORDER BY message_num DESC;
     </select>
+
+    <select id="findLogsByRoomNum" resultMap="chatRoomLogResultMap">
+        SELECT
+        message_num
+        , chatroom_num
+        , client_num
+        , message_content
+        , send_time
+        FROM chatroom_log
+        WHERE chatroom_num = #{roomNum}
+<!--        SELECT-->
+<!--            l.sender AS sender,-->
+<!--            l.message_content AS message,-->
+<!--            l.send_time AS sendTime-->
+<!--        FROM-->
+<!--            chatroom_log l-->
+<!--        JOIN-->
+<!--            chatroom c ON l.chatroom_num = c.chatroom_num-->
+<!--        WHERE-->
+<!--            c.room_num = #{roomNum}-->
+<!--        ORDER BY-->
+<!--            l.message_num ASC-->
+    </select>
 </mapper>

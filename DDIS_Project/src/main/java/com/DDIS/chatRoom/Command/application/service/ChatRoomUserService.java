@@ -37,6 +37,14 @@ public class ChatRoomUserService {
         chatRoomUserRepository.save(user);
     }
 
+    @Transactional
+    public void updateLastReadMessage(Long chatRoomNum, Long clientNum, Long lastMsgNum) {
+        ChatRoomUserEntity user = chatRoomUserRepository.findByChatRoom_ChatRoomNumAndClientNum(chatRoomNum, clientNum)
+                .orElseThrow(() -> new IllegalArgumentException("채팅방 사용자 정보가 없습니다."));
+        user.setLastMsgNum(lastMsgNum);
+        chatRoomUserRepository.save(user);
+    }
+
 
     // ✅ 채팅방 퇴장
     @Transactional

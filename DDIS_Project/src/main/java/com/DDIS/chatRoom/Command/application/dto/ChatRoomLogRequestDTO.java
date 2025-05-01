@@ -14,6 +14,6 @@ public class ChatRoomLogRequestDTO {
     private Long chatRoomNum;
     private Long sender;
     private String message;
-    private LocalDateTime sendTime;
+    private String sendTime;
 
 }

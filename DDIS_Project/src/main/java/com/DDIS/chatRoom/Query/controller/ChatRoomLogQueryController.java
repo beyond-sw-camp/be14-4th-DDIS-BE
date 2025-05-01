@@ -27,4 +27,12 @@ public class ChatRoomLogQueryController {
         return chatRoomLogQueryService.getMessagesByRoomAsDTO(roomNum);
     }
 
+    @GetMapping("/chat-room/logs/{roomNum}")
+    public List<ChatRoomLogQueryDTO> getChatLogsByRoom(@PathVariable Long roomNum) {
+        System.out.println("조회 요청 들어온 채팅방 번호: " + roomNum);
+        List<ChatRoomLogQueryDTO> result = chatRoomLogQueryService.getLogsByRoomNum(roomNum);
+        System.out.println("조회된 로그 수: " + result.size());
+        return result;
+    }
+
 }

@@ -12,7 +12,7 @@ import lombok.*;
 public class InquiryRequestDTO {
     private String inquiryTitle;
     private String inquiryContent;
-//    private String inquiryTime;
+    private String inquiryTime;
     private Long clientNum;
 
     public InquiryEntity toEntity() {
