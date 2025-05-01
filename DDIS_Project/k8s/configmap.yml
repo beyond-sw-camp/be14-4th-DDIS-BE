@@ -1,4 +1,3 @@
-# configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,6 +10,12 @@ data:
   SPRING_DATA_REDIS_HOST: "ddis-redis-service"
   SPRING_DATA_REDIS_PORT: "6379"
   SERVER_PORT: "8080"
+
+  # 토큰 만료 설정
+  token.expiration_time: "86400000"
+  token.refresh_expiration_time: "604800000"
+
+  # 메일 설정
   SPRING_MAIL_HOST: "smtp.gmail.com"
   SPRING_MAIL_PORT: "587"
   SPRING_MAIL_USERNAME: "zlions2127@gmail.com"
@@ -21,6 +26,8 @@ data:
   SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT: "5000"
   SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITE_TIMEOUT: "5000"
   SPRING_MAIL_PROPERTIES_AUTH_CODE_EXPIRATION_MILLIS: "1800000"
+
+  # JPA 설정
   SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
   SPRING_JPA_SHOW_SQL: "true"
   SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
