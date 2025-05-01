@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/clients")
 @RequiredArgsConstructor
@@ -69,36 +70,31 @@ public class ClientController {
     // 마이 페이지 조회 API
     @GetMapping("/mypage")
     public ResponseEntity<MypageResponseVO> getMyPage(HttpServletRequest request) {
-        // 1. Authorization 헤더가 null인지 먼저 확인
         String header = request.getHeader("Authorization");
 
         if (header == null || !header.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(null);  // 혹은 에러 메시지 포함한 ResponseEntity로 변경 가능
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        // 2. "Bearer " 제거하고 토큰만 추출
         String token = header.replace("Bearer ", "");
+        Long clientNum = jwtUtil.getClientNum(token);
 
-        // 3. 토큰에서 clientId 추출
-        String clientId = jwtUtil.getClientId(token);
-
-        // 4. clientId로 마이페이지 조회
-        MypageResponseVO response = clientService.getMyPage(clientId);
-
+        MypageResponseVO response = clientService.getMyPage(clientNum);
         return ResponseEntity.ok(response);
     }
 
+    // 로그아웃 API
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
-        String clientId = jwtUtil.getClientId(token);
+        Long clientNum = jwtUtil.getClientNum(token);
 
-        clientService.logout(clientId); // 🔥 Service 호출
+        clientService.logout(clientNum); // 🔥 Service 호출
 
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
 
+    // 토큰 재발급 API
     @PostMapping("/token/refresh")
     public ResponseEntity<TokenResponseVO> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
         TokenResponseVO response = clientService.refreshAccessToken(refreshToken);

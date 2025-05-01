@@ -33,6 +33,6 @@ public class ReportCommandController {
 
     @GetMapping("/health")
     public String healthCheck() {
-        return "I'm alive! Maybe?";
+        return "I'm alive! 배포 테스트";
     }
 }
