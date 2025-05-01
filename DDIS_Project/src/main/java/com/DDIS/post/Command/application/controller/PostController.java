@@ -41,7 +41,6 @@ public class PostController {
         return ResponseEntity.ok("작성완료!");
     }
 
-
     // 3. 수정
     @PatchMapping("/{postNum}")
     public ResponseEntity<Void> updatePost(@PathVariable Long postNum,

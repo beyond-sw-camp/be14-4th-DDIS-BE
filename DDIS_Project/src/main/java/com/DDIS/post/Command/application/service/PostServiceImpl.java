@@ -77,24 +77,6 @@ public class PostServiceImpl implements PostService {
             throw new IllegalArgumentException("활동 시작일과 종료일은 필수입니다.");
         }
 
-//        // 날짜 포맷 지정
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//
-//        LocalDate startDate;
-//        LocalDate endDate;
-//        try {
-//            startDate = LocalDate.parse(dto.getStartDate(), formatter);
-//            endDate = LocalDate.parse(dto.getEndDate(), formatter);
-//        } catch (Exception e) {
-//            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다. (예: 2025-05-02)", e);
-//        }
-//
-//        // 활동 일수 계산 (절댓값 처리)
-//        int activity = Math.abs((int) ChronoUnit.DAYS.between(startDate, endDate));
-//        if (activity == 0) {
-//            activity = 1; // 최소 1일
-//        }
-//
         // 현재 날짜
         String nowDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
