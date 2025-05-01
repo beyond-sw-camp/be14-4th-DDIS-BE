@@ -1,7 +1,8 @@
 package com.DDIS.security.filter;
 
-// 토큰 인증 필터, 요청마다 JWT 인증 처리
 import com.DDIS.security.util.JwtUtil;
+import com.DDIS.security.userdetails.CustomUserDetails;
+import com.DDIS.security.userdetails.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -21,6 +23,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -28,23 +31,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. 토큰 추출
         String token = resolveToken(request);
 
-        // 2. 유효성 검사 후 인증 객체 생성
         if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
             String clientId = jwtUtil.getClientId(token);
 
+            // DB 조회를 통한 사용자 정보 획득
+            UserDetails userDetails = userDetailsService.loadUserByUsername(clientId);
+
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(clientId, null, null);
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities());
 
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // 3. 인증 객체 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        // 다음 필터로 전달
         filterChain.doFilter(request, response);
     }
 

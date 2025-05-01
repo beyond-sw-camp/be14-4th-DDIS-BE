@@ -14,9 +14,9 @@ public interface ClientService {
 
     FindIDResponseVO findID(FindIDRequestVO vo);
 
-    MypageResponseVO getMyPage(String clientId);
+    MypageResponseVO getMyPage(Long clientNum);  // clientNum을 파라미터로 받도록 변경
 
     TokenResponseVO refreshAccessToken(String refreshToken);
 
-    void logout(String clientId);
+    void logout(Long clientNum);  // clientNum을 파라미터로 받도록 변경
 }
