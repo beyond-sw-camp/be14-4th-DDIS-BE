@@ -22,15 +22,9 @@ public class PublicPostDTO {
     private Boolean isPublic;               // 공개 여부
     private Boolean isClosed;               // 모집 마감 여부
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime createdDate;       // 작성일
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime updatedDate;       // 수정일
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime deleteDate;        // 삭제일
-
+    private String createdDate;       // 작성일
+    private String updatedDate;       // 수정일
+    private String deleteDate;        // 삭제일
     private String categoryName;             // 카테고리명
     private String clientName;               // 작성자 이름
 }

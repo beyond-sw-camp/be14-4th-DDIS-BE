@@ -30,4 +30,9 @@ public class ReportCommandController {
         reportCommandService.handleReport(reportNum, false);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "I'm alive! 배포 테스트";
+    }
 }

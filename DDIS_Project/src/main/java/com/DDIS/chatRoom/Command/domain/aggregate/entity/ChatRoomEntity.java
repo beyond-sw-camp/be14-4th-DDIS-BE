@@ -18,9 +18,9 @@ public class ChatRoomEntity {
     @Column(name = "chatroom_num")
     private Long chatRoomNum;
 
-    @ManyToOne
-    @JoinColumn(name = "room_num")
-    private Rooms roomNum;
+////    @ManyToOne
+//    @JoinColumn(name = "room_num")
+//    private Long roomNum;
 
     @Column(name = "chatroom_name")
     private String chatRoomName;
@@ -30,6 +30,10 @@ public class ChatRoomEntity {
 
     @Column(name = "created_time")
     private String createdTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_num") // FK 이름
+    private Rooms rooms;
 
     public ChatRoomEntity(String name) {
         this();

@@ -69,13 +69,21 @@ public class ClientController {
     // 마이 페이지 조회 API
     @GetMapping("/mypage")
     public ResponseEntity<MypageResponseVO> getMyPage(HttpServletRequest request) {
-        // 1. Authorization 헤더에서 토큰 추출
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        // 1. Authorization 헤더가 null인지 먼저 확인
+        String header = request.getHeader("Authorization");
 
-        // 2. 토큰에서 clientId 추출
+        if (header == null || !header.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(null);  // 혹은 에러 메시지 포함한 ResponseEntity로 변경 가능
+        }
+
+        // 2. "Bearer " 제거하고 토큰만 추출
+        String token = header.replace("Bearer ", "");
+
+        // 3. 토큰에서 clientId 추출
         String clientId = jwtUtil.getClientId(token);
 
-        // 3. clientId로 마이페이지 조회
+        // 4. clientId로 마이페이지 조회
         MypageResponseVO response = clientService.getMyPage(clientId);
 
         return ResponseEntity.ok(response);
@@ -91,8 +99,8 @@ public class ClientController {
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
 
-    @PostMapping("/clients/refresh")
-    public ResponseEntity<TokenResponseVO> refresh(@RequestBody String refreshToken) {
+    @PostMapping("/token/refresh")
+    public ResponseEntity<TokenResponseVO> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
         TokenResponseVO response = clientService.refreshAccessToken(refreshToken);
         return ResponseEntity.ok(response);
     }

@@ -21,7 +21,7 @@ public class InquiryResponseQueryService {
         return inquiryResponseMapper.selectAllResponses();
     }
 
-    public InquiryResponseQueryDTO getResponse(Long responseNum) {
-        return inquiryResponseMapper.selectResponse(responseNum);
+    public InquiryResponseQueryDTO getResponse(Long inquiryNum) {
+        return inquiryResponseMapper.selectResponse(inquiryNum);
     }
 }

@@ -19,10 +19,7 @@ public class PostCreateRequestDTO {
     private String postPassword;
     private Long categoryNum;
     private Long clientNum;
-
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime createdDate;
+    private String createdDate;
 
 }
 
