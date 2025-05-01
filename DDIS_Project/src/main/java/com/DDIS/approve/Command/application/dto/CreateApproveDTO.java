@@ -14,4 +14,5 @@ public class CreateApproveDTO {
     private String todoDate;
     private String approveTitle;
     private String approveContent;
+    private String approveTime;
 }

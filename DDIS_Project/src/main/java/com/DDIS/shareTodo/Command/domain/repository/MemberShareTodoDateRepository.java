@@ -23,21 +23,32 @@ public interface MemberShareTodoDateRepository extends JpaRepository<MemberShare
             "JOIN ShareTodo t ON mst.shareTodo.shareTodoNum = t.shareTodoNum " +
             "JOIN Members m ON mst.memberNum.memberNum = m.memberNum " +
             "LEFT JOIN Approve a ON a.memberShareTodoNum.memberShareTodoNum = d.memberShareTodoNum AND a.todoDate = d.todoDate " +
-            "WHERE m.room.roomNum = :roomNum AND m.client.clientNum = :clientNum AND d.todoDate = :todoDate")
+            "LEFT JOIN MemberApprove ma ON a.approveNum = ma.approve.approveNum AND ma.member.memberNum = m.memberNum " +
+            "WHERE m.room.roomNum = :roomNum AND m.client.clientNum = :clientNum AND d.todoDate = :todoDate " +
+            "AND (a.approveNum IS NULL OR ma.approve IS NULL)")
+
     List<DailyShareTodoDTO> findDailyTodos(
             @Param("roomNum") Long roomNum,
             @Param("clientNum") Long clientNum,
             @Param("todoDate") String todoDate);
 
-    Optional<MemberShareTodoDate> findByTodoDateAndMemberShareTodoNum(String dateStr, Long memberShareTodoNum);
+    List<MemberShareTodoDate> findByTodoDateAndMemberShareTodoNum(String dateStr, Long memberShareTodoNum);
 
 
-    @Query("""
-    SELECT m FROM MemberShareTodoDate m
-    WHERE m.todoDate = :todoDate
-    AND m.memberShareTodo.shareTodo.rooms.roomNum = :roomNum
-    AND m.isDone = true
-""")
+    @Query(value = """
+SELECT m.todo_date,
+         m.member_share_todo_num,
+         m.is_done,
+         m.is_public,
+         m.pin_order FROM member_share_todo_date m
+JOIN member_share_todos mst ON m.member_share_todo_num = mst.member_share_todo_num
+JOIN share_todos st ON mst.share_todo_num = st.share_todo_num
+JOIN rooms r ON st.room_num = r.room_num
+WHERE m.todo_date = :todoDate
+AND r.room_num = :roomNum
+AND m.is_done = 1
+""", nativeQuery = true)
     List<MemberShareTodoDate> findDoneTodos(@Param("todoDate") String todoDate, @Param("roomNum") Long roomNum);
+
 
 }

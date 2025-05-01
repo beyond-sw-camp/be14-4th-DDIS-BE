@@ -132,11 +132,15 @@ public class ApproveServiceImpl implements ApproveService {
                 String dateStr = approve.getTodoDate();
 
                 // memberShareTodoDate 조회
-                MemberShareTodoDate dateEntity = memberShareTodoDateRepository
-                        .findByTodoDateAndMemberShareTodoNum(dateStr, memberShareTodo.getMemberShareTodoNum())
-                        .orElseThrow(() -> new IllegalArgumentException("일치하는 날짜 데이터가 없습니다."));
+                List<MemberShareTodoDate> dates = memberShareTodoDateRepository
+                        .findByTodoDateAndMemberShareTodoNum(dateStr, memberShareTodo.getMemberShareTodoNum());
+                if (dates.isEmpty()) {
+                    throw new IllegalArgumentException("일치하는 날짜 데이터가 없습니다.");
+                }
 
-                dateEntity.setDone(true);
+
+                MemberShareTodoDate dateEntity = dates.get(0);
+                dateEntity.setDone(true);  // ✅ 상태 변경!
                 memberShareTodoDateRepository.save(dateEntity);
             }
         }
