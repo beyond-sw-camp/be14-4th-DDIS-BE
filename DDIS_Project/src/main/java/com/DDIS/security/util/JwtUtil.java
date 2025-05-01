@@ -26,10 +26,11 @@ public class JwtUtil {
     }
 
     // 토큰 생성 메서드
-    public String generateToken(String clientId, String role) {
+    public String generateToken(String clientId, String role, Long clientNum) {
         return Jwts.builder()
                 .setSubject(clientId)
                 .claim("role", role)
+                .claim("clientNum", clientNum)
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secret.getBytes())
                 .compact();
@@ -56,6 +57,22 @@ public class JwtUtil {
                 .getSubject();
     }
 
+    public Long getClientNum(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build()
+                .parseClaimsJws(token).getBody();
+        return claims.get("clientNum", Long.class);
+    }
+
+    public String getClientRole(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secret.getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("role", String.class);
+    }
+
     // Refresh token 생성 메서드 추가
     public String generateRefreshToken(String clientId) {
         return Jwts.builder()
@@ -65,3 +82,4 @@ public class JwtUtil {
                 .compact();
     }
 }
+
