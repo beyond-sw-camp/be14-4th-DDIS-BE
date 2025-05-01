@@ -10,6 +10,7 @@ public class ChatRoomLogQueryDTO {
     private Long messageNum;
     private Long chatRoomNum;
     private Long clientNum;
+    private String clientName;
     private String messageContent;
     private String sendTime;
 }

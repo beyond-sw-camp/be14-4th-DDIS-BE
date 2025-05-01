@@ -9,6 +9,7 @@
         <id property="messageNum" column="message_num"/>
         <result property="chatRoomNum" column="chatroom_num"/>
         <result property="clientNum" column="client_num"/>
+        <result property="clientName" column="client_nickname"/>
         <result property="messageContent" column="message_content"/>
         <result property="sendTime" column="send_time"/>
     </resultMap>
@@ -18,6 +19,7 @@
             message_num
             , chatroom_num
             , client_num
+            , client_nickname
             , message_content
             , send_time
           FROM chatroom_log
@@ -30,6 +32,7 @@
         message_num
         , chatroom_num
         , client_num
+        , client_nickname
         , message_content
         , send_time
         FROM chatroom_log

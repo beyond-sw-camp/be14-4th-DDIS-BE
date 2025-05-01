@@ -26,6 +26,9 @@ public class ChatRoomLogEntity {
     @Column(name = "client_num")
     private Long sender;
 
+    @Column(name = "client_nickname")
+    private String senderName;
+
     @Column(name = "message_content")
     private String message;
 
