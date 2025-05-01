@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -51,4 +52,15 @@ AND m.is_done = 1
     List<MemberShareTodoDate> findDoneTodos(@Param("todoDate") String todoDate, @Param("roomNum") Long roomNum);
 
 
+
+
+    @Query("""
+        SELECT d.todoDate, COUNT(d)
+        FROM MemberShareTodoDate d
+        JOIN d.memberShareTodo mst
+        WHERE mst.shareTodo.rooms.roomNum = :roomNum
+        AND d.isDone = true
+        GROUP BY d.todoDate
+    """)
+    List<Object[]> countDoneByDate(@Param("roomNum") Long roomNum);
 }
