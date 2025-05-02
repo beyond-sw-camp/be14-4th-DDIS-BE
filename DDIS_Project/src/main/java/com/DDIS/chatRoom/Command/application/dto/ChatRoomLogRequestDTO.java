@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class ChatRoomLogRequestDTO {
     private Long chatRoomNum;
     private Long sender;
+    private String senderName;
     private String message;
     private String sendTime;
 

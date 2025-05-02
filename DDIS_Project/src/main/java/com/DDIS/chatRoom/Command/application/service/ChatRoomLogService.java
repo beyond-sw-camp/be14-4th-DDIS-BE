@@ -42,6 +42,7 @@ public class ChatRoomLogService {
         ChatRoomLogEntity entity = ChatRoomLogEntity.builder()
                 .chatRoomNum(chatRoom)
                 .sender(dto.getSender())
+                .senderName(dto.getSenderName())
                 .message(dto.getMessage())
                 .sendTime(dto.getSendTime().toString())
                 .build();
