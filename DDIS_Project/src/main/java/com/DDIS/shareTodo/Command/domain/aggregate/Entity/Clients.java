@@ -42,7 +42,7 @@ public class Clients {
     private String clientPhotoUrl;
 
     @Column(name = "client_report_num")
-    private int clientReportNum;
+    private Integer clientReportNum;
 
     @Column(name = "client_account_status")
     private String clientAccountStatus;

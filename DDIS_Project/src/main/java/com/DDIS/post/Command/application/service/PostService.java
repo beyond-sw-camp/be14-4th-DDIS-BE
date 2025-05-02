@@ -16,7 +16,7 @@ public interface PostService {
     Post getPost(Long postNum, String inputPassword);
 
     // 2. 모집게시글 작성
-    void createPost(PostCreateRequestDTO request);
+    Post createPost(PostCreateRequestDTO request);
 
     // 3. 모집게시글 수정
     void updatePost(Long postNum, PostUpdateRequestDTO request, Long requesterId);

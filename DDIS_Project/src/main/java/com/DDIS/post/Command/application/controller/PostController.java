@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController("postCommandController")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -36,10 +38,36 @@ public class PostController {
 
     // 2. 작성
     @PostMapping("/createPost")
-    public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO dto) {
-        postService.createPost(dto);
-        return ResponseEntity.ok("작성완료!");
+    public ResponseEntity<Map<String, Object>> createPost(@RequestBody PostCreateRequestDTO dto) {
+        Post savedPost = postService.createPost(dto); // 이제 Post 반환받음
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("post_num", savedPost.getPostNum());
+        response.put("category_name", savedPost.getCategoryNum().getCategoryName());
+        response.put("post_title", savedPost.getPostTitle());
+        response.put("recruitment_start_date", savedPost.getRecruitmentStartDate());
+        response.put("recruitment_end_date", savedPost.getRecruitmentEndDate());
+
+        return ResponseEntity.ok(response); // Vue에서 JSON 파싱 가능
     }
+
+
+//    @PostMapping("/createPost")
+//    public ResponseEntity<Map<String, Object>> createPost(@RequestBody PostCreateRequestDTO postDto) {
+//        // 게시글 저장
+//        Post savedPost = postService.save(postDto); // ← 실제 저장 로직
+//
+//        // 응답 JSON 객체 생성
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("post_num", savedPost.getPostNum());
+//        response.put("category_name", savedPost.getCategoryNum().getCategoryName());
+//        response.put("post_title", savedPost.getPostTitle());
+//        response.put("recruitment_start_date", savedPost.getRecruitmentStartDate());
+//        response.put("recruitment_end_date", savedPost.getRecruitmentEndDate());
+//
+//        return ResponseEntity.ok(response); // JSON 응답
+//    }
+
 
     // 3. 수정
     @PatchMapping("/{postNum}")
