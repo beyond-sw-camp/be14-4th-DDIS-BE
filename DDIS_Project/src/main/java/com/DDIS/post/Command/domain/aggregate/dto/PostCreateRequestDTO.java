@@ -23,6 +23,7 @@ public class PostCreateRequestDTO {
     private Integer recruitmentLimit;     // 모집 인원
 
     private Boolean isPublic;             // 공개 여부
+
     private String postPassword;          // 비공개 시 비밀번호
 
     private Long categoryNum;             // 카테고리 번호

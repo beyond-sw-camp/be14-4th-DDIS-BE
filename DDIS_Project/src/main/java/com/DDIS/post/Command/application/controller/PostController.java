@@ -35,9 +35,10 @@ public class PostController {
     }
 
     // 2. 작성
-    @PostMapping()
-    public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO dto) { postService.createPost(dto);
-        return ResponseEntity.ok("모집 게시글 작성 완료!");
+    @PostMapping("/createPost")
+    public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO dto) {
+        postService.createPost(dto);
+        return ResponseEntity.ok("작성완료!");
     }
 
     // 3. 수정
