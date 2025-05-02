@@ -103,7 +103,7 @@ public class ClientServiceImpl implements ClientService {
                 user.getClientNum()
         );
 
-        String refreshToken = jwtUtil.generateRefreshToken(user.getClientId());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getClientId(), user.getClientType(), user.getClientNum());
 
         // Redis에 저장 (key: refresh:clientId)
         redisTemplate.opsForValue().set(

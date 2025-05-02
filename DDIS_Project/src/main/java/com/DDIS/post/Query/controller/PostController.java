@@ -30,7 +30,7 @@ public class PostController {
     }
 
     // 2. public 모집게시글 조회
-    @GetMapping("public")
+    @GetMapping("/public")
     public ResponseEntity<List<PublicPostDTO>> getPublicPosts() {
         List<PublicPostDTO> posts = postService.findPublicPost();
 

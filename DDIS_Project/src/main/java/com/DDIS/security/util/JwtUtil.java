@@ -74,9 +74,12 @@ public class JwtUtil {
     }
 
     // Refresh token 생성 메서드 추가
-    public String generateRefreshToken(String clientId) {
+    public String generateRefreshToken(String clientId, String role, Long clientNum) {
         return Jwts.builder()
                 .setSubject(clientId)
+                .claim("role", role)
+                .claim("clientNum", clientNum)
+
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
                 .signWith(SignatureAlgorithm.HS256, secret.getBytes())
                 .compact();

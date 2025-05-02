@@ -3,6 +3,7 @@ package com.DDIS.security.config;
 import com.DDIS.security.JwtAccessDeniedHandler;
 import com.DDIS.security.JwtAuthenticationEntryPoint;
 import com.DDIS.security.filter.JwtAuthenticationFilter;
+import com.DDIS.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

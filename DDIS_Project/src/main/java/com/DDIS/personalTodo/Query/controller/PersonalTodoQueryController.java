@@ -2,6 +2,8 @@ package com.DDIS.personalTodo.Query.controller;
 
 import com.DDIS.personalTodo.Query.dto.PersonalTodoQueryDTO;
 import com.DDIS.personalTodo.Query.service.PersonalTodoQueryService;
+import com.DDIS.security.util.JwtUtil;
+import com.DDIS.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import java.util.List;
 public class PersonalTodoQueryController {
 
     private final PersonalTodoQueryService personalTodoQueryService;
+    private final JwtUtil jwtUtil;
 
     // 1. 회원별 전체 todo 조회
     @GetMapping("/{clientNum}")

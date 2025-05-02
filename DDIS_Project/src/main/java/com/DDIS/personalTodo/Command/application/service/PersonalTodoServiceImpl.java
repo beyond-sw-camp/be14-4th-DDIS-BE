@@ -174,5 +174,4 @@ public class PersonalTodoServiceImpl implements PersonalTodoService {
 
         personalTodoDateRepository.save(todoDate);
     }
-
 }
