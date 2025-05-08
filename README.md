@@ -37,7 +37,10 @@
   <tr>
     <td align="center"><img src="https://avatars.githubusercontent.com/u/33333333?s=100"/><br/>김기종<br/><a href="https://github.com/github-id3">@github-id3</a></td>
     <td align="center"><img src="https://avatars.githubusercontent.com/u/44444444?s=100"/><br/>주아현<br/><a href="https://github.com/github-id4">@github-id4</a></td>
-    <td align="center"><img src="https://avatars.githubusercontent.com/u/55555555?s=100"/><br/>한윤상<br/><a href="https://github.com/github-id5">@github-id5</a></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/1419fdd5-7407-4ca9-bb5c-e475ab487286" width="400"/><br/>한윤상<br/><a href="https://github.com/tommy8969">@tommy8969</a></td>
+
+
+    
   </tr>
 </table>
 
