@@ -839,7 +839,7 @@ pipeline {
 
 - 특히 **배포 자동화 파이프라인**을 혼자서 처음부터 끝까지 구성하면서 부담감도 있었지만, 그만큼 가장 성장할 수 있었던 영역이었다.
 
-- DockerHub 인증 실패, ArgoCD manifest 연동 오류, Ingress 트래픽 분기 문제 등 다양한 이슈를 직접 해결하며 **실전 DevOps 경험**을 쌓을 수 있었다.
+- DockerHub 인증 실패, ArgoCD manifest 연동 오류, Ingress 분기 문제 등 다양한 이슈를 직접 해결하며 **실전 DevOps 경험**을 쌓을 수 있었다.
 
 ### 🔍 FINDINGS (배운 것)
 
